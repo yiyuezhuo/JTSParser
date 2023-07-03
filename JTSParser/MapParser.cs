@@ -45,15 +45,6 @@ namespace YYZ.JTS.NB
 
     public class EdgeState
     {
-        /*
-        public bool Top => RawData[0];
-        public bool TopRight;
-        public bool BottomRight;
-        public bool Bottom;
-        public bool BottomLeft;
-        public bool TopLeft;
-        */
-
         public bool[] RawData = new bool[6];
         public bool ByDirection(HexDirection d) => RawData[(int)d];
 
@@ -296,15 +287,6 @@ namespace YYZ.JTS.NB
             };
         }
 
-        /*
-        public EdgeLayer StreamMap{get => EdgeLayers[0];}
-        public EdgeLayer CreekMap{get => EdgeLayers[1];}
-        public EdgeLayer PathMap{get => EdgeLayers[2];}
-        public EdgeLayer RoadMap{get => EdgeLayers[3];}
-        public EdgeLayer PikeMap{get => EdgeLayers[4];}
-        public EdgeLayer RailwayMap{get => EdgeLayers[5];}
-        */
-
         public EdgeLayer GetEdgeLayer(RoadType t)
         {
             switch(t)
@@ -334,56 +316,8 @@ namespace YYZ.JTS.NB
         }
     }
 
-    /*
-    public class Cell
-    {
-        public int I;
-        public int J;
-
-        public override int GetHashCode()
-        {
-            // https://stackoverflow.com/questions/892618/create-a-hashcode-of-two-numbers
-            // https://stackoverflow.com/questions/263400/what-is-the-best-algorithm-for-overriding-gethashcode/263416#263416
-            unchecked 
-            {
-                return (17 * 31 + I) * 31 + J;
-            }
-        }
-
-        public bool Equals(Cell other)
-        {
-            // https://tieba.baidu.com/p/8486613643
-            return other != null && X == other.X && Y == other.Y;
-        }
-
-        public override bool Equals(object other)
-        {
-            return Equals(other as Cell);
-        }
-
-        public int X() => J;
-        public int Y() => I;
-
-        public Cell Top() => new Cell(){I=I-1, J=J};
-        public Cell Bottom() => new Cell(){I=I+1, J=J};
-        public Cell TopRight() => new Cell(){I = J % 2 == 0 ? I : I - 1, J=J+1};
-        public Cell BottomRight() => new Cell(){I = J % 2 == 0 ? I + 1 : I, J=J+1};
-        public Cell TopLeft() => new Cell(){I =  J % 2 == 0 ? I : I - 1, J=J-1};
-        public Cell BottomLeft() => new Cell(){I = J % 2 == 0 ? I + 1 : I, J=J-1};
-    }
-    */
-
     public class HexEdge
     {
-        /*
-        public bool Stream;
-        public bool Creeek;
-        public bool Path;
-        public bool Road;
-        public bool Pike;
-        public bool Railway;
-        */
-
         public bool[] RiverArr = new bool[Enum.GetNames(typeof(RiverType)).Length];
         public bool[] RoadArr = new bool[Enum.GetNames(typeof(RoadType)).Length];
 
@@ -410,8 +344,10 @@ namespace YYZ.JTS.NB
 
         public override string ToString()
         {
+            
             var es = string.Join(",", EdgeMap.Select(KV => $"(I={KV.Key.I}, J={KV.Key.J}): {KV.Value}"));
             return $"Hex(I={I}, J={J}, X={X}, Y={Y}, {Terrain}, {Height}, {es})";
+            
         }
     }
     
@@ -447,9 +383,9 @@ namespace YYZ.JTS.NB
         };
         
         // (i, j) offsets
-        static HexDirection[] directions = new []{HexDirection.Top, HexDirection.TopRight, HexDirection.TopRight, HexDirection.BottomRight, HexDirection.Bottom, HexDirection.BottomLeft, HexDirection.TopLeft};
-        static int[][] oddNeighborOffsets = new int[][]{new int[]{-1, 0}, new int[]{0, 1}, new int[]{1, 1}, new int[]{1, 0}, new int[]{1, -1}, new int[]{0, -1}}; // Follwing HexDirection order
-        static int[][] evenNeighborOffsets = new int[][]{new int[]{-1, 0}, new int[]{-1, 1}, new int[]{0, 1}, new int[]{1, 0}, new int[]{0, -1}, new int[]{-1, -1}};
+        static HexDirection[] directions = new []{HexDirection.Top, HexDirection.TopRight, HexDirection.BottomRight, HexDirection.Bottom, HexDirection.BottomLeft, HexDirection.TopLeft};
+        static int[][] evenNeighborOffsets = new int[][]{new int[]{-1, 0}, new int[]{0, 1}, new int[]{1, 1}, new int[]{1, 0}, new int[]{1, -1}, new int[]{0, -1}}; // Follwing HexDirection order
+        static int[][] oddNeighborOffsets = new int[][]{new int[]{-1, 0}, new int[]{-1, 1}, new int[]{0, 1}, new int[]{1, 0}, new int[]{0, -1}, new int[]{-1, -1}};
 
         public Hex[,] HexMat;
 
@@ -473,7 +409,7 @@ namespace YYZ.JTS.NB
                 for(var j=0; j<map.Width; j++)
                 {
                     var src = hexMat[i, j];
-                    var offsets = j % 2 == 0 ? oddNeighborOffsets : oddNeighborOffsets;
+                    var offsets = j % 2 == 0 ? evenNeighborOffsets : oddNeighborOffsets;
                     for(var e=0; e<6; e++)
                     {
                         var offset = offsets[e];
@@ -491,16 +427,6 @@ namespace YYZ.JTS.NB
 
                             foreach(RoadType t in Enum.GetValues(typeof(RoadType)))
                                 edge.Set(t, map.GetEdgeLayer(t).HasEdge(i, j, direction));
-                            /*
-                            {
-                                Stream=map.StreamMap.HasEdge(i, j, direction),
-                                Creeek=map.CreeekMap.HasEdge(i, j, direction),
-                                Path=map.PathMap.HasEdge(i, j, direction),
-                                Road=map.RoadMap.HasEdge(i, j, direction),
-                                Pike=map.PikeMap.HasEdge(i, j, direction),
-                                Railway=map.RailwayMap.HasEdge(i, j, direction),
-                            };
-                            */
                         }
 
                     }
@@ -546,53 +472,6 @@ namespace YYZ.JTS.NB
         public override string ToString()
         {
             return $"InfantryColumnGraph(Height={HexMat.GetLength(0)}, Width={HexMat.GetLength(1)})";
-        } 
-
-        /*
-
-        public MapFile Map;
-
-        public bool Movable(Cell cell) => BaseCostMap[Map.TerrainMap[cell.I, cell.J]] > 0;
-
-        public IEnumerable<Cell> Neighbors(Cell pos)
-        {
-            if(Movable(pos))
-            {
-                var top = pos.Top();
-                if(top.I >= 0 && Movable(top))
-                    yield return top;
-
-                var topRight = pos.TopRight();
-                if(topRight.I >= 0 && topRight.J < Map.Width && Movable(topRight))
-                    yield return topRight;
-
-                var bottomRight = pos.BottomRight();
-                if(bottomRight.I < Map.Height &&  bottomRight.J <= Map.Width && Movable(bottomRight))
-                    yield return bottomRight;
-
-                var bottom = pos.Bottom();
-                if(bottom.I < Map.Height && Movable(bottom))
-                    yield return bottom;
-
-                var bottomLeft = pos.BottomLeft();
-                if(bottomLeft.I < Map.Height && bottomLeft.J < Map.Height && Movable(bottomLeft))
-                    yield return bottomLeft;
-
-                var topLeft = pos.TopLeft();
-                if(topLeft.I >= 0 && topLeft.J > 0 && Movable(topLeft))
-                    yield return topLeft;
-            }
         }
-
-        float MoveCost(Cell src, Cell dst)
-        {
-            if(Map.RoadMap[src])
-        }
-
-        float EstimateCost(Cell src, Cell dst)
-        {
-
-        }
-        */
     }
 }

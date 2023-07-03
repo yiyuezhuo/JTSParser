@@ -53,6 +53,50 @@ class Program
         Console.WriteLine(l1.Min());
         Console.WriteLine(l2.Min());
         */
+
+        /*
+
+        var rs = YYZ.PathFinding.PathFinding<Hex>.GetReachable(graph, graph.HexMat[0, 0], 20);
+        Console.WriteLine(rs.nodeToPath.Count);
+        Console.WriteLine(string.Join(",", rs.nodeToPath.Keys.Select(hex => $"({hex.I}, {hex.J})")));
+
+        var p = rs.Reconstruct(graph.HexMat[2, 2]);
+        Console.WriteLine(rs.nodeToPath[graph.HexMat[2, 2]].cost);
+        Console.WriteLine(string.Join(",", p.Select(hex => $"({hex.X}, {hex.Y})")));
+
+        Console.WriteLine(graph.HexMat[0, 0]);
+        Console.WriteLine(graph.HexMat[1, 0]);
+        Console.WriteLine(graph.HexMat[2, 1]);
+        Console.WriteLine(graph.HexMat[2, 2]);
+        Console.WriteLine(graph.HexMat[1, 1]);
+
+        var p2 = YYZ.PathFinding.PathFinding<Hex>.AStar(graph, graph.HexMat[0, 0], graph.HexMat[2, 2]);
+        Console.WriteLine(string.Join(",", p2.Select(hex => $"({hex.X}, {hex.Y})")));
+
+        Console.WriteLine(string.Join(",", graph.HexMat[1, 1].EdgeMap.Keys.Select(hex => $"({hex.X}, {hex.Y})")));
+        Console.WriteLine(string.Join(",", graph.HexMat[1, 0].EdgeMap.Keys.Select(hex => $"({hex.X}, {hex.Y})")));
+
+        var r2 = YYZ.PathFinding.PathFinding<Hex>.GetReachable(graph, graph.HexMat[21, 37], 20);
+        Console.WriteLine(graph.MoveCost(graph.HexMat[21, 37], graph.HexMat[20, 37]));
+        Console.WriteLine(graph.MoveCost(graph.HexMat[22, 37], graph.HexMat[21, 37]));
+        foreach(var pp in r2.nodeToPath)
+        {
+            var prev = pp.Value.prev == null ? "" : $"({pp.Value.prev.X} {pp.Value.prev.Y})";
+            Console.WriteLine($"({pp.Key.X}, {pp.Key.Y}), {pp.Value.cost}, {prev}");
+        }
+        */
+
+        var r3 = YYZ.PathFinding.PathFinding<Hex>.GetReachable(graph, graph.HexMat[8, 0], 10);
+        foreach(var pp in r3.nodeToPath)
+        {
+            var prev = pp.Value.prev == null ? "" : $"({pp.Value.prev.X} {pp.Value.prev.Y})";
+            Console.WriteLine($"({pp.Key.X}, {pp.Key.Y}), {pp.Value.cost}, {prev}");
+        }
+
+        var aiStatus = new AIStatus();
+        aiStatus.Extract(units, scenario.AICommandScripts);
+        Console.WriteLine(aiStatus);
     }
+
 }
 

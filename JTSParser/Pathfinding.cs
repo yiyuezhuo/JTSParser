@@ -139,11 +139,13 @@ namespace YYZ.PathFinding
             while(openSet.Count > 0)
             {
                 // pick
+                /*
                 openSet.Min(node => 
                     graph.Neighbors(node).Where(nei => closeSet.Contains(nei)).Select(nei => 
                         graph.MoveCost(node, nei)
                     ).Min()
                 );
+                */
 
                 IndexT pickedNode = default(IndexT);
                 IndexT pickedClosedNei = default(IndexT);

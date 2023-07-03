@@ -124,6 +124,20 @@ namespace YYZ.JTS.NB
             Summary(out var strength, out var guns);
             return $"Group({Name}, {Size}, {strength}, {guns})";
         }
+
+        public AbstractUnit Select(string oobIndex)
+        {
+            // Ex. 1.4.3.4
+            var unit = this;
+            AbstractUnit unitSelected = null;
+            // UnityEngine.Debug.Log($"oobIndex={oobIndex}, s={s}");
+            foreach (var idx in oobIndex.Split(".").Select(int.Parse))
+            {
+                unitSelected = unit.Units[idx - 1];
+                unit = unitSelected as UnitGroup;
+            }
+            return unitSelected;
+        }
     }
 
     public class UnitOob : AbstractUnit
@@ -413,6 +427,9 @@ namespace YYZ.JTS.NB
             foreach(Match match in Regex.Matches(s, unitPattern)) // Groups[0] => full match, Groups[1] => First group, ...
             {
                 var oobIndex = match.Groups[2].Value;
+
+                var unitSelected = oobRoot.Select(oobIndex);
+                /*
                 var unit = oobRoot;
                 AbstractUnit unitSelected = null;
                 foreach(var idx in oobIndex.Split(".").Select(int.Parse))
@@ -420,6 +437,7 @@ namespace YYZ.JTS.NB
                     unitSelected = unit.Units[idx-1];
                     unit = unitSelected as UnitGroup;
                 }
+                */
 
                 var unitState = new UnitState()
                 {
@@ -452,7 +470,11 @@ namespace YYZ.JTS.NB
                 if (ss[0] != "1")
                     continue;
 
+                
+                
                 var oobIndex = ss[1];
+                var unitSelected = oobRoot.Select(oobIndex);
+                /*
                 var unit = oobRoot;
                 AbstractUnit unitSelected = null;
                 // UnityEngine.Debug.Log($"oobIndex={oobIndex}, s={s}");
@@ -461,6 +483,7 @@ namespace YYZ.JTS.NB
                     unitSelected = unit.Units[idx - 1];
                     unit = unitSelected as UnitGroup;
                 }
+                */
 
                 var unitState = new UnitState()
                 {
@@ -522,15 +545,86 @@ namespace YYZ.JTS.NB
         }
     }
 
-    public class JTSScenario
+    public class JTSTime
     {
-        public string Name;
-
         public int Year;
         public int Month;
         public int Day;
         public int Hour;
         public int Minute;
+        public override string ToString()
+        {
+            return $"JTSTime({Year},{Month},{Day},{Hour},{Minute})";
+        }
+    }
+
+    public enum AIOrderType
+    {
+        DefendExtreme,
+        Defend,
+        NoOrder,
+        Attack,
+        AttackExtreme
+    }
+
+    public class AIOrder
+    {
+        // 1.3 1809 1 16 17 0 18 10 3
+        public AbstractUnit Unit;
+        public JTSTime Time;
+        public int X;
+        public int Y;
+        public AIOrderType Type;
+
+        public static AIOrder Decode(UnitGroup oobRoot, string s)
+        {
+            var ret = new AIOrder();
+            var sl = s.Split();
+            ret.Unit = oobRoot.Select(sl[0]);
+            ret.Time = new JTSTime()
+            {
+                Year = int.Parse(sl[1]),
+                Month = int.Parse(sl[2]),
+                Day = int.Parse(sl[3]),
+                Hour = int.Parse(sl[4]),
+                Minute = int.Parse(sl[5]),
+            };
+            ret.X = int.Parse(sl[6]);
+            ret.Y = int.Parse(sl[7]);
+            ret.Type = (AIOrderType)int.Parse(sl[8]);
+
+            return ret;
+        }
+
+        public override string ToString()
+        {
+            return $"AIOrder({Unit}, {Time}, {X}, {Y}, {Type})";
+        }
+    }
+
+    public class AIScript
+    {
+        public string Name;
+        public List<AIOrder> Orders = new();
+
+        public override string ToString()
+        {
+            return $"AIScript({Name}, {Orders.Count})";
+        }
+    }
+
+    public class JTSScenario
+    {
+        public string Name;
+
+        /*
+        public int Year;
+        public int Month;
+        public int Day;
+        public int Hour;
+        public int Minute;
+        */
+        public JTSTime Time;
         public int Turn;
         public int TurnLimit;
 
@@ -539,28 +633,28 @@ namespace YYZ.JTS.NB
         public string PdtFile;
 
         public List<string> DynamicCommandBlock = new(); // unit states (positions, direction,...), reinforcement
-        public List<string> AICommandBlock = new();
+        public List<List<string>> AICommandScripts = new();
         public string Description;
+
+        public string[] Lines;
+        public int AIBegin;
+        public int AIEnd;
 
         public override string ToString()
         {
-            return $"Scenario({Name}, ({Year},{Month},{Day},{Hour},{Minute}), {Turn}/{TurnLimit}, DC:{DynamicCommandBlock.Count}, AC:{AICommandBlock.Count})";
+            return $"Scenario({Name}, ({Time}), {Turn}/{TurnLimit}, DC:{DynamicCommandBlock.Count}, AC:{AICommandScripts.Count})";
         }
 
         public void Extract(string s)
         {
-            var sl = s.Split("\n");
+            var sl = Lines = s.Split("\n");
             Name = sl[1].Trim();
 
             // 1808 10 31 8 0 0 0 1 32
             //  0   1   2 3 4 5 6 7 8
             // var ds = sl[2].Trim().Split(" ").Select(int.Parse).ToArray();
             var ds = sl[2].Trim().Split().Select(int.Parse).ToArray();
-            Year = ds[0];
-            Month = ds[1];
-            Day = ds[2];
-            Hour = ds[3];
-            Minute = ds[4];
+            Time = new JTSTime(){Year = ds[0], Month = ds[1], Day = ds[2], Hour = ds[3], Minute = ds[4]};
             // Current Side and Step Mode (15min vs 10min?) or Night state or PBEM flag? 
             Turn = ds[7];
             TurnLimit = ds[8];
@@ -575,21 +669,105 @@ namespace YYZ.JTS.NB
                 DynamicCommandBlock.Add(sl[idx]);
                 idx++;
             }
-            idx = idx + 2;
-            var pair = sl[idx].Split((char[])null, 2, StringSplitOptions.RemoveEmptyEntries);
-            var aiCommandSize = int.Parse(pair[0]);
-            var DescriptionIdx = idx + aiCommandSize + 1;
+            idx += 1;
 
-            for (var i = idx + 1; i < DescriptionIdx; i++)
-                AICommandBlock.Add(sl[i]);
+            AIBegin = idx;
+
+            var AIScriptCountAndUnknown = sl[idx].Split();
+            var AIScriptCount = int.Parse(AIScriptCountAndUnknown[0]);
+
+            idx += 1;
+
+            for(var i=0; i<AIScriptCount; i++)
+            {
+                var scriptLines = new List<string>(){sl[idx]};
+
+                var pair = sl[idx].Split((char[])null, 2, StringSplitOptions.RemoveEmptyEntries);
+                var aiCommandSize = int.Parse(pair[0]);
+                var aiScriptName = pair[1];
+
+                idx += 1;
+                for(var j=0; j<aiCommandSize; idx++, j++)
+                {
+                    scriptLines.Add(sl[idx]);
+                }
+                AICommandScripts.Add(scriptLines);
+            }
+
+            AIEnd = idx;
 
             var descriptionList = new List<string>();
-            for (var i = DescriptionIdx; i < sl.Length; i++)
-                descriptionList.Add(sl[i]);
+            for (; idx < sl.Length; idx++)
+                descriptionList.Add(sl[idx]);
 
             Description = string.Join("\n", descriptionList);
         }
     }
 
-    
+    public class AIStatus
+    {
+        public List<AIScript> AIScripts = new();
+
+        public void Extract(UnitGroup oobRoot, List<List<string>> aiScripts)
+        {
+            foreach(var aiScriptLines in aiScripts)
+            {
+                var pair = aiScriptLines[0].Split((char[])null, 2, StringSplitOptions.RemoveEmptyEntries);
+                var name = pair[1];
+                var orders = aiScriptLines.Skip(1).Select(line => AIOrder.Decode(oobRoot, line)).ToList();
+                var aiScript = new AIScript(){Name = name, Orders=orders};
+                AIScripts.Add(aiScript);
+            }
+        }
+
+        public void GetInvMap(UnitGroup unit, string prefix, Dictionary<AbstractUnit, string> outMap)
+        {
+            for(var i=0; i<unit.Units.Count; i++)
+            {
+                var subUnit = unit.Units[i];
+                var code = prefix.Length == 0 ? $"{i+1}" : $"{prefix}.{i+1}";
+                outMap[subUnit] = code;
+                var subGroup = subUnit as UnitGroup;
+                if(subGroup != null)
+                {
+                    GetInvMap(subGroup, code, outMap);
+                }
+            }
+        }
+
+        public Dictionary<AbstractUnit, string> GetInvMap(UnitGroup oobRoot)
+        {
+            var outMap = new Dictionary<AbstractUnit, string>();
+            GetInvMap(oobRoot, "", outMap);
+            return outMap;
+        }
+
+        public string Transform(JTSScenario scenario, UnitGroup oobRoot)
+        {
+            var aiLines = new List<string>(){$"{AIScripts.Count} 0"};
+
+            var invMap = GetInvMap(oobRoot);
+            foreach(var aiScript in AIScripts)
+            {
+                aiLines.Add($"{aiScript.Orders.Count} {aiScript.Name}");
+                foreach(var order in aiScript.Orders)
+                {
+                    var idxStr = invMap[order.Unit];
+                    var type = (int)order.Type;
+                    var t = order.Time;
+                    aiLines.Add($"{idxStr} {t.Year} {t.Month} {t.Day} {t.Hour} {t.Minute} {order.X} {order.Y} {type}");
+                }
+            }
+
+            var lines = scenario.Lines.Take(scenario.AIBegin).Concat(aiLines).Concat(scenario.Lines.Skip(scenario.AIEnd));
+            return string.Join("\n", lines);
+        }
+
+        public override string ToString()
+        {
+            return $"AIStatus({AIScripts.Count})";
+        }
+
+    }
+
 }
