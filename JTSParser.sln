@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30114.105
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JTSParser", "JTSParser\JTSParser.csproj", "{E2C25599-C68B-44F9-B567-FFC0598696B5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShowCase", "ShowCase\ShowCase.csproj", "{AA73C1F5-88BE-4A5C-8AF2-4F367DBDC8C5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E2C25599-C68B-44F9-B567-FFC0598696B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E2C25599-C68B-44F9-B567-FFC0598696B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E2C25599-C68B-44F9-B567-FFC0598696B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E2C25599-C68B-44F9-B567-FFC0598696B5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA73C1F5-88BE-4A5C-8AF2-4F367DBDC8C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA73C1F5-88BE-4A5C-8AF2-4F367DBDC8C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA73C1F5-88BE-4A5C-8AF2-4F367DBDC8C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA73C1F5-88BE-4A5C-8AF2-4F367DBDC8C5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
