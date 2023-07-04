@@ -352,7 +352,7 @@ namespace YYZ.JTS.NB
     }
     
 
-    public class InfantryColumnGraph: YYZ.PathFinding.IGraph<Hex>
+    public class InfantryColumnGraph: YYZ.AI.IGraphEnumerable<Hex>
     {
         public static Dictionary<TerrainType, float> BaseCostMap = new()
         {
@@ -472,6 +472,19 @@ namespace YYZ.JTS.NB
         public override string ToString()
         {
             return $"InfantryColumnGraph(Height={HexMat.GetLength(0)}, Width={HexMat.GetLength(1)})";
+        }
+
+        public IEnumerable<Hex> Nodes()
+        {
+            var height = HexMat.GetLength(0);
+            var width = HexMat.GetLength(1);
+            for(var i=0; i<height; i++)
+            {
+                for(var j=0; j<width; j++)
+                {
+                    yield return HexMat[i, j];
+                }
+            }
         }
     }
 }

@@ -1,15 +1,10 @@
+using System.Collections.Generic;
+using System;
+using System.Diagnostics;
+using System.Linq;
+
 namespace YYZ.JTS.NB
 {
-
-
-    using System.Collections;
-    using System.Collections.Generic;
-    using System;
-    using System.Diagnostics;
-    using System.Linq;
-    using System.Text.RegularExpressions;
-    // using UnityEngine;
-
     /*
     public enum GroupSize
     {
@@ -21,22 +16,22 @@ namespace YYZ.JTS.NB
     }
     */
 
-    public enum UnitType
+    public enum UnitCategory
     {
         Infantry,
         Cavalry,
         Artillery
     }
 
-    public class UnitSubType
+    public class UnitType
     {
         public string Name;
-        public UnitType Type;
+        public UnitCategory Category;
         public string Code;
 
         public override string ToString()
         {
-            return $"UnitSubType({Name}, {Type}, {Code})";
+            return $"UnitSubType({Name}, {Category}, {Code})";
         }
     }
 
@@ -105,13 +100,13 @@ namespace YYZ.JTS.NB
                 if (_unit != null)
                 {
                     // Debug.Log(_unit);
-                    switch (_unit.Type.Type)
+                    switch (_unit.Type.Category)
                     {
-                        case UnitType.Infantry:
-                        case UnitType.Cavalry:
+                        case UnitCategory.Infantry:
+                        case UnitCategory.Cavalry:
                             strength += _unit.Strength;
                             break;
-                        case UnitType.Artillery:
+                        case UnitCategory.Artillery:
                             guns += _unit.Strength;
                             break;
                     }
@@ -123,6 +118,20 @@ namespace YYZ.JTS.NB
         {
             Summary(out var strength, out var guns);
             return $"Group({Name}, {Size}, {strength}, {guns})";
+        }
+
+        public AbstractUnit Select(string oobIndex)
+        {
+            // Ex. 1.4.3.4
+            var unit = this;
+            AbstractUnit unitSelected = null;
+            // UnityEngine.Debug.Log($"oobIndex={oobIndex}, s={s}");
+            foreach (var idx in oobIndex.Split(".").Select(int.Parse))
+            {
+                unitSelected = unit.Units[idx - 1];
+                unit = unitSelected as UnitGroup;
+            }
+            return unitSelected;
         }
     }
 
@@ -141,47 +150,60 @@ namespace YYZ.JTS.NB
         public int Strength;
         public int Morale;
         // public string Type;
-        public UnitSubType Type;
+        public UnitType Type;
         public string Weapon;
         public string Icon3D;
         public override string ToString() => $"Unit({Name}, {Strength}, Morale={Morale}, Type={Type}, Weapon={Weapon})";
 
-        public static UnitSubType[] UnitSubTypes =
+        static Dictionary<string, UnitType[]> SubTypesMap = new()
         {
-            new UnitSubType(){Name="Heavy Artillery", Type=UnitType.Artillery, Code="A"},
-            new UnitSubType(){Name="Light Artillery", Type=UnitType.Artillery, Code="B"},
-            new UnitSubType(){Name="Horse Artillery", Type=UnitType.Artillery, Code="C"},
-            new UnitSubType(){Name="Emplaced Guns", Type=UnitType.Artillery, Code="E"},
+            {"NB", new UnitType[]{
+                new UnitType(){Name="Heavy Artillery", Category=UnitCategory.Artillery, Code="A"},
+                new UnitType(){Name="Light Artillery", Category=UnitCategory.Artillery, Code="B"},
+                new UnitType(){Name="Horse Artillery", Category=UnitCategory.Artillery, Code="C"},
+                new UnitType(){Name="Emplaced Guns", Category=UnitCategory.Artillery, Code="E"},
 
-            new UnitSubType(){Name="Dragoon", Type=UnitType.Cavalry, Code="D"},
-            new UnitSubType(){Name="Light Cavalry", Type=UnitType.Cavalry, Code="L"},
-            new UnitSubType(){Name="Heavy Cavalry", Type=UnitType.Cavalry, Code="H"},
-            new UnitSubType(){Name="Cossack", Type=UnitType.Cavalry, Code="K"},
+                new UnitType(){Name="Dragoon", Category=UnitCategory.Cavalry, Code="D"},
+                new UnitType(){Name="Light Cavalry", Category=UnitCategory.Cavalry, Code="L"},
+                new UnitType(){Name="Heavy Cavalry", Category=UnitCategory.Cavalry, Code="H"},
+                new UnitType(){Name="Cossack", Category=UnitCategory.Cavalry, Code="K"},
 
-            new UnitSubType(){Name="Line Infantry", Type=UnitType.Infantry, Code="I"},
-            new UnitSubType(){Name="Militia", Type=UnitType.Infantry, Code="M"},
-            new UnitSubType(){Name="Light Infantry", Type=UnitType.Infantry, Code="V"},
-            new UnitSubType(){Name="Guard Infantry", Type=UnitType.Infantry, Code="G"},
-            new UnitSubType(){Name="Restricted Infantry", Type=UnitType.Infantry, Code="R"},
+                new UnitType(){Name="Line Infantry", Category=UnitCategory.Infantry, Code="I"},
+                new UnitType(){Name="Militia", Category=UnitCategory.Infantry, Code="M"},
+                new UnitType(){Name="Light Infantry", Category=UnitCategory.Infantry, Code="V"},
+                new UnitType(){Name="Guard Infantry", Category=UnitCategory.Infantry, Code="G"},
+                new UnitType(){Name="Restricted Infantry", Category=UnitCategory.Infantry, Code="R"},
 
-            new UnitSubType(){Name="Line Infantry (2 rank)", Type=UnitType.Infantry, Code="T"},
-            new UnitSubType(){Name="Light Infantry (2 rank)", Type=UnitType.Infantry, Code="U"},
-            new UnitSubType(){Name="Guard Infantry (2 rank)", Type=UnitType.Infantry, Code="F"},
+                new UnitType(){Name="Line Infantry (2 rank)", Category=UnitCategory.Infantry, Code="T"},
+                new UnitType(){Name="Light Infantry (2 rank)", Category=UnitCategory.Infantry, Code="U"},
+                new UnitType(){Name="Guard Infantry (2 rank)", Category=UnitCategory.Infantry, Code="F"},
 
-            new UnitSubType(){Name="Independent Skirmisher", Type=UnitType.Infantry, Code="S"},
-            new UnitSubType(){Name="Pioneer", Type=UnitType.Infantry, Code="P"},
+                new UnitType(){Name="Independent Skirmisher", Category=UnitCategory.Infantry, Code="S"},
+                new UnitType(){Name="Pioneer", Category=UnitCategory.Infantry, Code="P"},
+            }},
+            {"CWB", new UnitType[]{
+                new UnitType(){Name="Artillery", Category=UnitCategory.Artillery, Code="A"},
+                new UnitType(){Name="Cavalry", Category=UnitCategory.Cavalry, Code="C"},
+                new UnitType(){Name="Horse Artillery", Category=UnitCategory.Artillery, Code="H"},
+                new UnitType(){Name="Infantry", Category=UnitCategory.Infantry, Code="I"},
+                new UnitType(){Name="Militia", Category=UnitCategory.Infantry, Code="M"},
+                new UnitType(){Name="Infantry (Z)", Category=UnitCategory.Infantry, Code="Z"},
+            }}
         };
 
-        public static Dictionary<string, UnitSubType> UnitTypeMap;// = new Dictionary<string, UnitType>()
+        // game series name => unit code => unit type
+        public static Dictionary<string, Dictionary<string, UnitType>> Series2Code2Type;// = new Dictionary<string, UnitType>()
 
         static UnitOob()
         {
-            UnitTypeMap = new Dictionary<string, UnitSubType>();
-            foreach (var unitSubType in UnitSubTypes)
+            Series2Code2Type = new();
+            foreach(var subTypes in SubTypesMap)
             {
-                UnitTypeMap[unitSubType.Code] = unitSubType;
+                Series2Code2Type[subTypes.Key] = subTypes.Value.ToDictionary(d => d.Code);
             }
         }
+
+        public UnitCategory Category => Type.Category;
     }
 
     public class Leader : AbstractUnit
@@ -198,16 +220,19 @@ namespace YYZ.JTS.NB
         public override string ToString() => $"SupplyWagon({Name}, {Strength})";
     }
 
-    
-
-    public static class JTSOobParser
+    public class JTSOobParser
     {
-        static char[] seps = new char[]{' '};
+        public Dictionary<string, UnitType> UnitTypeMap; // C# 11: required
 
-        public static UnitGroup ParseUnits(string s)
+        public static JTSOobParser FromCode(string name)
         {
-            var lines = s.Split('\n');
-            Debug.Assert(lines[0].Trim() == "2");
+            return new JTSOobParser(){UnitTypeMap = UnitOob.Series2Code2Type[name]};
+        }
+
+        public UnitGroup ParseUnits(string s)
+        {
+            var lines = s.Split("\n");
+            Debug.Assert(lines[0].Trim() == "2" || lines[0].Trim() == "3");
 
             var rootGroup = new UnitGroup();
             var stack = new Stack<UnitGroup>();
@@ -238,11 +263,11 @@ namespace YYZ.JTS.NB
             return rootGroup;
         }
 
-        public static AbstractUnit ParseUnit(Stack<UnitGroup> stack, string line)
+        public AbstractUnit ParseUnit(Stack<UnitGroup> stack, string line)
         {
             if (stack.Count == 1) // Top unit has 1 extra prefix to define its country
             {
-                var s = line.Split(seps, 2);
+                var s = line.Split((char[])null, 2, StringSplitOptions.RemoveEmptyEntries);
                 var unit = _ParseUnit(s[1]);
                 unit.Country = s[0];
                 return unit;
@@ -250,13 +275,13 @@ namespace YYZ.JTS.NB
             return _ParseUnit(line);
         }
 
-        static AbstractUnit _ParseUnit(string line)
+        AbstractUnit _ParseUnit(string line)
         {
-            var ss = line.Split(seps, 2);
+            var ss = line.Split((char[])null, 2, StringSplitOptions.RemoveEmptyEntries);
             switch (ss[0])
             {
                 case "L":
-                    var sss = ss[1].Split(seps, 4);
+                    var sss = ss[1].Split((char[])null, 4, StringSplitOptions.RemoveEmptyEntries);
                     return new Leader()
                     {
                         Rating = int.Parse(sss[0]),
@@ -265,12 +290,12 @@ namespace YYZ.JTS.NB
                         Name = sss[3]
                     };
                 case "U":
-                    sss = ss[1].Split(seps, 7);
+                    sss = ss[1].Split(" ", 7);
                     return new UnitOob()
                     {
                         Strength = int.Parse(sss[0]),
                         Morale = int.Parse(sss[1]),
-                        Type = UnitOob.UnitTypeMap[sss[2]],
+                        Type = UnitTypeMap[sss[2]],
                         // Type = sss[2],
                         Weapon = sss[3],
                         Icon2D = sss[4],
@@ -278,7 +303,7 @@ namespace YYZ.JTS.NB
                         Name = sss[6]
                     };
                 case "S":
-                    sss = ss[1].Split(seps, 3);
+                    sss = ss[1].Split((char[])null, 3, StringSplitOptions.RemoveEmptyEntries);
                     return new SupplyWagon()
                     {
                         Strength = int.Parse(sss[0]),
@@ -291,67 +316,6 @@ namespace YYZ.JTS.NB
                         Size = ss[0],
                         Name = ss[1],
                     };
-            }
-        }
-    }
-
-    public class UnitState
-    {
-        public AbstractUnit OobItem;
-
-        public int CurrentStrength;
-        public int Fatigue;
-        public int X;
-        public int Y;
-
-        public override string ToString()
-        {
-            return $"UnitState(CurrentStrength={CurrentStrength}, Fatigue={Fatigue}, X={X}, Y={Y}, {OobItem})";
-        }
-    }
-
-    public class JTSUnitStatus
-    {
-        // extract unit state (position, direction, current strength, disorder & fatigue state)
-        // from a scenario file (*.scn) or a save file (*.btl, *.bte)
-
-        public List<UnitState> UnitStates = new List<UnitState>();
-        public Dictionary<AbstractUnit, UnitState> Unit2state = new Dictionary<AbstractUnit, UnitState>();
-
-        static string unitPattern = @"(\d+) ((?:\d+\.)*\d+) (\d+) (\d+) (\d+) (\d+) (\d+) (\d+) (\d+) (\d+)";
-
-        public void Extract(UnitGroup oobRoot, string s)
-        {
-            foreach(Match match in Regex.Matches(s, unitPattern)) // Groups[0] => full match, Groups[1] => First group, ...
-            {
-                var oobIndex = match.Groups[2].Value;
-                var unit = oobRoot;
-                AbstractUnit unitSelected = null;
-                foreach(var idx in oobIndex.Split('.').Select(int.Parse))
-                {
-                    unitSelected = unit.Units[idx-1];
-                    unit = unitSelected as UnitGroup;
-                }
-                
-                /*
-                Debug.Log($"match={match}");
-                for(var i=0; i<match.Groups.Count; i++)
-                {
-                    Debug.Log($"match.Groups[{i}].Value={match.Groups[i].Value}");
-                }
-                */
-
-                var unitState = new UnitState()
-                {
-                    OobItem = unitSelected,
-                    CurrentStrength = int.Parse(match.Groups[5].Value),
-                    Fatigue = int.Parse(match.Groups[6].Value),
-                    X = int.Parse(match.Groups[9].Value),
-                    Y = int.Parse(match.Groups[10].Value)
-                };
-
-                UnitStates.Add(unitState);
-                Unit2state[unitSelected] = unitState;
             }
         }
     }

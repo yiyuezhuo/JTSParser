@@ -10,15 +10,17 @@ class Program
     {
         Console.WriteLine("Hello, World!");
 
-        // var s = File.ReadAllText(@"E:\JTSGames\Pen_spain\OOBs\Coruna.oob");
-        var oobStr = File.ReadAllText(@"E:\JTSGames\CampaignAntietam\OOBs\1st Bull Run.oob");
-        var scenarioStr = File.ReadAllText(@"E:\JTSGames\CampaignAntietam\Scenarios\002 1BR_Bull Run (Historical).scn");
+        var oobStr = File.ReadAllText(@"E:\JTSGames\Pen_spain\OOBs\Coruna.oob");
+        // var oobStr = File.ReadAllText(@"E:\JTSGames\CampaignAntietam\OOBs\1st Bull Run.oob");
+        // var scenarioStr = File.ReadAllText(@"E:\JTSGames\CampaignAntietam\Scenarios\002 1BR_Bull Run (Historical).scn");
+        var scenarioStr = File.ReadAllText(@"E:\JTSGames\Pen_spain\Scenarios\011.Coruna4_BrAI_test.scn");
 
         // var units = JTSOobParser.ParseUnits(s);
         var scenario = new JTSScenario();
         scenario.Extract(scenarioStr);
 
-        var units = JTSOobParser.FromCode("CWB").ParseUnits(oobStr);
+        // var units = JTSOobParser.FromCode("CWB").ParseUnits(oobStr);
+        var units = JTSOobParser.FromCode("NB").ParseUnits(oobStr);
 
         var unitStatus = new JTSUnitStates();
         unitStatus.ExtractByLines(units, scenario.DynamicCommandBlock);
@@ -96,7 +98,8 @@ class Program
         var aiStatus = new AIStatus();
         aiStatus.Extract(units, scenario.AICommandScripts);
         Console.WriteLine(aiStatus);
-    }
 
+        var influenceMap = InfluenceController.Setup(unitStatus.UnitStates, graph, 1, 1, 10);
+    }
 }
 
