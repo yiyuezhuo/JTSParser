@@ -2,6 +2,46 @@ namespace YYZ.JTS.NB
 {
     public static class StaticData
     {
+        public static string PreWW1TerrainCode = @"
+'w' => Water
+'r' => Rough
+'s' => Marsh
+'o' => Orchard
+' ' => Clear
+'f' => Forest
+'x' => Blocked
+";
+        public static string NBTerrainCode = PreWW1TerrainCode + @"
+'e' => Field
+
+'v' => Village
+'b' => Building
+'c' => Chateau
+";
+
+        public static string CWBTerrainCode = PreWW1TerrainCode +  @"
+'d' => Field
+
+'t' => Town
+";
+        public static string PZCTerrainCode = @"
+'p' => Town
+' ' => Clear
+'q' => City
+'o' => Village
+'f' => Forest
+'x' => Blocked
+'b' => Field
+'m' => Rough
+'e' => Orchard
+'a' => Water
+'c' => Brush
+'g' => Marsh
+'l' => Sand
+'h' => Swamp
+'k' => Broken
+";
+
         // Note: "" denotes " in the verbatim string
         /*
         1

@@ -21,7 +21,7 @@ namespace YYZ.JTS.NB
         }
         */
 
-        public static InfluenceMap<Hex> Setup(List<UnitState> unitStates, InfantryColumnGraph graph, float momentum, float decay, int step=0)
+        public static InfluenceMap<Hex> Setup(List<UnitState> unitStates, DistanceGraph graph, float momentum, float decay, int step=0)
         {
             var map = new InfluenceMap<Hex>(){Graph=graph, Momentum=momentum, Decay=decay};
             foreach(var node in graph.Nodes())
@@ -30,7 +30,7 @@ namespace YYZ.JTS.NB
             }
             foreach(var unitState in unitStates)
             {
-                var node = graph.HexMat[unitState.Y, unitState.X];
+                var node = graph.Network.HexMat[unitState.Y, unitState.X];
                 map.InfluenceDict[node] = unitState.CurrentStrength;
             }
             for(var i=0; i<step; i++)

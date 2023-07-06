@@ -22,7 +22,7 @@ namespace YYZ.JTS.NB
         public static JTSParser FromCode(string s)
         {
             return new JTSParser(codeMap[s]);
-        } 
+        }
 
         public JTSScenario ParseScenario(string scenarioStr)
         {
@@ -46,6 +46,26 @@ namespace YYZ.JTS.NB
         public UnitGroup ParseOOB(string oobStr)
         {
             return JTSOobParser.FromSeries(Series).ParseUnits(oobStr);
+        }
+
+        
+        public MapFile ParseMap(string mapStr, bool strict=true)
+        {
+            MapFile mp = null;
+            switch(Series)
+            {
+                case JTSSeries.NapoleonicBattle:
+                    mp = new NBMapFile();
+                    break;
+                case JTSSeries.CivilWarBattle:
+                    mp = new CWBMapFile();
+                    break;
+                case JTSSeries.PanzerCampaign:
+                    mp = new PZCMapFile();
+                    break;
+            }
+            mp.Extract(mapStr, strict);
+            return mp;
         }
     }
 }

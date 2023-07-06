@@ -284,33 +284,6 @@ namespace YYZ.JTS.NB
             idx += 1; // Skip Dynamic Command Block's ending trailing 0
 
             idx = ParseAIScripts(sl, idx); // point to AI Beginning of AI Scripts (NB/CWB) or Description (PZC)
-            /*
-            AIBegin = idx;
-
-            var AIScriptCountAndUnknown = sl[idx].Split();
-            var AIScriptCount = int.Parse(AIScriptCountAndUnknown[0]);
-
-            idx += 1;
-
-            for(var i=0; i<AIScriptCount; i++)
-            {
-                var scriptLines = new List<string>(){sl[idx]};
-
-                var pair = sl[idx].Split((char[])null, 2, StringSplitOptions.RemoveEmptyEntries);
-                var aiCommandSize = int.Parse(pair[0]);
-                var aiScriptName = pair[1];
-
-                idx += 1;
-                for(var j=0; j<aiCommandSize; idx++, j++)
-                {
-                    scriptLines.Add(sl[idx]);
-                }
-                AICommandScripts.Add(scriptLines);
-            }
-
-            AIEnd = idx;
-            */
-
 
             var descriptionList = new List<string>();
             for (; idx < sl.Length; idx++)

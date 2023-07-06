@@ -30,21 +30,33 @@ class Program
         // var units = JTSOobParser.FromCode("CWB").ParseUnits(oobStr);
         // var units = JTSOobParser.FromCode("NB").ParseUnits(oobStr);
         var units = nbParser.ParseOOB(oobStr);
+        Console.WriteLine(units);
 
         var unitStatus = new JTSUnitStates();
         unitStatus.ExtractByLines(units, scenario.DynamicCommandBlock);
+        Console.WriteLine(unitStatus);
         
         // Console.WriteLine('9' - '0');
         // Console.WriteLine('a' - '0');
 
         var mapStr = File.ReadAllText(@"E:\JTSGames\Pen_spain\Maps\Coruna.map");
-        var mapFile = MapFile.Parse(mapStr);
+        var mapFile = nbParser.ParseMap(mapStr);
+
+        // var mapFile = MapFile.Parse(mapStr);
         Console.WriteLine(mapFile.ToString());
 
-        var graph = InfantryColumnGraph.FromMapFile(mapFile);
+        var distance = new DistanceSystem(){Name="Column Infantry Movement Costs"};
+        var nbParam = ParameterData.Parse(StaticData.NBParameterData);
+        distance.Extract(mapFile.CurrentTerrainSystem, nbParam.Data["Column Infantry Movement Costs"]);
+        Console.WriteLine(distance);
+        
+        var network = HexNetwork.FromMapFile(mapFile);
+        Console.WriteLine(network);
+
+        var graph = new DistanceGraph(){Network=network, Distance=distance};
         Console.WriteLine(graph);
 
-        var roads = graph.SimplifyRoad(RoadType.Road);
+        var roads = network.SimplifyRoad(mapFile.CurrentTerrainSystem.Road.GetValue("Road"));
         Console.WriteLine(roads.Count);
         foreach(var road in roads)
         {
@@ -108,7 +120,7 @@ class Program
         }
         */
 
-        var r3 = YYZ.PathFinding.PathFinding<Hex>.GetReachable(graph, graph.HexMat[8, 0], 10);
+        var r3 = YYZ.PathFinding.PathFinding<Hex>.GetReachable(graph, network.HexMat[8, 0], 10);
         foreach(var pp in r3.nodeToPath)
         {
             var prev = pp.Value.prev == null ? "" : $"({pp.Value.prev.X} {pp.Value.prev.Y})";
@@ -147,6 +159,11 @@ class Program
         var pzcParser = new JTSParser(JTSSeries.PanzerCampaign);
         scenarioStr = File.ReadAllText(@"E:\JTSGames\Mius43\#0717_01_Mius_Campaign.scn");
         Console.WriteLine(pzcParser.ParseScenario(scenarioStr));
+
+        // scenarioStr = File.ReadAllText(@"E:\JTSGames\Mius43\Mius.map");
+        scenarioStr = File.ReadAllText(@"E:\JTSGames\Tobruk_41\Scenarios\Tobruk_Winter.map");
+        // scenarioStr = File.ReadAllText(@"E:\JTSGames\Tobruk_41\Scenarios\Mersa_Brega_Sub.map");
+        Console.WriteLine(pzcParser.ParseMap(scenarioStr));
     }
 }
 

@@ -16,6 +16,9 @@ namespace YYZ.JTS.NB
         LeftTop = 32
     }
 
+    
+
+    /*
     public enum TerrainType
     {
         Water,
@@ -34,6 +37,7 @@ namespace YYZ.JTS.NB
         // Panzer Campaign
         City
     }
+    
 
     public enum RoadType
     {
@@ -48,6 +52,7 @@ namespace YYZ.JTS.NB
         Stream,
         Creek
     }
+    */
 
     public enum HexDirection
     {
