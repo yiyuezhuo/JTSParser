@@ -1,4 +1,4 @@
-﻿namespace JTSParser
+﻿namespace TestNameSpace
 {
 public class Class1
 {

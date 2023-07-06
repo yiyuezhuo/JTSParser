@@ -3,6 +3,7 @@ using System;
 using YYZ.JTS.NB;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 class Program
 {
@@ -10,18 +11,25 @@ class Program
     {
         Console.WriteLine("Hello, World!");
 
+        
+        var nbParser = new JTSParser(JTSSeries.NapoleonicBattle);
+
         var oobStr = File.ReadAllText(@"E:\JTSGames\Pen_spain\OOBs\Coruna.oob");
         // var oobStr = File.ReadAllText(@"E:\JTSGames\CampaignAntietam\OOBs\1st Bull Run.oob");
         // var scenarioStr = File.ReadAllText(@"E:\JTSGames\CampaignAntietam\Scenarios\002 1BR_Bull Run (Historical).scn");
         var scenarioStr = File.ReadAllText(@"E:\JTSGames\Pen_spain\Scenarios\011.Coruna4_BrAI_test.scn");
 
         // var units = JTSOobParser.ParseUnits(s);
+        /*
         var scenario = new JTSScenario();
         scenario.Extract(scenarioStr);
+        */
+        var scenario = nbParser.ParseScenario(scenarioStr);
         Console.WriteLine(scenario);
 
         // var units = JTSOobParser.FromCode("CWB").ParseUnits(oobStr);
-        var units = JTSOobParser.FromCode("NB").ParseUnits(oobStr);
+        // var units = JTSOobParser.FromCode("NB").ParseUnits(oobStr);
+        var units = nbParser.ParseOOB(oobStr);
 
         var unitStatus = new JTSUnitStates();
         unitStatus.ExtractByLines(units, scenario.DynamicCommandBlock);
@@ -119,6 +127,26 @@ class Program
         var mapFile2 = MapFile.Parse(mapStr2);
         Console.WriteLine(mapFile2.ToString());
         */
+
+        Console.WriteLine(ParameterData.Parse(StaticData.NBParameterData));
+
+        var cwbParser = new JTSParser(JTSSeries.CivilWarBattle);
+        // scenarioStr = File.ReadAllText(@"E:\JTSGames\CampaignAntietam\Scenarios\002 1BR_Bull Run (Historical).scn");
+        // scenarioStr = File.ReadAllText(@"E:\JTSGames\cwb_demo\Scenarios\005-620101-Williamsburg.scn");
+        scenarioStr = File.ReadAllText(@"E:\JTSGames\cwb_demo\Scenarios\004-620101-Williamsburg_W.scn");
+
+        /*
+        var match = Regex.Matches("1-40[100/15]", @"(\d+)-(\d+)");
+        var match2 = Regex.Matches("1-40[100/15]", @"(\d+)/(\d+)");
+        var match3 = Regex.Matches("100/15", @"(\d+)/(\d+)");
+        var match4 = Regex.Matches("2", @"(\d+)/(\d+)");
+        */
+
+        Console.WriteLine(cwbParser.ParseScenario(scenarioStr));
+
+        var pzcParser = new JTSParser(JTSSeries.PanzerCampaign);
+        scenarioStr = File.ReadAllText(@"E:\JTSGames\Mius43\#0717_01_Mius_Campaign.scn");
+        Console.WriteLine(pzcParser.ParseScenario(scenarioStr));
     }
 }
 

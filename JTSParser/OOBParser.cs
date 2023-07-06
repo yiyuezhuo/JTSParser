@@ -5,23 +5,6 @@ using System.Linq;
 
 namespace YYZ.JTS.NB
 {
-    /*
-    public enum GroupSize
-    {
-        Army,
-        Wing,
-        Corp,
-        Division,
-        Brigade,
-    }
-    */
-
-    public enum UnitCategory
-    {
-        Infantry,
-        Cavalry,
-        Artillery
-    }
 
     public class UnitType
     {
@@ -155,9 +138,9 @@ namespace YYZ.JTS.NB
         public string Icon3D;
         public override string ToString() => $"Unit({Name}, {Strength}, Morale={Morale}, Type={Type}, Weapon={Weapon})";
 
-        static Dictionary<string, UnitType[]> SubTypesMap = new()
+        static Dictionary<JTSSeries, UnitType[]> SubTypesMap = new()
         {
-            {"NB", new UnitType[]{
+            {JTSSeries.NapoleonicBattle, new UnitType[]{
                 new UnitType(){Name="Heavy Artillery", Category=UnitCategory.Artillery, Code="A"},
                 new UnitType(){Name="Light Artillery", Category=UnitCategory.Artillery, Code="B"},
                 new UnitType(){Name="Horse Artillery", Category=UnitCategory.Artillery, Code="C"},
@@ -181,7 +164,7 @@ namespace YYZ.JTS.NB
                 new UnitType(){Name="Independent Skirmisher", Category=UnitCategory.Infantry, Code="S"},
                 new UnitType(){Name="Pioneer", Category=UnitCategory.Infantry, Code="P"},
             }},
-            {"CWB", new UnitType[]{
+            {JTSSeries.CivilWarBattle, new UnitType[]{
                 new UnitType(){Name="Artillery", Category=UnitCategory.Artillery, Code="A"},
                 new UnitType(){Name="Cavalry", Category=UnitCategory.Cavalry, Code="C"},
                 new UnitType(){Name="Horse Artillery", Category=UnitCategory.Artillery, Code="H"},
@@ -191,8 +174,8 @@ namespace YYZ.JTS.NB
             }}
         };
 
-        // game series name => unit code => unit type
-        public static Dictionary<string, Dictionary<string, UnitType>> Series2Code2Type;// = new Dictionary<string, UnitType>()
+        // game series => unit code => unit type
+        public static Dictionary<JTSSeries, Dictionary<string, UnitType>> Series2Code2Type;// = new Dictionary<string, UnitType>()
 
         static UnitOob()
         {
@@ -224,9 +207,9 @@ namespace YYZ.JTS.NB
     {
         public Dictionary<string, UnitType> UnitTypeMap; // C# 11: required
 
-        public static JTSOobParser FromCode(string name)
+        public static JTSOobParser FromSeries(JTSSeries series)
         {
-            return new JTSOobParser(){UnitTypeMap = UnitOob.Series2Code2Type[name]};
+            return new JTSOobParser(){UnitTypeMap = UnitOob.Series2Code2Type[series]};
         }
 
         public UnitGroup ParseUnits(string s)

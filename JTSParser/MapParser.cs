@@ -5,48 +5,7 @@ using System.Linq;
 
 namespace YYZ.JTS.NB
 {
-    public enum TerrainType
-    {
-        Water,
-        Rough,
-        Marsh,
-        Village,
-        Building,
-        Chateau,
-        Orchard,
-        Clear,
-        Field,
-        Forest,
-        Blocked,
-        // Civil War Battles
-        Town, // = Village?
-        // Panzer Campaign
-        City
-    }
 
-    public enum RoadType
-    {
-        Path,
-        Road,
-        Pike, // Major road
-        Railway
-    }
-
-    public enum RiverType
-    {
-        Stream,
-        Creek
-    }
-
-    public enum HexDirection
-    {
-        Top,
-        TopRight,
-        BottomRight,
-        Bottom,
-        BottomLeft,
-        TopLeft
-    }
 
     public class EdgeState
     {
@@ -94,33 +53,12 @@ namespace YYZ.JTS.NB
     // For road, river, wall, ...
     public class EdgeLayer
     {
-        // Note: "" denotes " in the verbatim string
-        /*
-        1
-      ____  
-    6/    \2
-    5\____/3
-        4
-        */
-        // So 1245,; represents "; => 1245 has a edge" (the cell location is correspond to tilemap location)
-        static string codeString = @"1245,;	1346,M	1246,K	1235,7	2346,N	1345,=
-23,&	24,*	25,2	26,B	34,,	2,""
-12,#	13,%	14,)	15,1	16,A	1,!
-35,4	36,D	45,8	46,H	56,P	3,$
-1256,S	1236,G	13456,]	12456,[	12356,W	12346,O
-356,T	346,L	135,5	246,J	156,Q	6,@
-126,C	123,'	234,.	345,<	456,X	2356,V
-125,3	235,6	245,:	236,F	136,E	5,0
-145,9	134,-	124,+	146,I	256,R	4,(
-2456,Z	1356,U	1234,/	2345,>	3456,\	1456,Y
-12345,?	23456,^	123456,_			";
-
         public static Dictionary<char, EdgeState> CodeMap;
 
         static EdgeLayer() // Static Constructors 
         {
             CodeMap = new(){{' ', new EdgeState()}};
-            foreach(var line in codeString.Split("\n"))
+            foreach(var line in StaticData.EdgeCodeString.Split("\n"))
             {
                 foreach(var record in line.Split("\t"))
                 {
@@ -412,7 +350,7 @@ namespace YYZ.JTS.NB
         public static Dictionary<RiverType, float> RiverCostMap = new()
         {
             {RiverType.Creek, 1}, // extra 1
-            {RiverType.Stream, 0} // blocked
+            {RiverType.Stream, 0} // blocked if no bridge
         };
         
         // (i, j) offsets
@@ -461,7 +399,6 @@ namespace YYZ.JTS.NB
                             foreach(RoadType t in Enum.GetValues(typeof(RoadType)))
                                 edge.Set(t, map.GetEdgeLayer(t).HasEdge(i, j, direction));
                         }
-
                     }
                 }
 
@@ -470,9 +407,9 @@ namespace YYZ.JTS.NB
 
         public IEnumerable<Hex> Neighbors(Hex pos)
         {
-            foreach(var nei in pos.EdgeMap.Keys)
+            foreach((var nei, var edge) in pos.EdgeMap)
             {
-                if(BaseCostMap[nei.Terrain] > 0)
+                if(BaseCostMap[nei.Terrain] > 0 && !edge.Contains(RiverType.Creek))
                     yield return nei;
             }
         }

@@ -6,21 +6,6 @@ namespace YYZ.JTS.NB
     using System.Linq;
     using System.Text.RegularExpressions;
 
-    /*
-     *  32---- 1
-     * 16/    \2 
-     *   \____/
-     *  8     4
-     */
-    public enum UnitDirection
-    {
-        RightTop = 1,
-        Right = 2,
-        RightBottom = 4,
-        LeftBottom = 8,
-        Left = 16,
-        LeftTop = 32
-    }
 
     public class UnitState
     {
@@ -234,7 +219,7 @@ namespace YYZ.JTS.NB
         }
     }
 
-    public class JTSScenario
+    public abstract class JTSScenario
     {
         public string Name;
 
@@ -258,8 +243,14 @@ namespace YYZ.JTS.NB
 
         public override string ToString()
         {
-            return $"Scenario({Name}, {Time}, {Turn}/{TurnLimit}, DC:{DynamicCommandBlock.Count}, AC:{AICommandScripts.Count}, OB:{Objectives.Count})";
+            return $"{GetType().Name}({Name}, {Time}, {Turn}/{TurnLimit}, DC:{DynamicCommandBlock.Count}, AC:{AICommandScripts.Count}, OB:{Objectives.Count})";
         }
+
+        protected abstract int GetFilesBeginIndex();
+        protected abstract int GetDynamicBlockBeginIndex();
+        protected abstract void ExtractTime(int[] ds);
+
+        protected abstract char ObjectiveCommandSymbol{get;}
 
         public void Extract(string s)
         {
@@ -268,28 +259,32 @@ namespace YYZ.JTS.NB
 
             // 1808 10 31 8 0 0 0 1 32
             //  0   1   2 3 4 5 6 7 8
-            // var ds = sl[2].Trim().Split(" ").Select(int.Parse).ToArray();
             var ds = sl[2].Trim().Split().Select(int.Parse).ToArray();
-            Time = new JTSTime(){Year = ds[0], Month = ds[1], Day = ds[2], Hour = ds[3], Minute = ds[4]};
-            // Current Side and Step Mode (15min vs 10min?) or Night state or PBEM flag? 
-            Turn = ds[7];
-            TurnLimit = ds[8];
+            ExtractTime(ds);
 
-            MapFile = sl[6];
-            OobFile = sl[7];
-            PdtFile = sl[8];
+            var filesBeginIndex = GetFilesBeginIndex();
+            MapFile = sl[filesBeginIndex];
+            OobFile = sl[filesBeginIndex + 1];
+            PdtFile = sl[filesBeginIndex + 2];
 
-            var idx = 13;
+            var idx = GetDynamicBlockBeginIndex();
             while (sl[idx][0] != '0')
             {
-                if(sl[idx][0] == '7') // Objective Command
-                    Objectives.Add(Objective.Parse(sl[idx]));
+                if(sl[idx][0] == ObjectiveCommandSymbol) // Objective Command
+                {
+                    var objective = new Objective();
+                    objective.Extract(sl[idx]);
+                    Objectives.Add(objective);
+                }
+                    // Objectives.Add(Objective.Parse(sl[idx]));
 
                 DynamicCommandBlock.Add(sl[idx]);
                 idx++;
             }
-            idx += 1;
+            idx += 1; // Skip Dynamic Command Block's ending trailing 0
 
+            idx = ParseAIScripts(sl, idx); // point to AI Beginning of AI Scripts (NB/CWB) or Description (PZC)
+            /*
             AIBegin = idx;
 
             var AIScriptCountAndUnknown = sl[idx].Split();
@@ -314,12 +309,85 @@ namespace YYZ.JTS.NB
             }
 
             AIEnd = idx;
+            */
+
 
             var descriptionList = new List<string>();
             for (; idx < sl.Length; idx++)
                 descriptionList.Add(sl[idx]);
 
             Description = string.Join("\n", descriptionList);
+        }
+
+        protected abstract int ParseAIScripts(string[] sl, int idx);
+    }
+
+    public abstract class Pre1Scenario: JTSScenario
+    {
+        protected override int GetDynamicBlockBeginIndex() => 13;
+        protected override void ExtractTime(int[] ds)
+        {
+            Time = new JTSTime(){Year = ds[0], Month = ds[1], Day = ds[2], Hour = ds[3], Minute = ds[4]};
+            Turn = ds[7];
+            TurnLimit = ds[8];
+        }
+        protected override char ObjectiveCommandSymbol{get=> '7';}
+        protected override int ParseAIScripts(string[] sl, int idx) // idx point to dynamic command block's trailing 0
+        {
+            AIBegin = idx;
+
+            var AIScriptCountAndUnknown = sl[idx].Split();
+            var AIScriptCount = int.Parse(AIScriptCountAndUnknown[0]);
+
+            idx += 1;
+
+            for(var i=0; i<AIScriptCount; i++)
+            {
+                var scriptLines = new List<string>(){sl[idx]};
+
+                var pair = sl[idx].Split((char[])null, 2, StringSplitOptions.RemoveEmptyEntries);
+                var aiCommandSize = int.Parse(pair[0]);
+                var aiScriptName = pair[1];
+
+                idx += 1;
+                for(var j=0; j<aiCommandSize; idx++, j++)
+                {
+                    scriptLines.Add(sl[idx]);
+                }
+                AICommandScripts.Add(scriptLines);
+            }
+
+            AIEnd = idx;
+            return idx;
+        }
+        
+    }
+
+    public class NBScenario: Pre1Scenario
+    {
+        protected override int GetFilesBeginIndex() => 6;
+    }
+
+    public class CWBScenario: Pre1Scenario
+    {
+        protected override int GetFilesBeginIndex() => 8;
+    }
+
+    public class PZCScenario: JTSScenario
+    {
+        protected override int GetFilesBeginIndex() => 12;
+        protected override int GetDynamicBlockBeginIndex() => 15;
+        protected override void ExtractTime(int[] ds)
+        {
+            Time = new JTSTime(){Year = ds[0], Month = ds[1], Day = ds[2], Hour = ds[3]};
+            // Current Side and Step Mode (15min vs 10min?) or Night state or PBEM flag? 
+            Turn = ds[6];
+            TurnLimit = ds[7];
+        }
+        protected override char ObjectiveCommandSymbol{get=> '6';}
+        protected override int ParseAIScripts(string[] sl, int idx)
+        {
+            return idx; // TODO: Parse AI Scripts from dynamic block
         }
     }
 
@@ -390,19 +458,59 @@ namespace YYZ.JTS.NB
 
     public class Objective
     {
+        // 7 7 16 200 0
+        // 7 11 28 200/20 1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
         public int X;
         public int Y;
-        public int VP;
-        public int Side;
+        public int VP; // VP for the occupier once game ends. 
+        public string Side; // NB/CWB: int, PZC: string
+        public int VPPerTurn1;
+        public int VPPerTurn2;
+        public int TurnBegin;
+        public int TurnEnd;
+        public List<string> History = null;
 
-        public static Objective Parse(string s)
+        public void Extract(string s)
         {
             // 7 18 10 150 0
-            var sl = s.Trim().Split().Skip(1).Select(int.Parse).ToArray();
-            return new Objective(){X = sl[0], Y=sl[1], VP=sl[2], Side=sl[3]};
+            // 7 11 28 200/20 1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+
+            // var sl = s.Trim().Split().Skip(1).Select(int.Parse).ToArray();
+            var sl = s.Trim().Split();
+
+            X = int.Parse(sl[1]);
+            Y = int.Parse(sl[2]);
+
+            VP = 0;
+            VPPerTurn1 = 0;
+            VPPerTurn2 = 0;
+
+            var VPStr = sl[3];
+            var perTurnVPMatch = Regex.Match(VPStr, @"(\d+)/(\d+)");
+            if(perTurnVPMatch.Success)
+            {
+                VPPerTurn1 = int.Parse(perTurnVPMatch.Groups[1].Value);
+                VPPerTurn2 = int.Parse(perTurnVPMatch.Groups[2].Value);
+
+                var limitMatch = Regex.Match(VPStr, @"(\d+)-(\d+)");
+                if(limitMatch.Success)
+                {
+                    TurnBegin = int.Parse(limitMatch.Groups[1].Value);
+                    TurnEnd = int.Parse(limitMatch.Groups[2].Value);
+                }
+            }
+            else
+            {
+                VP = int.Parse(VPStr);
+            }
+
+            Side = sl[4];
+            if(sl.Length > 5)
+            {
+                History = sl.Skip(5).ToList();
+            }
         }
 
-        public override string ToString() => $"Objective({X}, {Y}, {VP}, {Side})";
-
+        public override string ToString() => $"Objective({X}, {Y}, VP:{VP}/{VPPerTurn1}/{VPPerTurn2}, Side:{Side}, Hist:[{History.Count}])";
     }
 }
