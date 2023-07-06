@@ -18,6 +18,7 @@ class Program
         // var units = JTSOobParser.ParseUnits(s);
         var scenario = new JTSScenario();
         scenario.Extract(scenarioStr);
+        Console.WriteLine(scenario);
 
         // var units = JTSOobParser.FromCode("CWB").ParseUnits(oobStr);
         var units = JTSOobParser.FromCode("NB").ParseUnits(oobStr);
@@ -33,6 +34,16 @@ class Program
         Console.WriteLine(mapFile.ToString());
 
         var graph = InfantryColumnGraph.FromMapFile(mapFile);
+        Console.WriteLine(graph);
+
+        var roads = graph.SimplifyRoad(RoadType.Road);
+        Console.WriteLine(roads.Count);
+        foreach(var road in roads)
+        {
+            Console.WriteLine(string.Join(",", road.Select(x => $"({x.X}, {x.Y})")));
+        }
+
+        /*
         Console.WriteLine(graph.ToString());
 
         Console.WriteLine(graph.HexMat[0, 0]);
@@ -41,6 +52,7 @@ class Program
         Console.WriteLine(graph.Neighbors(graph.HexMat[0, 0]));
         Console.WriteLine(graph.MoveCost(graph.HexMat[0, 0], graph.HexMat[0, 1]));
         Console.WriteLine(graph.EstimateCost(graph.HexMat[0, 0], graph.HexMat[0, 2]));
+        */
 
         /*
         var l1 = new int[]{1,2};
@@ -92,7 +104,7 @@ class Program
         foreach(var pp in r3.nodeToPath)
         {
             var prev = pp.Value.prev == null ? "" : $"({pp.Value.prev.X} {pp.Value.prev.Y})";
-            Console.WriteLine($"({pp.Key.X}, {pp.Key.Y}), {pp.Value.cost}, {prev}");
+            // Console.WriteLine($"({pp.Key.X}, {pp.Key.Y}), {pp.Value.cost}, {prev}");
         }
 
         var aiStatus = new AIStatus();
@@ -100,6 +112,13 @@ class Program
         Console.WriteLine(aiStatus);
 
         var influenceMap = InfluenceController.Setup(unitStatus.UnitStates, graph, 1, 1, 10);
+        Console.WriteLine(influenceMap);
+        
+        /*
+        var mapStr2 = File.ReadAllText(@"E:\JTSGames\Mius43\Mius.map");
+        var mapFile2 = MapFile.Parse(mapStr2);
+        Console.WriteLine(mapFile2.ToString());
+        */
     }
 }
 

@@ -16,7 +16,12 @@ namespace YYZ.JTS.NB
         Orchard,
         Clear,
         Field,
-        Forest
+        Forest,
+        Blocked,
+        // Civil War Battles
+        Town, // = Village?
+        // Panzer Campaign
+        City
     }
 
     public enum RoadType
@@ -148,9 +153,9 @@ namespace YYZ.JTS.NB
     {
         public double X;
         public double Y;
-        public int V1;
+        public int Size; // 2 => small, 3 => important
         public int V2;
-        public int V3;
+        public int Color; // 0 => Land (Black), 1 => Sea (Blue)
         public string Name;
 
         public static MapLabel ParseLine(string s)
@@ -161,9 +166,9 @@ namespace YYZ.JTS.NB
             {
                 X = double.Parse(ss[0]),
                 Y = double.Parse(ss[1]),
-                V1 = int.Parse(ss[2]),
+                Size = int.Parse(ss[2]),
                 V2 = int.Parse(ss[3]),
-                V3 = int.Parse(ss[4]),
+                Color = int.Parse(ss[4]),
                 Name = ss[5]
             };
         }
@@ -192,7 +197,16 @@ namespace YYZ.JTS.NB
             {'o', TerrainType.Orchard},
             {' ', TerrainType.Clear},
             {'e', TerrainType.Field},
-            {'f', TerrainType.Forest}
+            {'f', TerrainType.Forest},
+            {'x', TerrainType.Blocked},
+            // Civil War Battles
+            {'d', TerrainType.Field},
+            {'t', TerrainType.Town},
+            // Panzer Campaign
+            {'p', TerrainType.Town},
+            {'m', TerrainType.Rough},
+            {'q', TerrainType.City}
+            // {'o', TerrainType.Village} TODO: in PZC map Village will be mapped to "Orchard" incorrectly now.
         };
 
         public int Version; // ?
@@ -225,22 +239,36 @@ namespace YYZ.JTS.NB
             var lines = s.Split("\n"); // Trim should not be called here since space is used to represent clear terrain.
             var version = int.Parse(lines[0]);
 
-            var sizeStr = lines[1].Split(" ");
+            var sizeStr = lines[1].Split(" "); // "170 168" (NB/CWB) or "346 160 260938" PZC
             var width = int.Parse(sizeStr[0]);
             var height = int.Parse(sizeStr[1]);
 
             var terrainMap = new TerrainType[height, width];
             var heightMap = new int[height, width];
+
+            // Skip some unknown data until terrain matrix
+            // TODO: Separated parsers or more robust method
+            var matOffset = 2;
+            while(int.TryParse(lines[matOffset].Split()[0], out _))
+            {
+                matOffset++;
+            }
+
             for(int i=0; i<height; i++)
                 for(int j=0; j<width; j++)
                 {
-                    terrainMap[i, j] = TerrainCodeMap[lines[3+i][j]];
+                    var terrainCode = lines[matOffset+i][j];
+                    if(!TerrainCodeMap.TryGetValue(terrainCode, out terrainMap[i, j]))
+                    {
+                        throw new ArgumentException($"Unknown Terrain Code: {terrainCode} in ({i}, {j}), x={j}, y={i}");
+                    }
+                    terrainMap[i, j] = TerrainCodeMap[terrainCode];
                     var hc = lines[3+i+height][j];
                     heightMap[i, j] = ParseHeight(hc); // TODO: Performance Issue?
                 }
             
             var edgeLayers = new List<EdgeLayer>();
-            var idx = 3 + height * 2;
+            var idx = matOffset + height * 2;
             while(idx < lines.Length)
             {
                 var test = lines[idx];
@@ -365,7 +393,12 @@ namespace YYZ.JTS.NB
             {TerrainType.Marsh, 4},
             {TerrainType.Village, 2},
             {TerrainType.Chateau, 2},
-            {TerrainType.Water, 0} // 0 => non-movable
+            {TerrainType.Water, 0}, // 0 => non-movable
+            {TerrainType.Blocked, 0},
+            // Civil War Battles
+            {TerrainType.Town, 2}, // 1? TODO: Dedicated Parser for CWB
+            // Panzer Campaign
+            {TerrainType.City, 3} // 8 
         };
 
         public static Dictionary<RoadType, float> RoadCostMap = new()
@@ -485,6 +518,62 @@ namespace YYZ.JTS.NB
                     yield return HexMat[i, j];
                 }
             }
+        }
+
+        public List<List<Hex>> SimplifyRoad(RoadType T)
+        {
+            var roadMap = new Dictionary<Hex, List<Hex>>();
+
+            foreach(var src in Nodes())
+            {
+                foreach(var KV in src.EdgeMap)
+                {
+                    var dst = KV.Key;
+                    var edge = KV.Value;
+                    if(edge.Contains(T))
+                    {
+                        if(roadMap.TryGetValue(src, out var roads))
+                        {
+                            roads.Add(dst);
+                        }
+                        else
+                        {
+                            roadMap[src] = new List<Hex>{dst};
+                        }
+                    }
+                }
+            }
+
+            var stationSet = new HashSet<Hex>();
+            var relaySet = new HashSet<Hex>();
+            foreach(var KV in roadMap)
+            {
+                if(KV.Value.Count == 2)
+                    relaySet.Add(KV.Key);
+                else
+                    stationSet.Add(KV.Key);
+            }
+
+            var ret = new List<List<Hex>>();
+            foreach(var station in stationSet)
+            {
+                foreach(var firstDst in roadMap[station])
+                {
+                    var left = station;
+                    var right = firstDst;
+                    var road = new List<Hex>(){left, right};
+                    while(relaySet.Contains(right))
+                    {
+                        var next = roadMap[right][0] == left ? roadMap[right][1] : roadMap[right][0];
+                        road.Add(next);
+                        left = right;
+                        right = next;
+                    }
+
+                    ret.Add(road);
+                }
+            }
+            return ret;
         }
     }
 }

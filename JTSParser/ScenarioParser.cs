@@ -258,7 +258,7 @@ namespace YYZ.JTS.NB
 
         public override string ToString()
         {
-            return $"Scenario({Name}, ({Time}), {Turn}/{TurnLimit}, DC:{DynamicCommandBlock.Count}, AC:{AICommandScripts.Count}, OB:{Objectives.Count})";
+            return $"Scenario({Name}, {Time}, {Turn}/{TurnLimit}, DC:{DynamicCommandBlock.Count}, AC:{AICommandScripts.Count}, OB:{Objectives.Count})";
         }
 
         public void Extract(string s)

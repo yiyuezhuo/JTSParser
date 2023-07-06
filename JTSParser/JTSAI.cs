@@ -40,4 +40,9 @@ namespace YYZ.JTS.NB
             return map;
         }
     }
+
+    public class InfluenceController2
+    {
+        
+    }
 }

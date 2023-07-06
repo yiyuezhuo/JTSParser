@@ -43,4 +43,16 @@ namespace YYZ.AI
             return $"InfluenceMap(Decay={Decay}, Momentum={Momentum}, graph={Graph})";
         }
     }
+
+    public class InfluenceMap2<T>
+    {
+        public float Alpha;
+        public IGraphEnumerable<T> Graph;
+        public Dictionary<T, float> InfluenceDict = new();
+
+        public void Stamp()
+        {
+
+        }
+    }
 }
