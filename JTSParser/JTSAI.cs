@@ -1,4 +1,4 @@
-namespace YYZ.JTS.NB
+namespace YYZ.JTS
 {
     using YYZ.AI;
     using YYZ.PathFinding;
@@ -7,19 +7,6 @@ namespace YYZ.JTS.NB
 
     public class InfluenceController
     {
-        /*
-        public List<UnitState> UnitStates;
-        public InfantryColumnGraph Graph;
-        public InfluenceMap<Hex> Map = new();
-
-        public void Setup()
-        {
-            foreach(var unitState in UnitStates)
-            {
-                unitState.CurrentStrength\
-            }
-        }
-        */
 
         public static InfluenceMap<Hex> Setup(List<UnitState> unitStates, DistanceGraph graph, float momentum, float decay, int step=0)
         {

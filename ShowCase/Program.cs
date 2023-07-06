@@ -1,6 +1,6 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using System;
-using YYZ.JTS.NB;
+using YYZ.JTS;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;

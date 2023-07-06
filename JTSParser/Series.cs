@@ -1,4 +1,4 @@
-namespace YYZ.JTS.NB
+namespace YYZ.JTS
 {
     using System;
     using System.Collections.Generic;

@@ -1,4 +1,4 @@
-namespace YYZ.JTS.NB
+namespace YYZ.JTS
 {
     /*
      *  32---- 1
@@ -15,44 +15,6 @@ namespace YYZ.JTS.NB
         Left = 16,
         LeftTop = 32
     }
-
-    
-
-    /*
-    public enum TerrainType
-    {
-        Water,
-        Rough,
-        Marsh,
-        Village,
-        Building,
-        Chateau,
-        Orchard,
-        Clear,
-        Field,
-        Forest,
-        Blocked,
-        // Civil War Battles
-        Town, // = Village?
-        // Panzer Campaign
-        City
-    }
-    
-
-    public enum RoadType
-    {
-        Path, // Small road, (In CWB, it's called "Trail")
-        Road,
-        Pike, // Major road
-        Railway
-    }
-
-    public enum RiverType
-    {
-        Stream,
-        Creek
-    }
-    */
 
     public enum HexDirection
     {

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 // using System.Diagnostics;
 
-namespace YYZ.JTS.NB
+namespace YYZ.JTS
 {
 
 
@@ -120,44 +120,53 @@ namespace YYZ.JTS.NB
     }
 
     
-    public class TerrainType2
+    public class HexTerrain
     {
         public string Name;
         public char Code;
+        public override string ToString()
+        {
+            return $"HexTerrainType({Name}, '{Code}')";
+        }
     }
 
     public class HexTerrainSystem
     {
-        public Dictionary<char, TerrainType2> Code2TerrainMap;
-        public Dictionary<string, TerrainType2> Name2TerrainMap;
+        public Dictionary<char, HexTerrain> Code2TerrainMap;
+        public Dictionary<string, HexTerrain> Name2TerrainMap;
 
-        public static TerrainType2 UnknownTerrain = new(){Code='0', Name="Unknown"};
+        public static HexTerrain UnknownTerrain = new(){Code='0', Name="Unknown"};
 
         public static HexTerrainSystem Parse(string s)
         {
             // ' ' => Clear
             // 'x' => Blocked
 
-            var code2TerrainMap = new Dictionary<char, TerrainType2>(){{UnknownTerrain.Code, UnknownTerrain}};
-            var name2TerrainMap = new Dictionary<string, TerrainType2>(){{UnknownTerrain.Name, UnknownTerrain}};
+            var code2TerrainMap = new Dictionary<char, HexTerrain>(){{UnknownTerrain.Code, UnknownTerrain}};
+            var name2TerrainMap = new Dictionary<string, HexTerrain>(){{UnknownTerrain.Name, UnknownTerrain}};
             foreach(Match match in Regex.Matches(s, @"'(.)'\s*=>\s*(\w+)"))
             {
                 var code = match.Groups[1].Value[0];
                 var name = match.Groups[2].Value;
-                var terrain = new TerrainType2(){Code=code, Name=name};
+                var terrain = new HexTerrain(){Code=code, Name=name};
                 code2TerrainMap[code] = terrain;
                 name2TerrainMap[name] = terrain;
             }
             return new HexTerrainSystem(){Code2TerrainMap=code2TerrainMap, Name2TerrainMap=name2TerrainMap};
         }
 
-        public TerrainType2 GetValue(char c) => Code2TerrainMap[c];
-        public TerrainType2 Get(string s) => Name2TerrainMap[s];
-        public bool TryGetValue(char c, out TerrainType2 o) => Code2TerrainMap.TryGetValue(c, out o);
-        public bool TryGetValue(string s, out TerrainType2 o) => Name2TerrainMap.TryGetValue(s, out o);
+        public HexTerrain GetValue(char c) => Code2TerrainMap[c];
+        public HexTerrain GetValue(string s) => Name2TerrainMap[s];
+        public bool TryGetValue(char c, out HexTerrain o) => Code2TerrainMap.TryGetValue(c, out o);
+        public bool TryGetValue(string s, out HexTerrain o) => Name2TerrainMap.TryGetValue(s, out o);
         public int Count{get => Code2TerrainMap.Count;}
         // public bool ContainsKey(string s) => Name2TerrainMap.ContainsKey(s);
-        public IEnumerable<TerrainType2> Terrains{get => Code2TerrainMap.Values;}
+        public IEnumerable<HexTerrain> Terrains{get => Code2TerrainMap.Values;}
+        public override string ToString()
+        {
+            var ts = string.Join(",", Terrains);
+            return $"HexTerrainSystem({ts})";
+        }
     }
 
     public class EdgeTerrain
@@ -186,8 +195,12 @@ namespace YYZ.JTS.NB
         // public bool ContainsKey(string s) => Name2Terrain.ContainsKey(s);
         public int Count{get => Name2Terrain.Count;}
         public IEnumerable<EdgeTerrain> Terrains{get => Name2Terrain.Values;}
+        public override string ToString()
+        {
+            var ts = string.Join(",", Terrains);
+            return $"EdgeTerrainSystem({ts})";
+        }
     }
-    
 
     public abstract class MapFile
     {
@@ -196,36 +209,11 @@ namespace YYZ.JTS.NB
             return $"MapFile(Width={Width}, Height={Height}, EdgeLayerMap={EdgeLayerMap.Count}, LabelsN={Labels.Count})";
         }
 
-        /*
-        static Dictionary<char, TerrainType> TerrainCodeMap = new()
-        {
-            {'w', TerrainType.Water},
-            {'r', TerrainType.Rough},
-            {'s', TerrainType.Marsh},
-            {'v', TerrainType.Village},
-            {'b', TerrainType.Building},
-            {'c', TerrainType.Chateau},
-            {'o', TerrainType.Orchard},
-            {' ', TerrainType.Clear},
-            {'e', TerrainType.Field},
-            {'f', TerrainType.Forest},
-            {'x', TerrainType.Blocked},
-            // Civil War Battles
-            {'d', TerrainType.Field},
-            {'t', TerrainType.Town},
-            // Panzer Campaign
-            {'p', TerrainType.Town},
-            {'m', TerrainType.Rough},
-            {'q', TerrainType.City}
-            // {'o', TerrainType.Village} TODO: in PZC map Village will be mapped to "Orchard" incorrectly now.
-        };
-        */
-
         public int Version; // ?
         public int Width;
         public int Height;
         // -40 40 0 44370 0
-        public TerrainType2[,] TerrainMap;
+        public HexTerrain[,] TerrainMap;
         public int[,] HeightMap;
 
         // public List<EdgeLayer> EdgeLayers;
@@ -259,7 +247,7 @@ namespace YYZ.JTS.NB
             Width = int.Parse(sizeStr[0]);
             Height = int.Parse(sizeStr[1]);
 
-            TerrainMap = new TerrainType2[Height, Width];
+            TerrainMap = new HexTerrain[Height, Width];
             HeightMap = new int[Height, Width];
 
             // Skip some unknown data until terrain matrix
@@ -281,37 +269,9 @@ namespace YYZ.JTS.NB
                         TerrainMap[i, j] = HexTerrainSystem.UnknownTerrain;
                     }
                     // TerrainMap[i, j] = CurrentTerrainSystem.Hex.GetValue(terrainCode);
-                    var hc = lines[3 + i + Height][j];
+                    var hc = lines[matOffset + i + Height][j];
                     HeightMap[i, j] = ParseHeight(hc); // TODO: Performance Issue?
                 }
-            
-            /*
-            EdgeLayers = new List<EdgeLayer>();
-            var idx = matOffset + Height * 2;
-            while(idx < lines.Length)
-            {
-                var test = lines[idx];
-                
-                if(test.Trim().Length == 1)
-                {
-                    idx += 1;
-                    var defined = int.Parse(test) == 0 ? false : true;
-                    var edgeLayer = new EdgeLayer(){Defined = defined}; 
-                    if(defined)
-                    {
-                        var data = edgeLayer.Data = new EdgeState[Height, Width];
-                        for(var i=0; i<Height; i++)
-                            for(var j=0; j<Width; j++)
-                                data[i, j] = EdgeLayer.CodeMap[lines[idx+i][j]];
-                        idx += Height;
-                    }
-                    EdgeLayers.Add(edgeLayer);
-                }
-                else{
-                    break;
-                }
-            }
-            */
 
             var idx = ParseEdgeMap(lines, matOffset + Height * 2);
 
@@ -324,55 +284,10 @@ namespace YYZ.JTS.NB
                 Labels.Add(MapLabel.ParseLine(lines[idx]));
                 idx += 1;
             }
-
-            /*
-            return new MapFile()
-            {
-                Version=version,
-                Width=width,
-                Height=height,
-                TerrainMap=terrainMap,
-                HeightMap=heightMap,
-                EdgeLayers=edgeLayers,
-                Labels=labels
-            };
-            */
         }
-
-        /*
-        public EdgeLayer GetEdgeLayer(RoadType t)
-        {
-            switch(t)
-            {
-                case RoadType.Path:
-                    return EdgeLayers[0];
-                case RoadType.Road:
-                    return EdgeLayers[1];
-                case RoadType.Pike:
-                    return EdgeLayers[2];
-                case RoadType.Railway:
-                    return EdgeLayers[3];
-            }
-            throw new ArgumentException($"Undefined RoadType {t}");
-        }
-
-        public EdgeLayer GetEdgeLayer(RiverType t)
-        {
-            switch(t)
-            {
-                case RiverType.Stream:
-                    return EdgeLayers[4];
-                case RiverType.Creek:
-                    return EdgeLayers[5];
-            }
-            throw new ArgumentException($"Undefined RiverType {t}");
-        }
-        */
 
         protected abstract void CreateTerrainSystem();
 
-        // public Dictionary<EdgeTerrain, EdgeLayer> RiverMap = new();
-        // public Dictionary<EdgeTerrain, EdgeLayer> RoadMap = new();
         public Dictionary<EdgeTerrain, EdgeLayer> EdgeLayerMap = new();
 
         protected abstract int ParseEdgeMap(string[] lines, int idx);
@@ -403,17 +318,7 @@ namespace YYZ.JTS.NB
                 {
                     idx += 1;
                     var defined = int.Parse(test) != 0; // ? false : true;
-                    /*
-                    var edgeLayer = new EdgeLayer(){Defined = defined}; 
-                    if(defined)
-                    {
-                        var data = edgeLayer.Data = new EdgeState[Height, Width];
-                        for(var i=0; i<Height; i++)
-                            for(var j=0; j<Width; j++)
-                                data[i, j] = EdgeLayer.CodeMap[lines[idx+i][j]];
-                        idx += Height;
-                    }
-                    */
+                    
                     idx = CreateEdgeLayer(lines, idx, defined, out var edgeLayer);
                     edgeLayers.Add(edgeLayer);
                 }
@@ -559,19 +464,6 @@ namespace YYZ.JTS.NB
 
     public class HexEdge
     {
-        /*
-        public bool[] RiverArr = new bool[Enum.GetNames(typeof(RiverType)).Length];
-        public bool[] RoadArr = new bool[Enum.GetNames(typeof(RoadType)).Length];
-        */
-
-        /*
-        public bool Contains(RiverType t) => RiverArr[(int)t];
-        public bool Contains(RoadType t) => RoadArr[(int)t];
-        public bool Set(RiverType t, bool v) => RiverArr[(int)t] = v;
-        public bool Set(RoadType t, bool v) => RoadArr[(int)t] = v;
-        */
-        
-        
         public HashSet<EdgeTerrain> RiverSet = new();
         public HashSet<EdgeTerrain> RoadSet = new();
 
@@ -580,13 +472,6 @@ namespace YYZ.JTS.NB
         public void AddRiver(EdgeTerrain e) => RiverSet.Add(e);
         public void AddRoad(EdgeTerrain e) => RoadSet.Add(e);
         
-        
-        /*
-        public HashSet<EdgeTerrain> EdgeSet = new();
-        public bool Contains(EdgeTerrain e) => EdgeSet.Contains(e);
-        public void AddRiver(EdgeTerrain e) => EdgeSet.Add(e);
-        */
-
         public override string ToString()
         {
             var river_s = string.Join(",", RiverSet.Select(e => e.Name));
@@ -601,7 +486,7 @@ namespace YYZ.JTS.NB
         public int J;
         public int X{get => J;}
         public int Y{get => I;}
-        public TerrainType2 Terrain;
+        public HexTerrain Terrain;
         public int Height;
         public Dictionary<Hex, HexEdge> EdgeMap = new();
 
@@ -666,13 +551,6 @@ namespace YYZ.JTS.NB
                                 if(edgeLayer.HasEdge(i, j, direction))
                                     edge.AddRiver(edgeType);
                             }
-                            /*
-                            foreach(RiverType el in Enum.GetValues(typeof(RiverType)))
-                                edge.Set(el, map.GetEdgeLayer(el).HasEdge(i, j, direction));
-
-                            foreach(RoadType t in Enum.GetValues(typeof(RoadType)))
-                                edge.Set(t, map.GetEdgeLayer(t).HasEdge(i, j, direction));
-                            */
                         }
                     }
                 }
@@ -769,7 +647,7 @@ namespace YYZ.JTS.NB
     {
         // Infantry, Motorized, ...
         public string Name; // Motorized, Tracked, ...
-        public Dictionary<TerrainType2, float> BaseCostMap = new();
+        public Dictionary<HexTerrain, float> BaseCostMap = new();
         public Dictionary<EdgeTerrain, float> RoadCostMap = new();
         public Dictionary<EdgeTerrain, float> RiverCostMap = new();
 
@@ -803,7 +681,7 @@ namespace YYZ.JTS.NB
 
         public override string ToString() => $"DistanceSystem({Name}, {BaseCostMap.Count}, {RoadCostMap.Count}, {RiverCostMap.Count})";
 
-        public float BaseCost(TerrainType2 t) => BaseCostMap[t];
+        public float BaseCost(HexTerrain t) => BaseCostMap[t];
         public float RoadCostCost(EdgeTerrain t) => RoadCostMap[t];
         public float RiverCostCost(EdgeTerrain t) => RiverCostMap[t];
     }
@@ -811,46 +689,8 @@ namespace YYZ.JTS.NB
 
     public class DistanceGraph: YYZ.AI.IGraphEnumerable<Hex>
     {
-        /*
-        public static Dictionary<TerrainType, float> BaseCostMap = new()
-        {
-            {TerrainType.Clear, 2},
-            {TerrainType.Building, 2},
-            {TerrainType.Field, 2},
-            {TerrainType.Forest, 5},
-            {TerrainType.Orchard, 3},
-            {TerrainType.Rough, 3},
-            {TerrainType.Marsh, 4},
-            {TerrainType.Village, 2},
-            {TerrainType.Chateau, 2},
-            {TerrainType.Water, 0}, // 0 => non-movable
-            {TerrainType.Blocked, 0},
-            // Civil War Battles
-            {TerrainType.Town, 2}, // 1? TODO: Dedicated Parser for CWB
-            // Panzer Campaign
-            {TerrainType.City, 3} // 8 
-        };
-
-        public static Dictionary<RoadType, float> RoadCostMap = new()
-        {
-            {RoadType.Path, 2},
-            {RoadType.Road, 1},
-            {RoadType.Pike, 1},
-            {RoadType.Railway, 2}
-        };
-
-        public static Dictionary<RiverType, float> RiverCostMap = new()
-        {
-            {RiverType.Creek, 1}, // extra 1
-            {RiverType.Stream, 0} // blocked if no bridge
-        };
-        */
-
         public HexNetwork Network;
         public DistanceSystem Distance;
-        
-
-        // public Hex[,] HexMat;
 
         bool HasEdge(EdgeLayer layer, int i, int j, HexDirection direction) => layer.Defined && layer.Data[i, j].ByDirection(direction);
 

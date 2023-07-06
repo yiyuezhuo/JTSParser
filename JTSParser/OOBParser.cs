@@ -3,7 +3,7 @@ using System;
 using System.Diagnostics;
 using System.Linq;
 
-namespace YYZ.JTS.NB
+namespace YYZ.JTS
 {
 
     public class UnitType

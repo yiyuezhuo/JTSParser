@@ -1,4 +1,4 @@
-namespace YYZ.JTS.NB
+namespace YYZ.JTS
 {
     public static class StaticData
     {
