@@ -15,6 +15,8 @@ namespace YYZ.JTS
         public int Fatigue;
         public int X;
         public int Y;
+        public int I{get => Y;}
+        public int J{get => X;}
 
         public int DirectionCode;
         public int Slot;
@@ -33,6 +35,10 @@ namespace YYZ.JTS
     {
         // Extract unit state (position, direction, current strength, disorder & fatigue state)
         // from a scenario file (*.scn) or a save file (*.btl, *.bte)
+        public override string ToString()
+        {
+            return $"JTSUnitStates({UnitStates.Count})";
+        }
 
         public List<UnitState> UnitStates = new();
         public Dictionary<AbstractUnit, UnitState> Unit2state = new();
@@ -442,6 +448,9 @@ namespace YYZ.JTS
         public int TurnBegin;
         public int TurnEnd;
         public List<string> History = null;
+
+        public int I{get => Y;}
+        public int J{get => X;}
 
         public void Extract(string s)
         {

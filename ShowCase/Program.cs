@@ -4,6 +4,8 @@ using YYZ.JTS;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Collections.Generic;
+using System.Diagnostics;
 
 class Program
 {
@@ -60,8 +62,21 @@ class Program
         Console.WriteLine(roads.Count);
         foreach(var road in roads)
         {
-            Console.WriteLine(string.Join(",", road.Select(x => $"({x.X}, {x.Y})")));
+            // Console.WriteLine(string.Join(",", road.Select(x => $"({x.X}, {x.Y})")));
         }
+
+        var controller = new InfluenceController2(){FriendlyCountries = new HashSet<string>(){"French"}};
+        controller.Extract("NB", scenarioStr, mapStr, oobStr);
+        controller.AssignGraphByStaticData(StaticData.NBParameterData, "Column Infantry Movement Costs");
+
+        Stopwatch stopWatch = new Stopwatch();
+        stopWatch.Start();
+
+        controller.ComputeInfluenceMap();
+        TimeSpan ts = stopWatch.Elapsed;
+
+        Console.WriteLine(controller);
+        Console.WriteLine(ts);
 
         /*
         Console.WriteLine(graph.ToString());
@@ -129,10 +144,10 @@ class Program
 
         var aiStatus = new AIStatus();
         aiStatus.Extract(units, scenario.AICommandScripts);
-        Console.WriteLine(aiStatus);
+        // Console.WriteLine(aiStatus);
 
         var influenceMap = InfluenceController.Setup(unitStatus.UnitStates, graph, 1, 1, 10);
-        Console.WriteLine(influenceMap);
+        // Console.WriteLine(influenceMap);
         
         /*
         var mapStr2 = File.ReadAllText(@"E:\JTSGames\Mius43\Mius.map");
@@ -140,7 +155,7 @@ class Program
         Console.WriteLine(mapFile2.ToString());
         */
 
-        Console.WriteLine(ParameterData.Parse(StaticData.NBParameterData));
+        // Console.WriteLine(ParameterData.Parse(StaticData.NBParameterData));
 
         var cwbParser = new JTSParser(JTSSeries.CivilWarBattle);
         // scenarioStr = File.ReadAllText(@"E:\JTSGames\CampaignAntietam\Scenarios\002 1BR_Bull Run (Historical).scn");
@@ -154,16 +169,16 @@ class Program
         var match4 = Regex.Matches("2", @"(\d+)/(\d+)");
         */
 
-        Console.WriteLine(cwbParser.ParseScenario(scenarioStr));
+        // Console.WriteLine(cwbParser.ParseScenario(scenarioStr));
 
         var pzcParser = new JTSParser(JTSSeries.PanzerCampaign);
         scenarioStr = File.ReadAllText(@"E:\JTSGames\Mius43\#0717_01_Mius_Campaign.scn");
-        Console.WriteLine(pzcParser.ParseScenario(scenarioStr));
+        //Console.WriteLine(pzcParser.ParseScenario(scenarioStr));
 
         // scenarioStr = File.ReadAllText(@"E:\JTSGames\Mius43\Mius.map");
         scenarioStr = File.ReadAllText(@"E:\JTSGames\Tobruk_41\Scenarios\Tobruk_Winter.map");
         // scenarioStr = File.ReadAllText(@"E:\JTSGames\Tobruk_41\Scenarios\Mersa_Brega_Sub.map");
-        Console.WriteLine(pzcParser.ParseMap(scenarioStr));
+        // Console.WriteLine(pzcParser.ParseMap(scenarioStr));
     }
 }
 
