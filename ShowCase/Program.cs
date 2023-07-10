@@ -69,14 +69,37 @@ class Program
         controller.Extract("NB", scenarioStr, mapStr, oobStr);
         controller.AssignGraphByStaticData(StaticData.NBParameterData, "Column Infantry Movement Costs");
 
+        controller.VPDecay = 0.05f;
+        controller.FriendlyDecay = 0.1f;
+        controller.EnemyDecay = 0.1f;
+
         Stopwatch stopWatch = new Stopwatch();
         stopWatch.Start();
 
-        controller.ComputeInfluenceMap();
+        // controller.ComputeInfluenceMap();
+        // controller.TransformCountourPlanning();
+
+        controller.ComputeBrigadeMap();
+        var orders = controller.GetAttackContourOrders().ToList();
+
         TimeSpan ts = stopWatch.Elapsed;
 
-        Console.WriteLine(controller);
         Console.WriteLine(ts);
+
+        Console.WriteLine($"orders.Count={orders.Count}");
+        foreach(var order in orders)
+            Console.WriteLine(order);
+
+        /*
+        stopWatch.Restart();
+
+        controller.ComputeInfluenceMap2();
+        ts = stopWatch.Elapsed;
+
+        Console.WriteLine(ts);
+        */
+
+        Console.WriteLine(controller);
 
         /*
         Console.WriteLine(graph.ToString());

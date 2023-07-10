@@ -17,6 +17,7 @@ namespace YYZ.JTS
         public int Y;
         public int I{get => Y;}
         public int J{get => X;}
+        public float YCorrected{get => X % 2 == 0 ? Y : Y - 0.5f;}
 
         public int DirectionCode;
         public int Slot;
@@ -29,6 +30,25 @@ namespace YYZ.JTS
         }
 
         public UnitDirection Direction { get => (UnitDirection)DirectionCode; }
+
+        public float Distance2(UnitState other)
+        {
+            var dx = other.X - X;
+            var dy = other.Y - Y;
+            return dx*dx + dy*dy;
+        }
+
+        public float Distance2Corrected(UnitState other)
+        {
+            var dx = other.X - X;
+            var dy = other.YCorrected - YCorrected;
+            return dx*dx + dy*dy;
+        }
+
+        public float Distance(UnitState other) => MathF.Sqrt(Distance2(other));
+        public float DistanceCorrected(UnitState other) => MathF.Sqrt(Distance2Corrected(other));
+        
+        // public float Distance()
     }
 
     public class JTSUnitStates
@@ -155,6 +175,69 @@ namespace YYZ.JTS
             }
             return ret;
         }
+
+        public List<Formation> GetBrigadeFormations()
+        {
+            var formations = new List<Formation>();
+            foreach((var group, var states) in GroupByBrigade())
+            {
+                formations.Add(new Formation(){Group=group, States=states});
+            }
+            return formations;
+        }
+    }
+
+    public class Formation // Brigade
+    {
+        public UnitGroup Group;
+        public List<UnitState> States;
+
+        public override string ToString() => $"Formation({Group}, [{States.Count}])";
+
+        public float GetSumAndMean(out float x, out float y)
+        {
+            x = 0f;
+            y = 0f;
+            var strengthSum = 0f;
+            foreach(var state in States)
+            {
+                x += state.CurrentStrength * state.X;
+                y += state.CurrentStrength * state.Y;
+                strengthSum += state.CurrentStrength;
+            }
+            x /= strengthSum;
+            y /= strengthSum;
+
+            return strengthSum;
+        }
+
+        public UnitState GetCenterUnitSum(out float strengthSum)
+        {
+            strengthSum = GetSumAndMean(out var x, out var y);
+
+            UnitState minState = null;
+            var minValue = float.MaxValue;
+            foreach(var state in States)
+            {
+                var dx = x - state.X;
+                var dy = y - state.Y;
+                var d2 = dx * dx + dy * dy;
+                if(d2 < minValue)
+                {
+                    minValue = d2;
+                    minState = state;
+                }
+            }
+
+            return minState;
+        }
+
+        /*
+        public float Distance2(Formation other)
+        {
+            return 
+        }
+        */
     }
 
     public class JTSTime

@@ -26,6 +26,12 @@ namespace YYZ.PathFinding
         float EstimateCost(IndexT src, IndexT dst);
     }
 
+    public interface IGraphEnumerable<IndexT> : IGraph<IndexT>
+    {
+        IEnumerable<IndexT> Nodes();
+    }
+
+
     public static class PathFinding<IndexT>
     {
         static List<IndexT> ReconstructPath(Dictionary<IndexT, IndexT> cameFrom, IndexT current)
@@ -173,6 +179,7 @@ namespace YYZ.PathFinding
                     }
                 }
 
+                // Asymmetric Graph may raise exception here.
                 nodeToPath[pickedNode] = new Path() { cost = pickedCost, prev = pickedClosedNei };
 
                 if (Predicate(pickedNode))
@@ -378,5 +385,36 @@ namespace YYZ.PathFinding
         }
     }
 
-
+    /*
+    public class GraphSegmentation<IndexT>
+    {
+        static void Segmentation(IGraphEnumerable<IndexT> graph, float costThreshold)
+        {
+            var remaining = graph.Nodes().ToHashSet();
+            var clusters = new List<HashSet<IndexT>>();
+            while(remaining.Count > 0)
+            {
+                var clusterFirst = remaining.First();
+                var cluster = new HashSet<IndexT>(){clusterFirst};
+                var openSet = new HashSet<IndexT>(){clusterFirst};
+                var closedSet = new HashSet<IndexT>();
+                while(openSet.Count > 0)
+                {
+                    var node = openSet.First();
+                    openSet.Remove(node);
+                    foreach(var neiNode in graph.Neighbors(node))
+                    {
+                        if(cluster.Contains(neiNode))
+                            continue;
+                        foreach(var testNode in cluster)
+                        {
+                            graph.Mo
+                        }
+                    }
+                }
+            }
+        }
+        
+    }
+    */
 }

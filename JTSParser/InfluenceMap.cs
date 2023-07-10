@@ -4,11 +4,6 @@ namespace YYZ.AI
     using System.Collections.Generic;
     using System;
 
-    public interface IGraphEnumerable<IndexT> : IGraph<IndexT>
-    {
-        IEnumerable<IndexT> Nodes();
-    }
-
 
     public class InfluenceMap<T>
     {

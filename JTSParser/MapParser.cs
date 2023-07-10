@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using System.Text.RegularExpressions;
 // using System.Diagnostics;
+using YYZ.PathFinding;
 
 namespace YYZ.JTS
 {
@@ -687,7 +688,7 @@ namespace YYZ.JTS
     }
     
 
-    public class DistanceGraph: YYZ.AI.IGraphEnumerable<Hex>
+    public class DistanceGraph: IGraphEnumerable<Hex>
     {
         public HexNetwork Network;
         public DistanceSystem Distance;
