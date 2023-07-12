@@ -312,7 +312,18 @@ namespace YYZ.JTS
             foreach(var attackFormation in attackFormations)
             {
                 var attackerCenter = centerMap[attackFormation];
-                var minCenter = targetCenters.MinBy(other => attackerCenter.Distance2(other));
+                // var minCenter = targetCenters.MinBy(other => attackerCenter.Distance2(other)); // .netstandard 2.1 doesn't support `MinBy`
+                UnitState minCenter = null;
+                float minDist = float.PositiveInfinity;
+                foreach(var other in targetCenters)
+                {
+                    var d2 = attackerCenter.Distance2(other);
+                    if(d2 < minDist)
+                    {
+                        minDist = d2;
+                        minCenter = other;
+                    }
+                }
                 orders.Add(new AIOrder()
                 {
                     Unit=attackFormation.Group,

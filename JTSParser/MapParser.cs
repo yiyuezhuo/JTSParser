@@ -547,7 +547,10 @@ namespace YYZ.JTS
         public void ApplyTo(MapFile mapFile)
         {
             mapFile.CropInplace(OffsetXAdjusted, OffsetY, Width, Height);
-            mapFile.Labels.AddRange(ExtraLabels);
+
+            mapFile.Labels = mapFile.Labels.Where(
+                l => l.X >= 0 && l.X < Width && l.Y >= 0 && l.Y < Height)
+                .Concat(ExtraLabels).ToList();
         }
 
         public override string ToString()
