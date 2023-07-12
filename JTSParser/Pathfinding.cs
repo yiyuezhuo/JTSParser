@@ -60,6 +60,12 @@ namespace YYZ.PathFinding
         /// </summary>
         public static List<IndexT> AStar(IGraph<IndexT> graph, IndexT src, IndexT dst)
         {
+            AStar2(graph, src, dst, out var path);
+            return path;
+        }
+
+        public static float AStar2(IGraph<IndexT> graph, IndexT src, IndexT dst, out List<IndexT> path)
+        {
             var openSet = new HashSet<IndexT> { src };
             var cameFrom = new Dictionary<IndexT, IndexT>();
 
@@ -87,7 +93,8 @@ namespace YYZ.PathFinding
 
                 if (current.Equals(dst))
                 {
-                    return ReconstructPath(cameFrom, current);
+                    path = ReconstructPath(cameFrom, current);
+                    return lowest_f_score;
                 }
 
                 openSet.Remove(current);
@@ -104,7 +111,9 @@ namespace YYZ.PathFinding
                     }
                 }
             }
-            return new List<IndexT>(); // failure
+            path = new List<IndexT>();
+            return float.PositiveInfinity;
+            // return new List<IndexT>(); // failure
         }
 
         public class DijkstraResult

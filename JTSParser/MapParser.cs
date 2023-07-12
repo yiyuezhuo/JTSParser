@@ -183,12 +183,16 @@ namespace YYZ.JTS
     public class EdgeTerrainSystem // In general, road and river are 2 different systems.
     {
         public Dictionary<string, EdgeTerrain> Name2Terrain;
+        public List<string> Names;
+        /*
         public EdgeTerrainSystem(Dictionary<string, EdgeTerrain> name2Terrain)
         {
             this.Name2Terrain = name2Terrain;
         }
+        */
         public EdgeTerrainSystem(IEnumerable<string> names)
         {
+            this.Names = names.ToList();
             this.Name2Terrain = names.ToDictionary(x=>x, x=>new EdgeTerrain(x));
         }
         public bool TryGetValue(string s, out EdgeTerrain o) => Name2Terrain.TryGetValue(s, out o);
@@ -200,6 +204,10 @@ namespace YYZ.JTS
         {
             var ts = string.Join(",", Terrains);
             return $"EdgeTerrainSystem({ts})";
+        }
+        public EdgeTerrain GetFirstTerrain() // lowest level road/river
+        {
+            return Name2Terrain[Names[0]];
         }
     }
 
@@ -323,7 +331,8 @@ namespace YYZ.JTS
                     idx = CreateEdgeLayer(lines, idx, defined, out var edgeLayer);
                     edgeLayers.Add(edgeLayer);
                 }
-                else{
+                else
+                {
                     break;
                 }
             }
@@ -472,6 +481,9 @@ namespace YYZ.JTS
         public bool ContainsRoad(EdgeTerrain e) => RoadSet.Contains(e);
         public void AddRiver(EdgeTerrain e) => RiverSet.Add(e);
         public void AddRoad(EdgeTerrain e) => RoadSet.Add(e);
+
+        public bool HasRoad() => RoadSet.Count > 0;
+        public bool HasRiver() => RiverSet.Count > 0;
         
         public override string ToString()
         {
@@ -506,6 +518,21 @@ namespace YYZ.JTS
         static int[][] oddNeighborOffsets = new int[][]{new int[]{-1, 0}, new int[]{-1, 1}, new int[]{0, 1}, new int[]{1, 0}, new int[]{0, -1}, new int[]{-1, -1}};
 
         public Hex[,] HexMat;
+        public int Height;
+        public int Width;
+
+        public Hex GetHex(Hex src, HexDirection direction) // TODO: de-dupcalite
+        {
+            var offsets = src.J % 2 == 0 ? evenNeighborOffsets : oddNeighborOffsets;
+            var e = (int)direction;
+            var offset = offsets[e];
+
+            var ii = src.I + offset[0];
+            var jj = src.J + offset[1];
+            if(ii >= 0 && ii < Height && jj >= 0 && jj < Width)
+                return HexMat[ii, jj];
+            return null;
+        }
 
         public static HexNetwork FromMapFile(MapFile map)
         {
@@ -556,7 +583,7 @@ namespace YYZ.JTS
                     }
                 }
 
-            return new HexNetwork(){HexMat=hexMat};
+            return new HexNetwork(){Height=map.Height, Width=map.Width, HexMat=hexMat};
         }
 
         bool HasEdge(EdgeLayer layer, int i, int j, HexDirection direction) => layer.Defined && layer.Data[i, j].ByDirection(direction);
@@ -574,6 +601,10 @@ namespace YYZ.JTS
             }
         }
 
+        /*
+        Generate long sequence of road from edge, for example:
+        (0, 1), (1, 2), (2, 3), (3, 4), (3, 5), (3, 6) => [(0, 1), (1, 2), (2, 3)], [(3, 4)], [(3, 5), (3, 6)] 
+        */
         public List<List<Hex>> SimplifyRoad(EdgeTerrain T)
         {
             var roadMap = new Dictionary<Hex, List<Hex>>();
@@ -630,11 +661,14 @@ namespace YYZ.JTS
             return ret;
         }
 
+
         public override string ToString()
         {
             return $"HexNetwork(Height={HexMat.GetLength(0)}, Width={HexMat.GetLength(1)})";
         }
     }
+
+
 
     public class TerrainSystem
     {
@@ -699,8 +733,7 @@ namespace YYZ.JTS
         {
             foreach((var nei, var edge) in pos.EdgeMap)
             {
-                // if(CurrentDistanceSystem.GetBaseCost(nei.Terrain) > 0 && !edge.Contains(RiverType.Creek))
-                if(Distance.BaseCost(nei.Terrain) > 0) // TODO: Handle Cost 0 edge block in some level
+                if(edge.HasRoad() || Distance.BaseCost(nei.Terrain) > 0) // TODO: Handle Cost 0 edge block in some level
                     yield return nei;
             }
         }
@@ -736,6 +769,77 @@ namespace YYZ.JTS
         }
 
         public IEnumerable<Hex> Nodes() => Network.Nodes();
+
+        public SparseProxyGraph GetLimitNetwork(List<Hex> selectedHexes)
+        {
+            var hexSets = selectedHexes.ToHashSet();
+            var originMap = selectedHexes.ToDictionary(h =>h, h => new ProxyHex(){X = h.X, Y=h.Y});
+            foreach(var src in selectedHexes)
+            {
+                var srcProxy = originMap[src];
+                foreach(var dst in selectedHexes)
+                {
+                    if(src == dst)
+                        continue;
+                    var dstProxy = originMap[dst];
+
+                    var cost = PathFinding.PathFinding<Hex>.AStar2(this, src, dst, out var path);
+                    var cache = new ProxyHex.Cache(){Path=path, Cost=cost};
+                    srcProxy.DenseCacheMap[dstProxy] = cache;
+                    if(path.All(n => n == src || n == dst || !hexSets.Contains(n)))
+                    {
+                        srcProxy.SparseCacheMap[dstProxy] = cache;
+                    }
+                }
+            }
+
+            return new SparseProxyGraph(){OriginMap=originMap};
+        }
+    }
+
+    public class ProxyHex
+    {
+        public int X;
+        public int Y;
+        public int I{get=>Y;}
+        public int J{get=>X;}
+        
+        public class Cache
+        {
+            public List<Hex> Path;
+            public float Cost;
+            public override string ToString() => $"Cache({Cost}, [{Path.Count}])";
+        }
+
+        public Dictionary<ProxyHex, Cache> SparseCacheMap = new(); // edges containing other ProxyHex removed
+        public Dictionary<ProxyHex, Cache> DenseCacheMap = new();
+        public override string ToString()
+        {
+            return $"ProxyHex(IJ=({I},{J},XY=({X},{Y}),[{SparseCacheMap.Count}, {DenseCacheMap.Count}]))";
+        }
+    }
+
+    public class SparseProxyGraph: IGraph<ProxyHex>
+    {
+        public Dictionary<Hex, ProxyHex> OriginMap;
+        public IEnumerable<ProxyHex> Nodes() => OriginMap.Values;
+
+        public IEnumerable<ProxyHex> Neighbors(ProxyHex hex) => hex.SparseCacheMap.Keys;
+        public float MoveCost(ProxyHex src, ProxyHex dst) => src.SparseCacheMap[dst].Cost;
+        public float EstimateCost(ProxyHex src, ProxyHex dst)
+        {
+            var dx = src.X - dst.X;
+            var dy = src.Y - dst.Y;
+            return MathF.Sqrt(dx * dx + dy + dy);
+        }
+        public override string ToString()
+        {
+            return $"SparseProxyGraph({OriginMap.Count})";
+        }
+    }
+
+    public class MegaHex
+    {
 
     }
 }

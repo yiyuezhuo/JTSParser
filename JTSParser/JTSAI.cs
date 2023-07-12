@@ -48,6 +48,8 @@ namespace YYZ.JTS
         public DistanceGraph Graph;
         public UnitGroup RootOOBUnit;
         public JTSUnitStates UnitStates;
+        public JTSBridgeStates BridgeStates;
+
         public float VPBudget = 100;
         public float VPDecay = 0.1f;
         public float FriendlyDecay = 0.5f;
@@ -74,14 +76,13 @@ namespace YYZ.JTS
             Scenario = parser.ParseScenario(scenarioStr);
             Map = parser.ParseMap(mapStr);
             Network = HexNetwork.FromMapFile(Map);
-            /*
-            var distance = new DistanceSystem(){Name="Column Infantry Movement Costs"};
-            var nbParam = ParameterData.Parse(StaticData.NBParameterData);
-            var graph = new DistanceGraph(){Network=network, Distance=distance};
-            */
             RootOOBUnit = parser.ParseOOB(oobStr);
             UnitStates = new JTSUnitStates();
             UnitStates.ExtractByLines(RootOOBUnit, Scenario.DynamicCommandBlock);
+
+            BridgeStates = new JTSBridgeStates(Map.CurrentTerrainSystem.Road.GetFirstTerrain());
+            BridgeStates.ExtractByLines(Scenario.DynamicCommandBlock);
+            BridgeStates.ApplyTo(Network);
         }
         public void AssignGraphByStaticData(string parameterDataStr, string movementCostName)
         {
@@ -110,50 +111,6 @@ namespace YYZ.JTS
                 }
             }
         }
-        
-        /*
-        public static UnitState GetCenterUnitFrom(List<UnitState> states, out float strengthSum)
-        {
-            var x = 0f;
-            var y = 0f;
-            strengthSum = 0f;
-            foreach(var state in states)
-            {
-                x += state.CurrentStrength * state.X;
-                y += state.CurrentStrength * state.Y;
-                strengthSum += state.CurrentStrength;
-            }
-            x /= strengthSum;
-            y /= strengthSum;
-
-            UnitState minState = null;
-            var minValue = float.MaxValue;
-            foreach(var state in states)
-            {
-                var dx = x - state.X;
-                var dy = y - state.Y;
-                var d2 = dx * dx + dy * dy;
-                if(d2 < minValue)
-                {
-                    minValue = d2;
-                    minState = state;
-                }
-            }
-            return minState;
-        }
-        */
-
-        /*
-        public class StampRecord
-        {
-            public bool Friendly;
-            public int X;
-            public int Y;
-            public int I{get=>Y;}
-            public int J{get=>X;}
-            public float Value;
-        }
-        */
 
         public class StampRecord
         {
@@ -482,24 +439,6 @@ namespace YYZ.JTS
                 };
             }
         }
-
-        /*
-        public List<AIOrder> GetAttackContourOrdersAsList() => GetAttackContourOrders().ToList(); // Python API Comp
-        public static IEnumerable<int> TestPython()
-        {
-            yield return 0;
-            yield return 1;
-        }
-        public static List<int> TestPythonAsList()
-        {
-            return TestPython().ToList();
-        }
-        public static int[] TestPythonAsArray()
-        {
-            return TestPython().ToArray();
-        }
-        */
-
 
         public string TransformCountourPlanning()
         {

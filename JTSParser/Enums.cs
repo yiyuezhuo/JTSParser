@@ -16,6 +16,13 @@ namespace YYZ.JTS
         LeftTop = 32
     }
 
+    public enum SymmetryHexDirection
+    {
+        Top = 1,
+        TopRight = 2,
+        BottomRight = 4,
+    }
+
     public enum HexDirection
     {
         Top,

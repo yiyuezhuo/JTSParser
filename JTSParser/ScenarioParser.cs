@@ -102,7 +102,7 @@ namespace YYZ.JTS
             }
         }
 
-        public void ExtractByLines(UnitGroup oobRoot, List<string> sl)
+        public void ExtractByLines(UnitGroup oobRoot, IEnumerable<string> sl)
         {
             foreach (var s in sl)
             {
@@ -515,6 +515,76 @@ namespace YYZ.JTS
         public override string ToString()
         {
             return $"AIStatus({AIScripts.Count})";
+        }
+    }
+
+    public class Bridge
+    {
+        public int X;
+        public int Y;
+        public int I{get=>Y;}
+        public int J{get=>X;}
+        public int HP;
+        public SymmetryHexDirection Direction;
+
+        public static Bridge Parse(string s)
+        {
+            // 11 11 98 4 300
+            var nl = s.Trim().Split().Skip(1).Select(int.Parse).ToArray();
+            var d = (SymmetryHexDirection)nl[2];
+            return new Bridge(){X = nl[0], Y=nl[1], Direction=d, HP=nl[3]};
+        }
+    }
+
+    public class JTSBridgeStates
+    {
+        public EdgeTerrain terrain;
+        public JTSBridgeStates(EdgeTerrain terrain)
+        {
+            this.terrain = terrain;
+        }
+        // public EdgeTerrainSystem system;
+        public List<Bridge> Bridges = new();
+
+        public override string ToString()
+        {
+            return $"JTSBridgeStates({terrain}, [{Bridges.Count}])";
+        }
+
+        public void ExtractByLines(IEnumerable<string> sl)
+        {
+            foreach(var command in sl)
+            {
+                var wl = command.Trim().Split();
+                if(wl[0] == "11") // TODO: PZC Bridge types handling?
+                {
+                    Bridges.Add(Bridge.Parse(command));
+                }
+            }
+        }
+
+        static Dictionary<SymmetryHexDirection, HexDirection[]> directionMap = new()
+        {
+            {SymmetryHexDirection.Top, new HexDirection[]{HexDirection.Top, HexDirection.Bottom}},
+            {SymmetryHexDirection.TopRight, new HexDirection[]{HexDirection.TopRight, HexDirection.BottomLeft}},
+            {SymmetryHexDirection.BottomRight, new HexDirection[]{HexDirection.BottomRight, HexDirection.TopLeft}},
+        };
+
+        public void ApplyTo(HexNetwork network)
+        {
+            foreach(var bridge in Bridges)
+            {
+                var hex = network.HexMat[bridge.I, bridge.J];
+                foreach(var d in directionMap[bridge.Direction])
+                {
+                    var nei = network.GetHex(hex, d);
+                    if(nei != null)
+                    {
+                        hex.EdgeMap[nei].AddRoad(terrain);
+                        nei.EdgeMap[hex].AddRoad(terrain);
+                    }
+                }
+            }
         }
     }
 

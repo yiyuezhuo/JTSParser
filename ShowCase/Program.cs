@@ -64,6 +64,10 @@ class Program
         {
             // Console.WriteLine(string.Join(",", road.Select(x => $"({x.X}, {x.Y})")));
         }
+        
+        var objectiveHexes = scenario.Objectives.Select(o => network.HexMat[o.I, o.J]).ToList();
+        var limitNetwork = graph.GetLimitNetwork(objectiveHexes);
+        Console.WriteLine(limitNetwork);
 
         var controller = new InfluenceController2(){FriendlyCountries = new HashSet<string>(){"French"}};
         controller.Extract("NB", scenarioStr, mapStr, oobStr);
