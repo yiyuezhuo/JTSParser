@@ -15,6 +15,7 @@ class Program
 
         
         var nbParser = new JTSParser(JTSSeries.NapoleonicBattle);
+        var cwbParser = new JTSParser(JTSSeries.CivilWarBattle);
 
         var oobStr = File.ReadAllText(@"E:\JTSGames\Pen_spain\OOBs\Coruna.oob");
         // var oobStr = File.ReadAllText(@"E:\JTSGames\CampaignAntietam\OOBs\1st Bull Run.oob");
@@ -64,6 +65,15 @@ class Program
         {
             // Console.WriteLine(string.Join(",", road.Select(x => $"({x.X}, {x.Y})")));
         }
+
+        var mapFullStr = File.ReadAllText(@"E:\JTSGames\CampaignAntietam\Maps\the gaps to manassas.map");
+        var mapSubStr = File.ReadAllText(@"E:\JTSGames\CampaignAntietam\Maps\Henry Hill.map");
+        var fullMap = cwbParser.ParseMap(mapFullStr);
+        var subMap = new SubMapFile();
+        subMap.Extract(mapSubStr);
+        Console.WriteLine($"Before: {fullMap}");
+        subMap.ApplyTo(fullMap);
+        Console.WriteLine($"After: {fullMap} | {subMap}");
         
         var objectiveHexes = scenario.Objectives.Select(o => network.HexMat[o.I, o.J]).ToList();
         var limitNetwork = graph.GetLimitNetwork(objectiveHexes);
@@ -184,7 +194,7 @@ class Program
 
         // Console.WriteLine(ParameterData.Parse(StaticData.NBParameterData));
 
-        var cwbParser = new JTSParser(JTSSeries.CivilWarBattle);
+        
         // scenarioStr = File.ReadAllText(@"E:\JTSGames\CampaignAntietam\Scenarios\002 1BR_Bull Run (Historical).scn");
         // scenarioStr = File.ReadAllText(@"E:\JTSGames\cwb_demo\Scenarios\005-620101-Williamsburg.scn");
         scenarioStr = File.ReadAllText(@"E:\JTSGames\cwb_demo\Scenarios\004-620101-Williamsburg_W.scn");
