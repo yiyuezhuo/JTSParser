@@ -59,4 +59,13 @@ namespace YYZ.JTS
         SquadBattle // SB
     }
 
+    public enum VictoryState
+    {
+        MajorDefeat,
+        MinorDefeat,
+        Draw,
+        MinorVictory,
+        MajorVictory
+    }
+
 }

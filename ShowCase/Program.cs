@@ -16,6 +16,11 @@ class Program
         
         var nbParser = new JTSParser(JTSSeries.NapoleonicBattle);
         var cwbParser = new JTSParser(JTSSeries.CivilWarBattle);
+        var pzcParser = new JTSParser(JTSSeries.PanzerCampaign);
+
+        Console.WriteLine(nbParser.ParseScenario(File.ReadAllText(@"E:\JTSGames\Pen_spain\Saves\battle_loss.btl")));
+        Console.WriteLine(cwbParser.ParseScenario(File.ReadAllText(@"E:\JTSGames\CampaignAntietam\Saves\battle_loss.btl")));
+        Console.WriteLine(pzcParser.ParseScenario(File.ReadAllText(@"E:\JTSGames\Mius43\battle_loss.btl")));
 
         var oobStr = File.ReadAllText(@"E:\JTSGames\Pen_spain\OOBs\Coruna.oob");
         // var oobStr = File.ReadAllText(@"E:\JTSGames\CampaignAntietam\OOBs\1st Bull Run.oob");
@@ -208,7 +213,6 @@ class Program
 
         // Console.WriteLine(cwbParser.ParseScenario(scenarioStr));
 
-        var pzcParser = new JTSParser(JTSSeries.PanzerCampaign);
         scenarioStr = File.ReadAllText(@"E:\JTSGames\Mius43\#0717_01_Mius_Campaign.scn");
         //Console.WriteLine(pzcParser.ParseScenario(scenarioStr));
 

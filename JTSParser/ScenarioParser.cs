@@ -332,14 +332,21 @@ namespace YYZ.JTS
 
         public override string ToString()
         {
-            return $"{GetType().Name}({Name}, {Time}, {Turn}/{TurnLimit}, DC:{DynamicCommandBlock.Count}, AC:{AICommandScripts.Count}, OB:{Objectives.Count})";
+            return $"{GetType().Name}({Name}, {Time}, {Turn}/{TurnLimit}, DC:{DynamicCommandBlock.Count}, AC:{AICommandScripts.Count}, OB:{Objectives.Count}, {VictoryCondition}, {Side1Loss}, {Side2Loss})";
         }
+
+        public JTSVictoryCondition VictoryCondition;
+        public LossSystem Side1Loss;
+        public LossSystem Side2Loss;
 
         protected abstract int GetFilesBeginIndex();
         protected abstract int GetDynamicBlockBeginIndex();
+        protected abstract int GetVictoryConditionIndex();
         protected abstract void ExtractTime(int[] ds);
 
         protected abstract char ObjectiveCommandSymbol{get;}
+        protected abstract LossSystem CreateLossSystem();
+        protected abstract void ExtractLoss(string[] sl);
 
         public void Extract(string s)
         {
@@ -350,6 +357,13 @@ namespace YYZ.JTS
             //  0   1   2 3 4 5 6 7 8
             var ds = sl[2].Trim().Split().Select(int.Parse).ToArray();
             ExtractTime(ds);
+
+            VictoryCondition = JTSVictoryCondition.Parse(sl[GetVictoryConditionIndex()]);
+
+            Side1Loss = CreateLossSystem();
+            Side2Loss = CreateLossSystem();
+
+            ExtractLoss(sl);
 
             var filesBeginIndex = GetFilesBeginIndex();
             MapFile = sl[filesBeginIndex];
@@ -384,7 +398,7 @@ namespace YYZ.JTS
         protected abstract int ParseAIScripts(string[] sl, int idx);
     }
 
-    public abstract class Pre1Scenario: JTSScenario
+    public abstract class PreWWIScenario: JTSScenario
     {
         protected override int GetDynamicBlockBeginIndex() => 13;
         protected override void ExtractTime(int[] ds)
@@ -393,6 +407,7 @@ namespace YYZ.JTS
             Turn = ds[7];
             TurnLimit = ds[8];
         }
+        protected override int GetVictoryConditionIndex() => 5;
         protected override char ObjectiveCommandSymbol{get=> '7';}
         protected override int ParseAIScripts(string[] sl, int idx) // idx point to dynamic command block's trailing 0
         {
@@ -423,22 +438,44 @@ namespace YYZ.JTS
             return idx;
         }
         
+
+        protected override void ExtractLoss(string[] sl)
+        {
+            // 144 184 0 0 0 0 0 0
+            var nl = sl[11].Trim().Split().Select(int.Parse).ToArray();
+            Side1Loss.SetByIndex(0, nl[0]);
+            for(var i=0; i<nl.Length; i++)
+            {
+                var sideLoss = i % 2 == 0 ? Side1Loss : Side2Loss;
+                sideLoss.SetByIndex(i / 2, nl[i]);
+            }
+        }
     }
 
-    public class NBScenario: Pre1Scenario
+    public class NBScenario: PreWWIScenario
     {
         protected override int GetFilesBeginIndex() => 6;
+        protected override LossSystem CreateLossSystem()
+        {
+            return new LossSystem(new string[]{"Infantry", "Cavalry", "Artillery", "Supply"});
+        }
+
     }
 
-    public class CWBScenario: Pre1Scenario
+    public class CWBScenario: PreWWIScenario
     {
         protected override int GetFilesBeginIndex() => 8;
+        protected override LossSystem CreateLossSystem()
+        {
+            return new LossSystem(new string[]{"Infantry", "Cavalry", "Artillery", "Gunboat", "Unknown", "Supply"});
+        }
     }
 
     public class PZCScenario: JTSScenario
     {
         protected override int GetFilesBeginIndex() => 12;
         protected override int GetDynamicBlockBeginIndex() => 15;
+        protected override int GetVictoryConditionIndex() => 3;
         protected override void ExtractTime(int[] ds)
         {
             Time = new JTSTime(){Year = ds[0], Month = ds[1], Day = ds[2], Hour = ds[3]};
@@ -450,6 +487,51 @@ namespace YYZ.JTS
         protected override int ParseAIScripts(string[] sl, int idx)
         {
             return idx; // TODO: Parse AI Scripts from dynamic block
+        }
+        protected override LossSystem CreateLossSystem()
+        {
+            return new LossSystem(new string[]{"Men", "Gun", "Vehicle", "Naval", "Air", "Unknown"});
+        }
+        protected override void ExtractLoss(string[] sl)
+        {
+            ExtractLossOneSide(Side1Loss, sl[8]);
+            ExtractLossOneSide(Side2Loss, sl[10]);
+        }
+        void ExtractLossOneSide(LossSystem loss, string s)
+        {
+            // 765 0 4 0 0 0
+            var nl = s.Trim().Split().Select(int.Parse).ToArray();
+            for(var i=0; i<nl.Length; i++) // Don't know meaning of the last element yet.
+                loss.SetByIndex(i, nl[i]);
+        }
+    }
+
+    public class JTSVictoryCondition
+    {
+        public int MajorDefeat;
+        public int MinorDefeat;
+        public int MinorVictory;
+        public int MajorVictory;
+        public VictoryState Determine(int vp)
+        {
+            if(vp <= MajorDefeat)
+                return VictoryState.MajorDefeat;
+            else if(vp <= MinorDefeat)
+                return VictoryState.MinorDefeat;
+            else if(vp <= MinorVictory)
+                return VictoryState.Draw;
+            else if(vp <= MajorVictory)
+                return VictoryState.MinorVictory;
+            return VictoryState.MajorVictory;
+        }
+        public override string ToString()
+        {
+            return $"VictoryCondition({MajorDefeat}/{MinorDefeat}/{MinorVictory}/{MajorVictory})";
+        }
+        public static JTSVictoryCondition Parse(string s)
+        {
+            var nl = s.Trim().Split().Select(int.Parse).ToArray();
+            return new JTSVictoryCondition(){MajorDefeat=nl[0], MinorDefeat=nl[1], MinorVictory=nl[2], MajorVictory=nl[3]};
         }
     }
 
@@ -647,5 +729,41 @@ namespace YYZ.JTS
         }
 
         public override string ToString() => $"Objective({X}, {Y}, VP:{VP}/{VPPerTurn1}/{VPPerTurn2}, Side:{Side}, Hist:[{History.Count}])";
+    }
+
+    public class LossItem
+    {
+        public string Name;
+        public int Value;
+    }
+
+    public class LossSystem
+    {
+        public List<string> Names;
+        public Dictionary<string, LossItem> ItemMap; // = new();
+
+        public LossSystem(IEnumerable<string> Names)
+        {
+            this.Names = Names.ToList();
+            ItemMap = this.Names.ToDictionary(n => n, n => new LossItem(){Name=n});
+        }
+
+        /*
+        public void FillArray(IEnumerable<int> iEnum)
+        {
+            iEnum.Zip(Names, (value, name) => ItemMap[name].Value = value);
+        }
+        */
+        public void SetByIndex(int idx, int value)
+        {
+            ItemMap[Names[idx]].Value = value;
+        }
+
+        public int GetLoss(string name) => ItemMap[name].Value;
+        public override string ToString()
+        {
+            var s = string.Join("/", Names.Select(n => ItemMap[n].Value));
+            return $"LossSystem({s})";
+        }
     }
 }
