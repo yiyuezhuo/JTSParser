@@ -109,6 +109,14 @@ class Program
         Console.WriteLine($"orders.Count={orders.Count}");
         foreach(var order in orders)
             Console.WriteLine(order);
+        
+        controller.TargetInfluenceThreshold = 1750;
+        orders = controller.GetHierarchyFrontalAttackOrders().ToList();
+
+        Console.WriteLine($"[Hierarchy] orders.Count={orders.Count}");
+        foreach(var order in orders)
+            Console.WriteLine(order);
+
 
         /*
         stopWatch.Restart();

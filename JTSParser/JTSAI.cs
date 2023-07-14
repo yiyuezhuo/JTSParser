@@ -89,7 +89,6 @@ namespace YYZ.JTS
         }
         public void AssignGraphByStaticData(string parameterDataStr, string movementCostName)
         {
-            // AssignGraphByStaticData(StaticData.NBParameterData, "Column Infantry Movement Costs");
             var distance = new DistanceSystem(){Name=movementCostName};
             var param = ParameterData.Parse(parameterDataStr);
             distance.Extract(Map.CurrentTerrainSystem, param.Data[movementCostName]);
@@ -105,7 +104,6 @@ namespace YYZ.JTS
             foreach(var objective in Scenario.Objectives)
             {
                 var pt = objective.VP + (objective.VPPerTurn1 + objective.VPPerTurn2) * 5; // TODO: Use a formula with more discretion
-                // mat[objective.I, objective.J] = pt;
                 var vpHex = Network.HexMat[objective.I, objective.J];
                 var res = PathFinding.PathFinding<Hex>.GetReachable(Graph, vpHex, VPBudget);
                 foreach((var hex, var path) in res.nodeToPath)
@@ -136,11 +134,8 @@ namespace YYZ.JTS
             EnemyMat = Zeros();
 
             var relatedHexMap = new Dictionary<Hex, StampRecord>(); // hex => (friendly, enemy)
-            // foreach((var brigade, var states) in UnitStates.GroupByBrigade())
             foreach(var brigadeFormation in UnitStates.GetBrigadeFormations())
             {
-                // var centerState = GetCenterUnitFrom(states, out var strengthSum);
-                // var centerState = brigadeFormation.GetCenterUnitSum(out var strengthSum);
                 var hex = Network.HexMat[brigadeFormation.IAnchored, brigadeFormation.JAnchored];
                 if(!relatedHexMap.TryGetValue(hex, out var record))
                 {
@@ -262,7 +257,6 @@ namespace YYZ.JTS
 
         public AIOrder MakeHoldDefendOrder(Formation formation)
         {
-            // var centerState = formation.GetCenterUnitSum(out var strengthSum);
             var order = new AIOrder()
             {
                 Unit=formation.Group,
@@ -273,15 +267,6 @@ namespace YYZ.JTS
             };
             return order;
         }
-        /*
-        public AIOrder MakeHoldDefendOrder(Formation formation)
-        {
-            
-            var centerState = formation.GetCenterUnitSum(out var _);
-            return MakeHoldDefendOrder(formation, centerState);
-            
-        }
-        */
 
         public string TransformAllHold()
         {
@@ -298,30 +283,22 @@ namespace YYZ.JTS
             var orders = new List<AIOrder>();
 
             var attackerSet = attackers.ToHashSet();
-            // var targetFormations = new List<Formation>();
             var targetFormations = new List<Formation>();
             var attackFormations = new List<Formation>();
-            // var centerMap = new Dictionary<Formation, UnitState>();
             foreach(var brigadeFormation in UnitStates.GetBrigadeFormations())
             {
-                // var center = brigadeFormation.GetCenterUnitSum(out var _);
                 if(attackerSet.Contains(brigadeFormation.Group.Country))
                 {
-                    // centerMap[brigadeFormation] = center;
                     attackFormations.Add(brigadeFormation);
                 }
                 else
                 {
                     targetFormations.Add(brigadeFormation);
-                    // orders.Add(MakeHoldDefendOrder(brigadeFormation, center));
                     orders.Add(MakeHoldDefendOrder(brigadeFormation));
                 }
             }
             foreach(var attackFormation in attackFormations)
             {
-                // var attackerCenter = centerMap[attackFormation];
-                // var minCenter = targetCenters.MinBy(other => attackerCenter.Distance2(other)); // .netstandard 2.1 doesn't support `MinBy`
-
                 var minFormation = Utils.MinBy(targetFormations, f => Utils.Distance2(attackFormation.XMean, attackFormation.YMean, f.XMean, f.YMean));
 
                 orders.Add(new AIOrder()
@@ -339,10 +316,7 @@ namespace YYZ.JTS
         public class ContourCache
         {
             public PathFinding<Hex>.DijkstraResult Result;
-            // public UnitState CenterState;
-            // public Formation Formation;
             public Hex Center;
-            // public float StrengthSum;
         }
 
         public IEnumerable<DispatchPlan> AllocateSpace(HashSet<Hex> availableSet, HashSet<Formation> availableFormations, IGeneralGraph<Hex> graphModified)
@@ -351,8 +325,6 @@ namespace YYZ.JTS
 
             foreach(var formation in availableFormations)
             {
-                // var centerState = GetCenterUnitFrom(states, out var strengthSum);
-                // var centerState = formation.GetCenterUnitSum(out var strengthSum);
                 var hex = Network.HexMat[formation.IAnchored, formation.JAnchored];
                 var res = PathFinding<Hex>.GetReachable(graphModified, hex, StrengthBudget);
                 cacheMap[formation] = new ContourCache()
@@ -390,7 +362,6 @@ namespace YYZ.JTS
                 // breath-first deletion for hex
                 availableSet.Remove(minHex);
                 var designedWidth = (int)MathF.Ceiling(minFormation.CurrentStrength / 500);
-                // var dispatched = 1;
                 var dispatchedList = new List<Hex>(){minHex};
                 var openSet = new HashSet<Hex>(){minHex};
                 while(openSet.Count > 0 && dispatchedList.Count < designedWidth && availableSet.Count >= 0)
@@ -430,6 +401,11 @@ namespace YYZ.JTS
             public Hex AnchorHex;
             public List<Hex> AllocatedSpace;
             public int DesignedWidth;
+
+            public override string ToString()
+            {
+                return $"DispatchPlan({Formation}, {AnchorHex}, Allocated=[{AllocatedSpace.Count}], Designed={DesignedWidth})";
+            }
         }
 
         public void GetBlockedSetAvailableSet(out HashSet<Hex> blockedSet, out HashSet<Hex> availableSet)
@@ -476,7 +452,7 @@ namespace YYZ.JTS
             foreach(var plan in GetAttackContourPlan())
             {
                 var ss = string.Join(",", plan.AllocatedSpace.Select(h => $"({h.X}, {h.Y})"));
-                Log($"{plan.Formation.Group.DescribeCommand()} is assigned at {plan.AllocatedSpace.Count} hexes (requested {plan.DesignedWidth}): {ss}");
+                Log($"HQ => {plan.Formation.Group.DescribeCommand()} is assigned at {plan.AllocatedSpace.Count} hexes (requested {plan.DesignedWidth}): {ss}");
                 // dispatchPlan.Formation.Group.
                 yield return new AIOrder()
                 {
@@ -518,15 +494,71 @@ namespace YYZ.JTS
             public float MoveCost(Hex src, Hex dst) => Graph.MoveCost(src, dst);
         }
 
-        public void HierarchyFrontalAttack()
+        public IEnumerable<DispatchPlan> GetHierarchyFrontalAttackPlan() // ~= GetAttackContourPlan
         {
             GetBlockedSetAvailableSet(out var blockedSet, out var availableSet);
+
             var blockedGraph = new BlockedGraph(){Graph=Graph, BlockedSet=blockedSet};
 
+            var activeFormations = new List<Formation>();
+            /*
+            foreach((var unitGroup, var formation) in UnitStates.Group2Formation)
+            {
+                if(formation != UnitStates.FormationRoot && FriendlyCountries.Contains(unitGroup.Country))
+                    activeFormations.Add(formation);
+            }
+            */
+            foreach(var formation in UnitStates.FormationRoot.SubFormations)
+            {
+                if(FriendlyCountries.Contains(formation.Group.Country))
+                {
+                    activeFormations.Add(formation);
+                }
+            }
             
+            // var plans = AllocateSpace(availableSet.ToHashSet(), activeFormations.ToHashSet(), blockedGraph).ToList(); // Pass shallow-copied value
+            // foreach(var plan in)
+            var rootPlans = AllocateSpace(availableSet.ToHashSet(), activeFormations.ToHashSet(), blockedGraph).ToList(); // Pass shallow-copied value
+            var stack = new Stack<List<DispatchPlan>>();
+            stack.Push(rootPlans);
+            while(stack.Count > 0)
+            {
+                var plans = stack.Pop();
+
+                foreach(var plan in plans)
+                {
+                    yield return plan;
+                    
+                    if(plan.Formation.SubFormations.Count > 1)
+                    {
+                        var newPlans = AllocateSpace(plan.AllocatedSpace.ToHashSet(), plan.Formation.SubFormations.ToHashSet(), blockedGraph).ToList();
+                        stack.Push(newPlans);
+                    }
+                }
+            }
+            // var availableFormations = UnitStates.GetBrigadeFormations().Where(formation => FriendlyCountries.Contains(formation.Group.Country)).ToHashSet(); // TODO: de-duplicate?
+            // return AllocateSpace(availableSet, availableFormations, blockedGraph);
+        }
+
+        public IEnumerable<AIOrder> GetHierarchyFrontalAttackOrders()
+        {
+            foreach(var plan in GetHierarchyFrontalAttackPlan())
+            {
+                var ss = string.Join(",", plan.AllocatedSpace.Select(h => $"({h.X}, {h.Y})"));
+                var superior = plan.Formation.Parent == UnitStates.FormationRoot ? "HQ" : plan.Formation.Parent.Group.DescribeCommand();
+                Log($"{superior} => {plan.Formation.Group.DescribeCommand()} is assigned at {plan.AllocatedSpace.Count} hexes (requested {plan.DesignedWidth}): {ss}");
+                // dispatchPlan.Formation.Group.
+                yield return new AIOrder()
+                {
+                    Unit=plan.Formation.Group,
+                    Time=Scenario.Time,
+                    X=plan.AnchorHex.X,
+                    Y=plan.AnchorHex.Y,
+                    Type=AIOrderType.Attack
+                };
+            }
         }
 
         public void Log(string s) => Logs.Add(s);
-        // public void ClearLog() => Logs.Clear();
     }
 }

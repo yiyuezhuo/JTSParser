@@ -11,30 +11,13 @@ namespace YYZ.JTS
     {
         public AbstractUnit OobItem;
         public int CurrentStrength;
-        /*
-        public int XAnchored;
-        public int YAnchored;
-        public float XMean;
-        public float YMean;
-        */
         public Formation Parent = null;
-        /*
-        public AbstractUnitState(AbstractUnit oobItem)
-        {
-            this.OobItem = oobItem;
-        }
-        */
     }
 
 
 
     public class UnitState : AbstractUnitState
     {
-        /*
-        public override AbstractUnit OobItem{get; set;}
-
-        public override int CurrentStrength{get;set;}
-        */
         public int Fatigue;
         public int X;
         public int Y;
@@ -87,17 +70,19 @@ namespace YYZ.JTS
         public List<Formation> SubFormations = new();
         public List<AbstractUnitState> AbstractStates = new();
         public HashSet<HexPosition> HexPositions = new();
+        public List<UnitState> FlattenStates = new();
 
         public override string ToString()
         {
             var parentStr = Parent == null ? "" : $" ,{Parent.Group}";
-            return $"Formation({Group}, {CurrentStrength}, States:[{States.Count}], SubFormations:[{SubFormations.Count}], AbstractStates:[{AbstractStates.Count}], HexPositions:[{HexPositions.Count}]{parentStr})";
+            return $"Formation({Group}, CurrentStrength:{CurrentStrength}, States:[{States.Count}], SubFormations:[{SubFormations.Count}], AbstractStates:[{AbstractStates.Count}], HexPositions:[{HexPositions.Count}]{parentStr})";
         }
 
         public void Add(UnitState state)
         {
             States.Add(state);
             AbstractStates.Add(state);
+            FlattenStates.Add(state);
         }
 
         public void Add(Formation formation)
@@ -105,46 +90,6 @@ namespace YYZ.JTS
             SubFormations.Add(formation);
             AbstractStates.Add(formation);
         }
-
-        /*
-        public float GetSumAndMean(out float x, out float y)
-        {
-            x = 0f;
-            y = 0f;
-            var strengthSum = 0f;
-            foreach(var state in States)
-            {
-                x += state.CurrentStrength * state.X;
-                y += state.CurrentStrength * state.Y;
-                strengthSum += state.CurrentStrength;
-            }
-            x /= strengthSum;
-            y /= strengthSum;
-
-            return strengthSum;
-        }
-
-        public UnitState GetCenterUnitSum(out float strengthSum)
-        {
-            strengthSum = GetSumAndMean(out var x, out var y);
-
-            UnitState minState = null;
-            var minValue = float.MaxValue;
-            foreach(var state in States)
-            {
-                var dx = x - state.X;
-                var dy = y - state.Y;
-                var d2 = dx * dx + dy * dy;
-                if(d2 < minValue)
-                {
-                    minValue = d2;
-                    minState = state;
-                }
-            }
-
-            return minState;
-        }
-        */
 
         public void CalculateFrozenValue()
         {
@@ -176,41 +121,19 @@ namespace YYZ.JTS
                     y += formation.YMean * formation.CurrentStrength;
                     foreach(var hexPosition in formation.HexPositions)
                         HexPositions.Add(hexPosition);
-                    // HexPositions.AddRange(formation.HexPositions);
-                    
+
+                    FlattenStates.AddRange(formation.FlattenStates);
                 }
             }
 
             XMean = x / CurrentStrength;
             YMean = y / CurrentStrength;
 
-            /*
-            HexPosition minPosition = null;
-            var minD2 = float.PositiveInfinity;
-            foreach(var hexPos in HexPositions)
-            {
-                var dx = hexPos.X - XMean;
-                var dy = hexPos.Y - YMean;
-                var d2 = dx*dx + dy*dy;
-                if(d2 < minD2)
-                {
-                    minD2 = d2;
-                    minPosition = hexPos;
-                }
-            }
-            */
             var minPosition = Utils.MinBy(HexPositions, p => Utils.Distance2(p.X, p.Y, XMean, YMean));
 
             XAnchored = minPosition.X;
             YAnchored = minPosition.Y;
         }
-
-        /*
-        public float Distance2(Formation other)
-        {
-            return 
-        }
-        */
     }
 
     public class JTSUnitStates
@@ -263,11 +186,7 @@ namespace YYZ.JTS
                     Flags = int.Parse(match.Groups[8].Value)
                 };
 
-                // unitState.XAnchored = unitState.X;
-                // unitState.YAnchored = unitState.Y;
-
                 UnitStates.Add(unitState);
-                // Unit2state[unitSelected] = unitState;
             }
         }
 
@@ -279,20 +198,6 @@ namespace YYZ.JTS
             // AssignParentStrengthXYList();
             //  Assign Parent and Strength
         }
-
-        /*
-        protected void AssignParentStrengthHexPositions()
-        {
-            foreach(var child in FormationRoot.AbstractStates)
-            {
-                var unitState = child as UnitState;
-                if(unitState != null)
-                {
-                    
-                }
-            }
-        }
-        */
 
         protected void CreateUnitStates(UnitGroup oobRoot, IEnumerable<string> sl)
         {
@@ -426,9 +331,5 @@ namespace YYZ.JTS
             }
             return rootFormation;
         }
-
-        // public Formation AsFlatFormation(){}
     }
-
-
 }
