@@ -43,6 +43,7 @@ class Program
         var unitStatus = new JTSUnitStates();
         unitStatus.ExtractByLines(units, scenario.DynamicCommandBlock);
         Console.WriteLine(unitStatus);
+        Console.WriteLine(unitStatus.FormationRoot);
         
         // Console.WriteLine('9' - '0');
         // Console.WriteLine('a' - '0');

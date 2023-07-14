@@ -5,6 +5,7 @@ namespace YYZ.JTS
     using System.Collections.Generic;
     using System;
     using System.Linq;
+    // using Microsoft.Extentions.Log;
 
 
     public class InfluenceController
@@ -69,6 +70,8 @@ namespace YYZ.JTS
         public Tuple<int, int> MaxFriendlyLoc;
         public float MaxEnemy;
         public Tuple<int, int> MaxEnemyLoc;
+
+        public List<string> Logs = new();
 
         public void Extract(string code, string scenarioStr, string mapStr, string oobStr)
         {
@@ -137,18 +140,18 @@ namespace YYZ.JTS
             foreach(var brigadeFormation in UnitStates.GetBrigadeFormations())
             {
                 // var centerState = GetCenterUnitFrom(states, out var strengthSum);
-                var centerState = brigadeFormation.GetCenterUnitSum(out var strengthSum);
-                var hex = Network.HexMat[centerState.I, centerState.J];
+                // var centerState = brigadeFormation.GetCenterUnitSum(out var strengthSum);
+                var hex = Network.HexMat[brigadeFormation.IAnchored, brigadeFormation.JAnchored];
                 if(!relatedHexMap.TryGetValue(hex, out var record))
                 {
                     var res = PathFinding.PathFinding<Hex>.GetReachable(Graph, hex, StrengthBudget);
                     record = relatedHexMap[hex] = new StampRecord(){Result=res};
                 }
-                var friendly = FriendlyCountries.Contains(centerState.OobItem.Country);
+                var friendly = FriendlyCountries.Contains(brigadeFormation.OobItem.Country);
                 if(friendly)
-                    record.Friendly += strengthSum;
+                    record.Friendly += brigadeFormation.CurrentStrength;
                 else
-                    record.Enemy += strengthSum;
+                    record.Enemy += brigadeFormation.CurrentStrength;
             }
 
             foreach((var hex, var record) in relatedHexMap)
@@ -257,24 +260,28 @@ namespace YYZ.JTS
             return aiStatus.Transform(Scenario, RootOOBUnit);
         }
 
-        public AIOrder MakeHoldDefendOrder(Formation formation, UnitState centerState)
+        public AIOrder MakeHoldDefendOrder(Formation formation)
         {
             // var centerState = formation.GetCenterUnitSum(out var strengthSum);
             var order = new AIOrder()
             {
                 Unit=formation.Group,
                 Time=Scenario.Time,
-                X=centerState.X,
-                Y=centerState.Y,
+                X=formation.XAnchored,
+                Y=formation.YAnchored,
                 Type=AIOrderType.Defend
             };
             return order;
         }
+        /*
         public AIOrder MakeHoldDefendOrder(Formation formation)
         {
+            
             var centerState = formation.GetCenterUnitSum(out var _);
             return MakeHoldDefendOrder(formation, centerState);
+            
         }
+        */
 
         public string TransformAllHold()
         {
@@ -292,44 +299,37 @@ namespace YYZ.JTS
 
             var attackerSet = attackers.ToHashSet();
             // var targetFormations = new List<Formation>();
-            var targetCenters = new List<UnitState>();
+            var targetFormations = new List<Formation>();
             var attackFormations = new List<Formation>();
-            var centerMap = new Dictionary<Formation, UnitState>();
+            // var centerMap = new Dictionary<Formation, UnitState>();
             foreach(var brigadeFormation in UnitStates.GetBrigadeFormations())
             {
-                var center = brigadeFormation.GetCenterUnitSum(out var _);
+                // var center = brigadeFormation.GetCenterUnitSum(out var _);
                 if(attackerSet.Contains(brigadeFormation.Group.Country))
                 {
-                    centerMap[brigadeFormation] = center;
+                    // centerMap[brigadeFormation] = center;
                     attackFormations.Add(brigadeFormation);
                 }
                 else
                 {
-                    targetCenters.Add(center);
-                    orders.Add(MakeHoldDefendOrder(brigadeFormation, center));
+                    targetFormations.Add(brigadeFormation);
+                    // orders.Add(MakeHoldDefendOrder(brigadeFormation, center));
+                    orders.Add(MakeHoldDefendOrder(brigadeFormation));
                 }
             }
             foreach(var attackFormation in attackFormations)
             {
-                var attackerCenter = centerMap[attackFormation];
+                // var attackerCenter = centerMap[attackFormation];
                 // var minCenter = targetCenters.MinBy(other => attackerCenter.Distance2(other)); // .netstandard 2.1 doesn't support `MinBy`
-                UnitState minCenter = null;
-                float minDist = float.PositiveInfinity;
-                foreach(var other in targetCenters)
-                {
-                    var d2 = attackerCenter.Distance2(other);
-                    if(d2 < minDist)
-                    {
-                        minDist = d2;
-                        minCenter = other;
-                    }
-                }
+
+                var minFormation = Utils.MinBy(targetFormations, f => Utils.Distance2(attackFormation.XMean, attackFormation.YMean, f.XMean, f.YMean));
+
                 orders.Add(new AIOrder()
                 {
                     Unit=attackFormation.Group,
                     Time=Scenario.Time,
-                    X=minCenter.X,
-                    Y=minCenter.Y,
+                    X=minFormation.XAnchored,
+                    Y=minFormation.YAnchored,
                     Type=AIOrderType.Attack
                 });
             }
@@ -339,52 +339,25 @@ namespace YYZ.JTS
         public class ContourCache
         {
             public PathFinding<Hex>.DijkstraResult Result;
-            public UnitState CenterState;
+            // public UnitState CenterState;
+            // public Formation Formation;
             public Hex Center;
-            public float StrengthSum;
+            // public float StrengthSum;
         }
 
-        public IEnumerable<AIOrder> GetAttackContourOrders()
+        public IEnumerable<DispatchPlan> AllocateSpace(HashSet<Hex> availableSet, HashSet<Formation> availableFormations, IGeneralGraph<Hex> graphModified)
         {
-            // Requires:
-            // ComputeBrigadeMap();
-
-            // A smaller threshold make units move to secure positions to regroup and ready to assualt.
-            // Then a bigger threshold make AI lanuch a converging attack.
-
-            var blockedSet = new HashSet<Hex>();
-            
-            for(var i=0; i<Map.Height; i++)
-                for(var j=0; j<Map.Width; j++)
-                {
-                    if(EnemyMat[i, j] > TargetInfluenceThreshold)
-                        blockedSet.Add(Network.HexMat[i, j]);
-                }
-
-            var availableSet = new HashSet<Hex>(); // edgeSet
-            foreach(var hex in blockedSet)
-            {
-                foreach(var nei in Graph.Neighbors(hex))
-                {
-                    if(!blockedSet.Contains(nei))
-                        availableSet.Add(nei);
-                }
-            }
-
-            var blockedGraph = new BlockedGraph(){Graph=Graph, BlockedSet=blockedSet};
-            
-            var availableFormations = UnitStates.GetBrigadeFormations().Where(formation => FriendlyCountries.Contains(formation.Group.Country)).ToHashSet(); // TODO: de-duplicate?
             var cacheMap = new Dictionary<Formation, ContourCache>();
 
             foreach(var formation in availableFormations)
             {
                 // var centerState = GetCenterUnitFrom(states, out var strengthSum);
-                var centerState = formation.GetCenterUnitSum(out var strengthSum);
-                var hex = Network.HexMat[centerState.I, centerState.J];
-                var res = PathFinding<Hex>.GetReachable(blockedGraph, hex, StrengthBudget);
+                // var centerState = formation.GetCenterUnitSum(out var strengthSum);
+                var hex = Network.HexMat[formation.IAnchored, formation.JAnchored];
+                var res = PathFinding<Hex>.GetReachable(graphModified, hex, StrengthBudget);
                 cacheMap[formation] = new ContourCache()
                 {
-                    Result=res, CenterState=centerState, Center=hex, StrengthSum=strengthSum
+                    Result=res, Center=hex
                 };
             }
 
@@ -416,36 +389,101 @@ namespace YYZ.JTS
 
                 // breath-first deletion for hex
                 availableSet.Remove(minHex);
-                var designedWidth = (int)MathF.Ceiling(cacheMap[minFormation].StrengthSum / 500);
-                var dispatched = 1;
+                var designedWidth = (int)MathF.Ceiling(minFormation.CurrentStrength / 500);
+                // var dispatched = 1;
+                var dispatchedList = new List<Hex>(){minHex};
                 var openSet = new HashSet<Hex>(){minHex};
-                while(openSet.Count > 0 && dispatched < designedWidth && availableSet.Count >= 0)
+                while(openSet.Count > 0 && dispatchedList.Count < designedWidth && availableSet.Count >= 0)
                 {
                     var newOpenSet = new HashSet<Hex>();
                     foreach(var hex in openSet)
                     {
-                        if(dispatched >= designedWidth)
+                        if(dispatchedList.Count >= designedWidth)
                             break;
                         foreach(var nei in Graph.Neighbors(hex))
                         {
-                            if(dispatched >= designedWidth)
+                            if(dispatchedList.Count >= designedWidth)
                                 break;
                             if(availableSet.Contains(nei))
                             {
                                 availableSet.Remove(nei);
                                 newOpenSet.Add(nei);
-                                dispatched += 1;
+                                dispatchedList.Add(nei);
                             }
                         }
                     }
                     openSet = newOpenSet;
                 }
+                yield return new DispatchPlan()
+                {
+                    Formation=minFormation,
+                    AnchorHex=minHex,
+                    AllocatedSpace=dispatchedList,
+                    DesignedWidth=designedWidth
+                };
+            }
+        }
+
+        public class DispatchPlan
+        {
+            public Formation Formation;
+            public Hex AnchorHex;
+            public List<Hex> AllocatedSpace;
+            public int DesignedWidth;
+        }
+
+        public void GetBlockedSetAvailableSet(out HashSet<Hex> blockedSet, out HashSet<Hex> availableSet)
+        {
+            blockedSet = new HashSet<Hex>();
+            
+            for(var i=0; i<Map.Height; i++)
+                for(var j=0; j<Map.Width; j++)
+                {
+                    if(EnemyMat[i, j] > TargetInfluenceThreshold)
+                        blockedSet.Add(Network.HexMat[i, j]);
+                }
+
+            availableSet = new HashSet<Hex>(); // edgeSet
+            foreach(var hex in blockedSet)
+            {
+                foreach(var nei in Graph.Neighbors(hex))
+                {
+                    if(!blockedSet.Contains(nei))
+                        availableSet.Add(nei);
+                }
+            }
+        }
+
+        public IEnumerable<DispatchPlan> GetAttackContourPlan()
+        {
+            // Requires:
+            // ComputeBrigadeMap();
+
+            // A smaller threshold make units move to secure positions to regroup and ready to assualt.
+            // Then a bigger threshold make AI lanuch a converging attack.
+
+            GetBlockedSetAvailableSet(out var blockedSet, out var availableSet);
+
+            var blockedGraph = new BlockedGraph(){Graph=Graph, BlockedSet=blockedSet};
+            
+            var availableFormations = UnitStates.GetBrigadeFormations().Where(formation => FriendlyCountries.Contains(formation.Group.Country)).ToHashSet(); // TODO: de-duplicate?
+
+            return AllocateSpace(availableSet, availableFormations, blockedGraph);
+        }
+
+        public IEnumerable<AIOrder> GetAttackContourOrders()
+        {
+            foreach(var plan in GetAttackContourPlan())
+            {
+                var ss = string.Join(",", plan.AllocatedSpace.Select(h => $"({h.X}, {h.Y})"));
+                Log($"{plan.Formation.Group.DescribeCommand()} is assigned at {plan.AllocatedSpace.Count} hexes (requested {plan.DesignedWidth}): {ss}");
+                // dispatchPlan.Formation.Group.
                 yield return new AIOrder()
                 {
-                    Unit=minFormation.Group,
+                    Unit=plan.Formation.Group,
                     Time=Scenario.Time,
-                    X=minHex.X,
-                    Y=minHex.Y,
+                    X=plan.AnchorHex.X,
+                    Y=plan.AnchorHex.Y,
                     Type=AIOrderType.Attack
                 };
             }
@@ -479,5 +517,16 @@ namespace YYZ.JTS
 
             public float MoveCost(Hex src, Hex dst) => Graph.MoveCost(src, dst);
         }
+
+        public void HierarchyFrontalAttack()
+        {
+            GetBlockedSetAvailableSet(out var blockedSet, out var availableSet);
+            var blockedGraph = new BlockedGraph(){Graph=Graph, BlockedSet=blockedSet};
+
+            
+        }
+
+        public void Log(string s) => Logs.Add(s);
+        // public void ClearLog() => Logs.Clear();
     }
 }

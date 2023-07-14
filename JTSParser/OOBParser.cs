@@ -116,6 +116,25 @@ namespace YYZ.JTS
             }
             return unitSelected;
         }
+
+        public Leader FindLeader()
+        {
+            foreach(var unit in Units)
+            {
+                var leader = unit as Leader;
+                if(leader != null)
+                    return leader;
+            }
+            return null;
+        }
+
+        public string DescribeCommand()
+        {
+            // NB/CWB will report organization and leader name (if exist), but PZC will just report ony name. (At this point OOBParser provide only NB/CWB implematation)
+            var leader = FindLeader();
+            var leaderStr = leader != null ? $"({leader.Name})" : "";
+            return $"{Name}{leaderStr}";
+        }
     }
 
     public class UnitOob : AbstractUnit
