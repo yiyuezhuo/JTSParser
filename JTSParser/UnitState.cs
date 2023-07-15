@@ -61,8 +61,10 @@ namespace YYZ.JTS
     {
         public int XAnchored;
         public int YAnchored;
-        public float XMean;
+        public float XMean; // weighted by strength, fallback to XMeanUnit if strength is 0
         public float YMean;
+        public float XMeanUnit; // average directly on unit position
+        public float YMeanUnit;
         public int IAnchored{get => YAnchored;}
         public int JAnchored{get => XAnchored;}
         public UnitGroup Group{get => (UnitGroup)OobItem;}
@@ -98,6 +100,8 @@ namespace YYZ.JTS
 
             var x = 0f;
             var y = 0f;
+            var xW1 = 0f;
+            var yW1 = 0f;
 
             foreach(var abstractState in AbstractStates)
             {
@@ -109,6 +113,8 @@ namespace YYZ.JTS
                     CurrentStrength += unitState.CurrentStrength;
                     x += unitState.CurrentStrength * unitState.X;
                     y += unitState.CurrentStrength * unitState.Y;
+                    xW1 += unitState.X;
+                    yW1 += unitState.Y;
                     HexPositions.Add(new HexPosition(){X=unitState.X, Y=unitState.Y});
                 }
                 var formation = abstractState as Formation;
@@ -120,14 +126,30 @@ namespace YYZ.JTS
                     x += formation.XMean * formation.CurrentStrength;
                     y += formation.YMean * formation.CurrentStrength;
                     foreach(var hexPosition in formation.HexPositions)
+                    {
                         HexPositions.Add(hexPosition);
+                        xW1 += hexPosition.X;
+                        yW1 += hexPosition.Y;
+                    }
 
                     FlattenStates.AddRange(formation.FlattenStates);
                 }
             }
 
-            XMean = x / CurrentStrength;
-            YMean = y / CurrentStrength;
+            XMeanUnit = xW1 / HexPositions.Count;
+            YMeanUnit = yW1 / HexPositions.Count;
+
+            if(CurrentStrength > 0)
+            {
+                XMean = x / CurrentStrength;
+                YMean = y / CurrentStrength;
+            }
+            else // fallback for strange situation in some scenario
+            {
+                XMean = XMeanUnit;
+                YMean = YMeanUnit;
+            }
+
 
             var minPosition = Utils.MinBy(HexPositions, p => Utils.Distance2(p.X, p.Y, XMean, YMean));
 

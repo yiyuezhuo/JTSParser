@@ -132,9 +132,9 @@ namespace YYZ.JTS
             ExtractLoss(sl);
 
             var filesBeginIndex = GetFilesBeginIndex();
-            MapFile = sl[filesBeginIndex];
-            OobFile = sl[filesBeginIndex + 1];
-            PdtFile = sl[filesBeginIndex + 2];
+            MapFile = sl[filesBeginIndex].Trim();
+            OobFile = sl[filesBeginIndex + 1].Trim();
+            PdtFile = sl[filesBeginIndex + 2].Trim();
 
             var idx = GetDynamicBlockBeginIndex();
             while (sl[idx][0] != '0')

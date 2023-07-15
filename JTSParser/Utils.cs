@@ -11,6 +11,7 @@ namespace YYZ.JTS
         public int I{get => Y;}
         public int J{get => X;}
         public float YCorrected{get => X % 2 == 0 ? Y : Y - 0.5f;}
+        
         public override int GetHashCode()
         {
             int hash = 23;
@@ -32,6 +33,7 @@ namespace YYZ.JTS
     {
         public static T MinBy<T>(IEnumerable<T> l, Func<T, float> f)
         {
+            
             var minValue = float.PositiveInfinity;
             var minEl = default(T);
             foreach(var el in l)
@@ -43,7 +45,25 @@ namespace YYZ.JTS
                     minEl = el;
                 }
             }
-            return minEl;
+            return minEl;   
+        }
+
+        public static int MinIndexBy<T>(IEnumerable<T> l, Func<T, float> f)
+        {
+            var minValue = float.PositiveInfinity;
+            var minIdx = -1;
+            var idx = 0;
+            foreach(var el in l)
+            {
+                var fEl = f(el);
+                if(fEl < minValue)
+                {
+                    minValue = fEl;
+                    minIdx = idx;
+                }
+                idx++;
+            }
+            return minIdx;
         }
 
         public static float Distance2(float x1, float y1, float x2, float y2)
@@ -53,6 +73,6 @@ namespace YYZ.JTS
             return dx*dx + dy*dy;
         }
 
-        public static float Distance(float x1, float y1, float x2, float y2) => MathF.Sqrt(Distance(x1, y1, x2, y2));
+        public static float Distance(float x1, float y1, float x2, float y2) => MathF.Sqrt(Distance2(x1, y1, x2, y2));
     }
 }

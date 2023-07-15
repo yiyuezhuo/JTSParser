@@ -98,7 +98,7 @@ namespace YYZ.PathFinding
                 }
 
                 openSet.Remove(current);
-                foreach (IndexT neighbor in graph.Neighbors(current))
+                foreach (IndexT neighbor in graph.Neighbors(current)) // TODO: Switch to graph.NeighborsWithMoveCost API to prevent hash calculation 
                 {
                     float tentative_gScore = TryGet(gScore, current) + graph.MoveCost(current, neighbor);
                     if (tentative_gScore < TryGet(gScore, neighbor))
@@ -116,7 +116,13 @@ namespace YYZ.PathFinding
             // return new List<IndexT>(); // failure
         }
 
-        public class DijkstraResult
+        public static AStarResult<IndexT> AStar3(IGraph<IndexT> graph, IndexT src, IndexT dst)
+        {
+            var cost = AStar2(graph, src, dst, out var path);
+            return new AStarResult<IndexT>(){Cost=cost, Path=path};
+        }
+
+        public class DijkstraResult // TODO: Move it outside of the static class
         {
             public Dictionary<IndexT, Path> nodeToPath;
             public IndexT pickedNode;
@@ -393,6 +399,20 @@ namespace YYZ.PathFinding
             return set.ToList();
         }
     }
+
+    public class AStarResult<IndexT> // src -> node_1 -> ... -> dst
+    {
+        public float Cost;
+        public List<IndexT> Path;
+
+        public AStarResult<IndexT> Reverse()
+        {
+            var path = new List<IndexT>(Path);
+            path.Reverse();
+            return new AStarResult<IndexT>(){Cost=Cost, Path=path};
+        }
+    }
+
 
     /*
     public class GraphSegmentation<IndexT>

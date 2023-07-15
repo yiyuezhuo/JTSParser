@@ -7,16 +7,45 @@ using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using System.Diagnostics;
 
+class JTSEnvironment
+{
+    public string MapFolder;
+    public string OOBFolder;
+    public string ScenarioFolder;
+    public JTSParser Parser;
+    public void Load(string scenarioName, out string scenarioStr, out string OOBStr, out string mapStr)
+    {
+        scenarioStr = File.ReadAllText(Path.Join(ScenarioFolder, scenarioName));
+        var scenario = Parser.ParseScenario(scenarioStr);
+        OOBStr = File.ReadAllText(Path.Join(OOBFolder, scenario.OobFile));
+        mapStr = File.ReadAllText(Path.Join(MapFolder, scenario.MapFile));
+    }
+}
+
 class Program
 {
     static void Main(string[] args)
     {
         Console.WriteLine("Hello, World!");
 
-        
         var nbParser = new JTSParser(JTSSeries.NapoleonicBattle);
         var cwbParser = new JTSParser(JTSSeries.CivilWarBattle);
         var pzcParser = new JTSParser(JTSSeries.PanzerCampaign);
+
+        string scenarioStr, OOBStr, mapStr;
+        InfluenceController2 controller;
+
+        var nbPen = new JTSEnvironment(){ScenarioFolder=@"E:\JTSGames\Pen_spain\Scenarios", MapFolder=@"E:\JTSGames\Pen_spain\Maps", OOBFolder=@"E:\JTSGames\Pen_spain\OOBs", Parser=nbParser};
+        nbPen.Load("167.Vitoria1_21June13.scn", out scenarioStr, out OOBStr, out mapStr);
+
+        controller = new InfluenceController2();
+        // controller.FriendlyCountries = new HashSet<string>(){"French"};
+        controller.Extract("NB", scenarioStr, mapStr, OOBStr);
+        controller.AssignGraphByStaticData(StaticData.NBParameterData, "Column Infantry Movement Costs");
+
+        var divider = new HexGraphDivider(){Graph=controller.Graph, RoadSystem=controller.Map.CurrentTerrainSystem.Road};
+        var segGraph = divider.GetGraph();
+        Console.WriteLine(segGraph);
 
         Console.WriteLine(nbParser.ParseScenario(File.ReadAllText(@"E:\JTSGames\Pen_spain\Saves\battle_loss.btl")));
         Console.WriteLine(cwbParser.ParseScenario(File.ReadAllText(@"E:\JTSGames\CampaignAntietam\Saves\battle_loss.btl")));
@@ -25,7 +54,9 @@ class Program
         var oobStr = File.ReadAllText(@"E:\JTSGames\Pen_spain\OOBs\Coruna.oob");
         // var oobStr = File.ReadAllText(@"E:\JTSGames\CampaignAntietam\OOBs\1st Bull Run.oob");
         // var scenarioStr = File.ReadAllText(@"E:\JTSGames\CampaignAntietam\Scenarios\002 1BR_Bull Run (Historical).scn");
-        var scenarioStr = File.ReadAllText(@"E:\JTSGames\Pen_spain\Scenarios\011.Coruna4_BrAI_test.scn");
+        scenarioStr = File.ReadAllText(@"E:\JTSGames\Pen_spain\Scenarios\011.Coruna4_BrAI_test.scn");
+
+
 
         // var units = JTSOobParser.ParseUnits(s);
         /*
@@ -48,7 +79,7 @@ class Program
         // Console.WriteLine('9' - '0');
         // Console.WriteLine('a' - '0');
 
-        var mapStr = File.ReadAllText(@"E:\JTSGames\Pen_spain\Maps\Coruna.map");
+        mapStr = File.ReadAllText(@"E:\JTSGames\Pen_spain\Maps\Coruna.map");
         var mapFile = nbParser.ParseMap(mapStr);
 
         // var mapFile = MapFile.Parse(mapStr);
@@ -85,7 +116,7 @@ class Program
         var limitNetwork = graph.GetLimitNetwork(objectiveHexes);
         Console.WriteLine(limitNetwork);
 
-        var controller = new InfluenceController2(){FriendlyCountries = new HashSet<string>(){"French"}};
+        controller = new InfluenceController2(){FriendlyCountries = new HashSet<string>(){"French"}};
         controller.Extract("NB", scenarioStr, mapStr, oobStr);
         controller.AssignGraphByStaticData(StaticData.NBParameterData, "Column Infantry Movement Costs");
 

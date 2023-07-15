@@ -197,8 +197,9 @@ namespace YYZ.JTS
 
     public class EdgeTerrainSystem // In general, road and river are 2 different systems.
     {
-        public Dictionary<string, EdgeTerrain> Name2Terrain;
+        public Dictionary<string, EdgeTerrain> Name2Terrain = new();
         public List<string> Names;
+        public List<EdgeTerrain> Terrains;
         /*
         public EdgeTerrainSystem(Dictionary<string, EdgeTerrain> name2Terrain)
         {
@@ -208,13 +209,16 @@ namespace YYZ.JTS
         public EdgeTerrainSystem(IEnumerable<string> names)
         {
             this.Names = names.ToList();
-            this.Name2Terrain = names.ToDictionary(x=>x, x=>new EdgeTerrain(x));
+            this.Terrains = this.Names.Select(name => new EdgeTerrain(name)).ToList();
+            for(var i=0; i<Count; i++)
+                Name2Terrain[this.Names[i]] = Terrains[i];
+            // this.Name2Terrain = names.ToDictionary(x=>x, x=>new EdgeTerrain(x));
         }
         public bool TryGetValue(string s, out EdgeTerrain o) => Name2Terrain.TryGetValue(s, out o);
         public EdgeTerrain GetValue(string s) => Name2Terrain[s];
         // public bool ContainsKey(string s) => Name2Terrain.ContainsKey(s);
-        public int Count{get => Name2Terrain.Count;}
-        public IEnumerable<EdgeTerrain> Terrains{get => Name2Terrain.Values;}
+        public int Count{get => Terrains.Count;}
+        // public IEnumerable<EdgeTerrain> Terrains{get => Name2Terrain.Values;}
         public override string ToString()
         {
             var ts = string.Join(",", Terrains);
