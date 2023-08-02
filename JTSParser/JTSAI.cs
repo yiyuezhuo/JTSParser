@@ -676,7 +676,7 @@ namespace YYZ.JTS
             // Create area for remaining non-blocking nodes
             foreach(var node in Graph.Nodes())
             {
-                if(!SegmentMap.ContainsKey(node) && Graph.Neighbors(node).Count() > 0)
+                if(!SegmentMap.ContainsKey(node) && !Graph.IsIsolated(node))
                 {
                     FloodingSegment(node);
                 }
@@ -714,8 +714,9 @@ namespace YYZ.JTS
                         scores[i] += 0.34f;
                     }
                 }
+                // TODO: Consider terrain BaseCost and road level?
                 
-                var minIdx = Utils.MinIndexBy(scores, x => x);
+                var minIdx = Utils.MinIndexBy(scores, x => -x);
                 segment.Center = nodes[minIdx];
             }
         }
@@ -757,8 +758,11 @@ namespace YYZ.JTS
                     {
                         if(SegmentMap.TryGetValue(neiNode, out var segmentNei))
                         {
-                            segment.Neighbors.Add(segmentNei);
-                            segmentNei.Neighbors.Add(segment);
+                            if(segmentNei != segment)
+                            {
+                                segment.Neighbors.Add(segmentNei);
+                                segmentNei.Neighbors.Add(segment);
+                            }
                         }
                         else
                         {

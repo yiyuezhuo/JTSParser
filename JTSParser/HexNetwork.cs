@@ -271,6 +271,11 @@ namespace YYZ.JTS
             }
         }
 
+        public bool IsIsolated(Hex hex)
+        {
+            return Distance.BaseCost(hex.Terrain) == 0 && (hex.EdgeMap.Count == 0 || !hex.EdgeMap.Values.Any(edge => edge.HasRoad()));
+        }
+
         public float MoveCost(Hex src, Hex dst)
         {
             // dst is assumed to be in the EdgeMap
@@ -303,7 +308,7 @@ namespace YYZ.JTS
 
         public IEnumerable<Hex> Nodes() => Network.Nodes();
 
-        public SparseProxyGraph GetLimitNetwork(List<Hex> selectedHexes)
+        public SparseProxyGraph GetSparseProxyGraph(List<Hex> selectedHexes)
         {
             var hexSets = selectedHexes.ToHashSet();
             var originMap = selectedHexes.ToDictionary(h =>h, h => new ProxyHex(){X = h.X, Y=h.Y});

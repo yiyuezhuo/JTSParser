@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JTSParser", "JTSParser\JTSP
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShowCase", "ShowCase\ShowCase.csproj", "{AA73C1F5-88BE-4A5C-8AF2-4F367DBDC8C5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JTSNotebook", "JTSNotebook\JTSNotebook.csproj", "{6D8B9BA4-705D-4EA1-9456-1C72BD624A70}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{AA73C1F5-88BE-4A5C-8AF2-4F367DBDC8C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AA73C1F5-88BE-4A5C-8AF2-4F367DBDC8C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AA73C1F5-88BE-4A5C-8AF2-4F367DBDC8C5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6D8B9BA4-705D-4EA1-9456-1C72BD624A70}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6D8B9BA4-705D-4EA1-9456-1C72BD624A70}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6D8B9BA4-705D-4EA1-9456-1C72BD624A70}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6D8B9BA4-705D-4EA1-9456-1C72BD624A70}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

@@ -1,6 +1,7 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using System;
 using YYZ.JTS;
+using YYZ.PathFinding;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -46,6 +47,14 @@ class Program
         var divider = new HexGraphDivider(){Graph=controller.Graph, RoadSystem=controller.Map.CurrentTerrainSystem.Road};
         var segGraph = divider.GetGraph();
         Console.WriteLine(segGraph);
+
+        {
+            var src = segGraph.SegmentMap[controller.Network.HexMat[10, 10]];
+            var dst = segGraph.SegmentMap[controller.Network.HexMat[50, 50]];
+            var res = PathFinding<NetworkSegment>.AStar3(segGraph, src, dst);
+            Console.WriteLine(res);
+        }
+
 
         Console.WriteLine(nbParser.ParseScenario(File.ReadAllText(@"E:\JTSGames\Pen_spain\Saves\battle_loss.btl")));
         Console.WriteLine(cwbParser.ParseScenario(File.ReadAllText(@"E:\JTSGames\CampaignAntietam\Saves\battle_loss.btl")));
@@ -113,7 +122,7 @@ class Program
         Console.WriteLine($"After: {fullMap} | {subMap}");
         
         var objectiveHexes = scenario.Objectives.Select(o => network.HexMat[o.I, o.J]).ToList();
-        var limitNetwork = graph.GetLimitNetwork(objectiveHexes);
+        var limitNetwork = graph.GetSparseProxyGraph(objectiveHexes);
         Console.WriteLine(limitNetwork);
 
         controller = new InfluenceController2(){FriendlyCountries = new HashSet<string>(){"French"}};
