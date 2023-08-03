@@ -53,6 +53,9 @@ namespace YYZ.JTS
         public Hex[,] HexMat;
         public int Height;
         public int Width;
+        public TerrainSystem TerrainSystem;
+
+        // public MapFile MapFile;
 
         public Hex GetHex(Hex src, HexDirection direction) // TODO: de-dupcalite
         {
@@ -116,7 +119,7 @@ namespace YYZ.JTS
                     }
                 }
 
-            return new HexNetwork(){Height=map.Height, Width=map.Width, HexMat=hexMat};
+            return new HexNetwork(){Width=map.Width, Height=map.Height, TerrainSystem=map.CurrentTerrainSystem, HexMat=hexMat};
         }
 
         bool HasEdge(EdgeLayer layer, int i, int j, HexDirection direction) => layer.Defined && layer.Data[i, j].ByDirection(direction);
@@ -194,14 +197,11 @@ namespace YYZ.JTS
             return ret;
         }
 
-
         public override string ToString()
         {
             return $"HexNetwork(Height={HexMat.GetLength(0)}, Width={HexMat.GetLength(1)})";
         }
     }
-
-
 
     public class TerrainSystem
     {

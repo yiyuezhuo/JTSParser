@@ -590,7 +590,7 @@ namespace YYZ.JTS
         public IEnumerable<NetworkSegment> Nodes() => Segments;
         public override string ToString()
         {
-            return $"SegmentGraph({Segments.Count}, {SegmentMap.Count})";
+            return $"SegmentGraph(Nodes:[{Segments.Count}], Edges:[{SegmentMap.Count}])";
         }
     }
 
