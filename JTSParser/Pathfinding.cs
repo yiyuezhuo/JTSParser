@@ -391,10 +391,16 @@ namespace YYZ.PathFinding
         }
     }
 
-    public class Path<IndexT>
+    public interface IPath<IndexT>
     {
-        public IndexT prev;
-        public float cost;
+        public IndexT prev{get;}
+        public float cost{get;}
+    }
+
+    public class Path<IndexT>: IPath<IndexT>
+    {
+        public IndexT prev{get;set;}
+        public float cost{get;set;}
 
         public override string ToString() => $"Path({prev}, {cost})";
     }
@@ -442,9 +448,9 @@ namespace YYZ.PathFinding
         float Cost{get;}
     }
 
-    public interface IDijkstraOutput<T>: IEnumerable<KeyValuePair<T, Path<T>>>
+    public interface IDijkstraOutput<T>: IEnumerable<KeyValuePair<T, IPath<T>>>
     {
-        bool TryGetValue(T key, out Path<T> ret);
+        bool TryGetValue(T key, out IPath<T> ret);
     }
 
     public class AStarOutput<T>: IAStarOutput<T>
@@ -470,9 +476,17 @@ namespace YYZ.PathFinding
     {
         public DijkstraResult<T> Result;
 
-        public bool TryGetValue(T key, out Path<T> ret) => Result.nodeToPath.TryGetValue(key, out ret);
+        public bool TryGetValue(T key, out IPath<T> ret)
+        {
+            // return Result.nodeToPath.TryGetValue(key, out ret);
+            
+            var b = Result.nodeToPath.TryGetValue(key, out var ret2);
+            ret = ret2;
+            return b;
+            
+        }
 
-        public IEnumerator<KeyValuePair<T, Path<T>>> GetEnumerator() => Result.nodeToPath.GetEnumerator();
+        public IEnumerator<KeyValuePair<T, IPath<T>>> GetEnumerator() => Result.nodeToPath.Select(KV => new KeyValuePair<T, IPath<T>>(KV.Key, KV.Value)).GetEnumerator();
         IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
     }
 
@@ -482,7 +496,7 @@ namespace YYZ.PathFinding
         public Func<IT, ET> I2E;
         public Func<ET, IT> E2I;
 
-        public bool TryGetValue(ET key, out Path<ET> value)
+        public bool TryGetValue(ET key, out IPath<ET> value)
         {
             var ret = Result.nodeToPath.TryGetValue(E2I(key), out var p);
             value = AsET(p);
@@ -491,7 +505,7 @@ namespace YYZ.PathFinding
 
         Path<ET> AsET(Path<IT> p) => p == null ? null : new Path<ET>(){cost=p.cost, prev=I2E(p.prev)};
 
-        public IEnumerator<KeyValuePair<ET, Path<ET>>> GetEnumerator() => Result.nodeToPath.Select(KV => new KeyValuePair<ET, Path<ET>>(I2E(KV.Key), AsET(KV.Value))).GetEnumerator();
+        public IEnumerator<KeyValuePair<ET, IPath<ET>>> GetEnumerator() => Result.nodeToPath.Select(KV => new KeyValuePair<ET, IPath<ET>>(I2E(KV.Key), AsET(KV.Value))).GetEnumerator();
         IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
     }
 
@@ -527,21 +541,37 @@ namespace YYZ.PathFinding
     public interface IPathFinder<T>
     {
         IAStarOutput<T> AStar(T src, T dst);
-        IDijkstraOutput<T> Dijkstra(IEnumerable<T> srcIter, Func<T, bool> Predicate, float budget);
+        // IDijkstraOutput<T> Dijkstra(IEnumerable<T> srcIter, Func<T, bool> Predicate, float budget);
+
+        IDijkstraOutput<T> GetReachable(T src, float budget);
+
+        /*
+        public IDijkstraOutput<T> GetReachable(T src, float budget)
+        {
+            
+            var srcIter = new T[] { src };
+            return Dijkstra(srcIter, PathFinding<T>.DummyFalsePredicate, budget);
+        }
+
+        public IDijkstraOutput<T> ExploreNearestTarget(T src, Func<T, bool> Predicate)
+        {
+            var srcIter = new T[] { src };
+            var result = Dijkstra(srcIter, Predicate, float.PositiveInfinity);
+            return result;
+        }
+        */
+    }
+
+    public abstract class BasePathFinder<T>: IPathFinder<T>
+    {
+        public abstract IAStarOutput<T> AStar(T src, T dst);
+        public abstract IDijkstraOutput<T> Dijkstra(IEnumerable<T> srcIter, Func<T, bool> Predicate, float budget);
 
         public IDijkstraOutput<T> GetReachable(T src, float budget)
         {
             
             var srcIter = new T[] { src };
             return Dijkstra(srcIter, PathFinding<T>.DummyFalsePredicate, budget);
-
-            /*
-            var d = new Dictionary<string, int>();
-            foreach(var KV in d)
-            {
-
-            }
-            */
         }
 
         public IDijkstraOutput<T> ExploreNearestTarget(T src, Func<T, bool> Predicate)
@@ -552,30 +582,30 @@ namespace YYZ.PathFinding
         }
     }
 
-    public class DirectGraphPathFinder<T>: IPathFinder<T>
+    public class DirectGraphPathFinder<T>: BasePathFinder<T>
     {
         public IGraph<T> Graph;
 
-        public IAStarOutput<T> AStar(T src, T dst) => new AStarOutput<T>(){Result=PathFinding<T>.AStar3(Graph, src, dst)};
-        public IDijkstraOutput<T> Dijkstra(IEnumerable<T> srcIter, Func<T, bool> Predicate, float budget) => new DijkstraOutput<T>(){Result=PathFinding<T>.Dijkstra(Graph, srcIter, Predicate, budget)};
+        public override IAStarOutput<T> AStar(T src, T dst) => new AStarOutput<T>(){Result=PathFinding<T>.AStar3(Graph, src, dst)};
+        public override IDijkstraOutput<T> Dijkstra(IEnumerable<T> srcIter, Func<T, bool> Predicate, float budget) => new DijkstraOutput<T>(){Result=PathFinding<T>.Dijkstra(Graph, srcIter, Predicate, budget)};
         // public DijkstraResult<T> GetReachable(T src, float budget) => 
     }
     
 
-    public class MappedGraphPathFinder<IT, ET>: IPathFinder<ET>
+    public class MappedGraphPathFinder<IT, ET>: BasePathFinder<ET>
     {
         public IGraph<IT> Graph;
 
         public Func<IT, ET> I2E;
         public Func<ET, IT> E2I;
 
-        public IAStarOutput<ET> AStar(ET src, ET dst)
+        public override IAStarOutput<ET> AStar(ET src, ET dst)
         {
             var result = PathFinding<IT>.AStar3(Graph, E2I(src), E2I(dst));
             return new AStarOutputTransformed<IT, ET>(){Result=result, Transform=I2E};
         }
 
-        public IDijkstraOutput<ET> Dijkstra(IEnumerable<ET> srcIter, Func<ET, bool> Predicate, float budget)
+        public override IDijkstraOutput<ET> Dijkstra(IEnumerable<ET> srcIter, Func<ET, bool> Predicate, float budget)
         {
             var result = PathFinding<IT>.Dijkstra(Graph, srcIter.Select(E2I), (i) => Predicate(I2E(i)), budget); // prevent Predicate or I2E call for special case like Reachable?
             return new DijkstraOutputTransformed<IT, ET>(){Result=result, I2E=I2E, E2I=E2I};
@@ -659,4 +689,85 @@ namespace YYZ.PathFinding
             return new FrozenGraph<ET>(){e2iMap=e2iMap, i2eMap=i2eMap, nodes=nodes, estimateCoef=estimateCoef};
         }
     }
+
+    public class FrozenGraph2D<ET>: IPathFinder<ET>
+    {
+        PathFinding2.Graph2D Graph;
+        Dictionary<ET, int> e2iMap;
+        List<ET> i2eMap;
+        public ET I2E(int i) => i == -1 ? default(ET) : i2eMap[i];
+        public int E2I(ET e) => e2iMap[e];
+        
+        public class AStarOutput: List<ET>, IAStarOutput<ET>
+        {
+            public float Cost{get;set;}
+        }
+
+        public class DijkstraOutput: Dictionary<ET, IPath<ET>>, IDijkstraOutput<ET>
+        {
+        }
+
+        public IAStarOutput<ET> AStar(ET src, ET dst)
+        {
+            (var cost, var path) = Graph.AStar(E2I(src), E2I(dst));
+            var ret = new AStarOutput(){Cost=cost};
+            ret.AddRange(path.Select(I2E));
+            return ret;
+        }
+
+        public IDijkstraOutput<ET> GetReachable(ET src, float budget)
+        {
+            var dict = Graph.Dijkstra(new int[]{E2I(src)}, budget);
+            var ret = new DijkstraOutput();
+
+            foreach((var i, var arrow) in dict)
+                ret[I2E(i)] = new Path<ET>(){cost=arrow.Cost, prev=I2E(arrow.Prev)};
+
+            return ret;
+        }
+
+        public static IPathFinder<ET> GetPathFinder(IGraphEnumerable<ET> graph, Func<ET, (float, float)> embeddingMap, float estimateCoef=1f)
+        {
+            var nodes = new List<PathFinding2.Node2D>();
+            var e2iMap = new Dictionary<ET, int>();
+            var i2eMap = new List<ET>();
+
+            var idx = 0;
+            foreach(var node in graph.Nodes())
+            {
+                // var nodeTransformed = transform(node);
+                (var x, var y) = embeddingMap(node);
+                var nodeTransformed = new PathFinding2.Node2D(){X=x, Y=y};
+
+                nodes.Add(nodeTransformed);
+                e2iMap[node] = idx;
+                i2eMap.Add(node);
+                
+                idx++;
+            }
+
+            foreach(var node in graph.Nodes())
+            {
+                var edges = new List<PathFinding2.Edge2D>();
+                var nodeI = e2iMap[node];
+
+                foreach(var neiNode in graph.Neighbors(node))
+                {
+                    var neiNodeI = e2iMap[neiNode];
+
+                    var edge = new PathFinding2.Edge2D(){Cost=graph.MoveCost(node, neiNode), Target=neiNodeI};
+                    edges.Add(edge);
+                }
+                nodes[nodeI].Edges = edges.ToArray();
+            }
+
+            var baseGraph = new PathFinding2.Graph2D(){Nodes=nodes.ToArray(), EstimateCostCoef=estimateCoef};
+
+            return new FrozenGraph2D<ET>(){Graph=baseGraph, e2iMap=e2iMap, i2eMap=i2eMap};
+        }
+
+    }
+
+    // int graph and its family
+
 }

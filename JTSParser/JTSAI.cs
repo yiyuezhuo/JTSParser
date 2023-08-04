@@ -5,6 +5,8 @@ namespace YYZ.JTS
     using System.Collections.Generic;
     using System;
     using System.Linq;
+    using YYZ.PathFinding2;
+
     // using Microsoft.Extentions.Log;
 
 
@@ -48,7 +50,7 @@ namespace YYZ.JTS
         public HexNetwork Network;
 
         public DistanceGraph DynamicGraph;
-        public FrozenGraph<Hex> StaticGraph;
+        // public FrozenGraph<Hex> StaticGraph;
         IPathFinder<Hex> StaticPathFinder;
 
         public IGraphEnumerable<Hex> FrozenGraph;
@@ -98,8 +100,12 @@ namespace YYZ.JTS
             var param = ParameterData.Parse(parameterDataStr);
             distance.Extract(Map.CurrentTerrainSystem, param.Data[movementCostName]);
             DynamicGraph = new DistanceGraph(){Network=Network, Distance=distance};
-            StaticGraph = FrozenGraph<Hex>.GetGraph(DynamicGraph, hex => (hex.X, hex.Y));
-            StaticPathFinder = StaticGraph.GetPathFinder();
+
+            /*
+            var staticGraph = FrozenGraph<Hex>.GetGraph(DynamicGraph, hex => (hex.X, hex.Y));
+            StaticPathFinder = staticGraph.GetPathFinder();
+            */
+            StaticPathFinder = FrozenGraph2D<Hex>.GetPathFinder(DynamicGraph, hex => (hex.X, hex.Y));
         }
 
         public float[,] Zeros() => new float[Map.Height, Map.Width];
