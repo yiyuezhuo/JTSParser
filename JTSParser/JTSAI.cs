@@ -40,13 +40,18 @@ namespace YYZ.JTS
         {
             var fl = string.Join(",", FriendlyCountries);
             // var el = string.Join(",", EnemyCountries);
-            return $"InfluenceController2([{fl}], {Scenario}, {Map}, {Network}, {Graph}, {RootOOBUnit}, {UnitStates})";
+            return $"InfluenceController2([{fl}], {Scenario}, {Map}, {Network}, {DynamicGraph}, {RootOOBUnit}, {UnitStates})";
         }
 
         public JTSScenario Scenario;
         public MapFile Map;
         public HexNetwork Network;
-        public DistanceGraph Graph;
+
+        public DistanceGraph DynamicGraph;
+        public FrozenGraph<Hex> StaticGraph;
+        IPathFinder<Hex> StaticPathFinder;
+
+        public IGraphEnumerable<Hex> FrozenGraph;
         public UnitGroup RootOOBUnit;
         public JTSUnitStates UnitStates;
         public JTSBridgeStates BridgeStates;
@@ -92,7 +97,9 @@ namespace YYZ.JTS
             var distance = new DistanceSystem(){Name=movementCostName};
             var param = ParameterData.Parse(parameterDataStr);
             distance.Extract(Map.CurrentTerrainSystem, param.Data[movementCostName]);
-            Graph = new DistanceGraph(){Network=Network, Distance=distance};
+            DynamicGraph = new DistanceGraph(){Network=Network, Distance=distance};
+            StaticGraph = FrozenGraph<Hex>.GetGraph(DynamicGraph, hex => (hex.X, hex.Y));
+            StaticPathFinder = StaticGraph.GetPathFinder();
         }
 
         public float[,] Zeros() => new float[Map.Height, Map.Width];
@@ -105,24 +112,38 @@ namespace YYZ.JTS
             {
                 var pt = objective.VP + (objective.VPPerTurn1 + objective.VPPerTurn2) * 5; // TODO: Use a formula with more discretion
                 var vpHex = Network.HexMat[objective.I, objective.J];
-                var res = PathFinding.PathFinding<Hex>.GetReachable(Graph, vpHex, VPBudget);
+                /*
+                var res = PathFinding.PathFinding<Hex>.GetReachable(DynamicGraph, vpHex, VPBudget);
                 foreach((var hex, var path) in res.nodeToPath)
                 {
                     VPMat[hex.I, hex.J] += pt * MathF.Exp(-VPDecay * path.cost);
                 }
+                */
+                var res = StaticPathFinder.GetReachable(vpHex, VPBudget);
+                foreach((var hex, var path) in res)
+                {
+                    VPMat[hex.I, hex.J] += pt * MathF.Exp(-VPDecay * path.cost);
+                }
+
             }
         }
 
         public class StampRecord
         {
-            public PathFinding.PathFinding<Hex>.DijkstraResult Result;
+            public PathFinding.IDijkstraOutput<Hex> Result;
             public float Friendly;
             public float Enemy;
         }
 
-        public static void Stamp(PathFinding.PathFinding<Hex>.DijkstraResult result, float[,] mat, float source, float decay)
+        public static void Stamp(IDijkstraOutput<Hex> result, float[,] mat, float source, float decay)
         {
+            /*
             foreach((var node, var path) in result.nodeToPath)
+            {
+                mat[node.I, node.J] += source * MathF.Exp(-decay * path.cost);    
+            }
+            */
+            foreach((var node, var path) in result)
             {
                 mat[node.I, node.J] += source * MathF.Exp(-decay * path.cost);    
             }
@@ -139,7 +160,8 @@ namespace YYZ.JTS
                 var hex = Network.HexMat[brigadeFormation.IAnchored, brigadeFormation.JAnchored];
                 if(!relatedHexMap.TryGetValue(hex, out var record))
                 {
-                    var res = PathFinding.PathFinding<Hex>.GetReachable(Graph, hex, StrengthBudget);
+                    // var res = PathFinding.PathFinding<Hex>.GetReachable(DynamicGraph, hex, StrengthBudget);
+                    var res = StaticPathFinder.GetReachable(hex, StrengthBudget);
                     record = relatedHexMap[hex] = new StampRecord(){Result=res};
                 }
                 var friendly = FriendlyCountries.Contains(brigadeFormation.OobItem.Country);
@@ -167,7 +189,8 @@ namespace YYZ.JTS
             FriendlyMat = Zeros();
             EnemyMat = Zeros();
 
-            var hex2pathXUnits = new Dictionary<Hex, Tuple<PathFinding.PathFinding<Hex>.DijkstraResult, List<UnitState>>>();
+            // var hex2pathXUnits = new Dictionary<Hex, Tuple<PathFinding.DijkstraResult<Hex>, List<UnitState>>>();
+            var hex2pathXUnits = new Dictionary<Hex, (IDijkstraOutput<Hex>, List<UnitState>)>();
             foreach(var state in UnitStates.UnitStates)
             {
                 var hex = Network.HexMat[state.I, state.J];
@@ -177,9 +200,10 @@ namespace YYZ.JTS
                 }
                 else
                 {
-                    var res = PathFinding.PathFinding<Hex>.GetReachable(Graph, hex, StrengthBudget);
+                    // var res = PathFinding.PathFinding<Hex>.GetReachable(DynamicGraph, hex, StrengthBudget);
+                    var res = StaticPathFinder.GetReachable(hex, StrengthBudget);
                     var t2 = new List<UnitState>(){state};
-                    hex2pathXUnits[hex] = new (res, t2);
+                    hex2pathXUnits[hex] = (res, t2);
                 }
             }
 
@@ -189,7 +213,13 @@ namespace YYZ.JTS
                 {
                     var friendly = FriendlyCountries.Contains(state.OobItem.Country);
                     var mat = friendly ? FriendlyMat : EnemyMat;
+                    /*
                     foreach((var node, var path) in pathFindingRes.nodeToPath)
+                    {
+                        mat[node.I, node.J] += state.CurrentStrength * MathF.Exp(-FriendlyDecay * path.cost);    
+                    }
+                    */
+                    foreach((var node, var path) in pathFindingRes)
                     {
                         mat[node.I, node.J] += state.CurrentStrength * MathF.Exp(-FriendlyDecay * path.cost);    
                     }
@@ -315,7 +345,7 @@ namespace YYZ.JTS
 
         public class ContourCache
         {
-            public PathFinding<Hex>.DijkstraResult Result;
+            public IDijkstraOutput<Hex> Result;
             public Hex Center;
         }
 
@@ -326,7 +356,8 @@ namespace YYZ.JTS
             foreach(var formation in availableFormations)
             {
                 var hex = Network.HexMat[formation.IAnchored, formation.JAnchored];
-                var res = PathFinding<Hex>.GetReachable(graphModified, hex, StrengthBudget);
+                // var res = PathFinding<Hex>.GetReachable(graphModified, hex, StrengthBudget);
+                var res = StaticPathFinder.GetReachable(hex, StrengthBudget);
                 cacheMap[formation] = new ContourCache()
                 {
                     Result=res, Center=hex
@@ -343,7 +374,8 @@ namespace YYZ.JTS
                     var cache = cacheMap[formation];
                     foreach(var hex in availableSet)
                     {
-                        if(cache.Result.nodeToPath.TryGetValue(hex, out var path))
+                        // if(cache.Result.nodeToPath.TryGetValue(hex, out var path))
+                        if(cache.Result.TryGetValue(hex, out var path))
                         {
                             if(path.cost < minCost)
                             {
@@ -371,7 +403,7 @@ namespace YYZ.JTS
                     {
                         if(dispatchedList.Count >= designedWidth)
                             break;
-                        foreach(var nei in Graph.Neighbors(hex))
+                        foreach(var nei in DynamicGraph.Neighbors(hex))
                         {
                             if(dispatchedList.Count >= designedWidth)
                                 break;
@@ -422,7 +454,7 @@ namespace YYZ.JTS
             availableSet = new HashSet<Hex>(); // edgeSet
             foreach(var hex in blockedSet)
             {
-                foreach(var nei in Graph.Neighbors(hex))
+                foreach(var nei in DynamicGraph.Neighbors(hex))
                 {
                     if(!blockedSet.Contains(nei))
                         availableSet.Add(nei);
@@ -440,7 +472,7 @@ namespace YYZ.JTS
 
             GetBlockedSetAvailableSet(out var blockedSet, out var availableSet);
 
-            var blockedGraph = new BlockedGraph(){Graph=Graph, BlockedSet=blockedSet};
+            var blockedGraph = new BlockedGraph(){Graph=DynamicGraph, BlockedSet=blockedSet};
             
             var availableFormations = UnitStates.GetBrigadeFormations().Where(formation => FriendlyCountries.Contains(formation.Group.Country)).ToHashSet(); // TODO: de-duplicate?
 
@@ -498,7 +530,7 @@ namespace YYZ.JTS
         {
             GetBlockedSetAvailableSet(out var blockedSet, out var availableSet);
 
-            var blockedGraph = new BlockedGraph(){Graph=Graph, BlockedSet=blockedSet};
+            var blockedGraph = new BlockedGraph(){Graph=DynamicGraph, BlockedSet=blockedSet};
 
             var activeFormations = new List<Formation>();
             /*

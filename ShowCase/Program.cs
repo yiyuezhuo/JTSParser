@@ -27,6 +27,41 @@ class Program
 {
     static void Main(string[] args)
     {
+        var mapStr = File.ReadAllText(@"E:\JTSGames\Pen_spain\Maps\Vitoria.map");
+        var oobStr = File.ReadAllText(@"E:\JTSGames\Pen_spain\OOBs\Vitoria.oob");
+        var scenarioStr = File.ReadAllText(@"E:\JTSGames\Pen_spain\Scenarios\167.Vitoria1_21June13.scn");
+        
+        var controller = new InfluenceController2()
+        {
+            FriendlyCountries = new HashSet<string>() { "French" }
+        };
+        controller.Extract("NB", scenarioStr, mapStr, oobStr);
+        controller.AssignGraphByStaticData(StaticData.NBParameterData, "Column Infantry Movement Costs");
+        // controller.ToString()
+
+        controller.VPDecay = 0.05f;
+        controller.FriendlyDecay = 0.1f;
+        controller.EnemyDecay = 0.1f;
+
+        controller.TargetInfluenceThreshold = 1750;
+
+        controller.ComputeVPMap();
+        controller.ComputeBrigadeMap();
+        controller.ComputeDerivedMap();
+
+        controller.VPDecay = 0.05f;
+        controller.FriendlyDecay = 0.1f;
+        controller.EnemyDecay = 0.1f;
+
+        controller.TargetInfluenceThreshold = 1750;
+        controller.StrengthBudget = 100;
+
+        var orders = controller.GetHierarchyFrontalAttackOrders().ToList();
+        Console.WriteLine(orders.Count);
+    }
+
+    static void Main2(string[] args)
+    {
         Console.WriteLine("Hello, World!");
 
         var nbParser = new JTSParser(JTSSeries.NapoleonicBattle);
@@ -44,7 +79,7 @@ class Program
         controller.Extract("NB", scenarioStr, mapStr, OOBStr);
         controller.AssignGraphByStaticData(StaticData.NBParameterData, "Column Infantry Movement Costs");
 
-        var divider = new HexGraphDivider(){Graph=controller.Graph, RoadSystem=controller.Map.CurrentTerrainSystem.Road};
+        var divider = new HexGraphDivider(){Graph=controller.DynamicGraph, RoadSystem=controller.Map.CurrentTerrainSystem.Road};
         var segGraph = divider.GetGraph();
         Console.WriteLine(segGraph);
 
@@ -111,6 +146,7 @@ class Program
         {
             // Console.WriteLine(string.Join(",", road.Select(x => $"({x.X}, {x.Y})")));
         }
+        
 
         var mapFullStr = File.ReadAllText(@"E:\JTSGames\CampaignAntietam\Maps\the gaps to manassas.map");
         var mapSubStr = File.ReadAllText(@"E:\JTSGames\CampaignAntietam\Maps\Henry Hill.map");
