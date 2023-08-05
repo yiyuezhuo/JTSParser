@@ -114,13 +114,97 @@ namespace YYZ.PathFinding2
             public float Cost;
         }
 
-        public Dictionary<int, Arrow> Dijkstra(IEnumerable<int> srcIter, float budget) // return: nodeToArrow
+        public struct QueueNode : IComparable<QueueNode>
+        {
+            public int Value;
+            public float Cost;
+
+            public QueueNode(int value, float dist)
+            {
+                Value = value;
+                Cost = dist;
+            }
+
+            public int CompareTo(QueueNode other)
+            {
+                if(Cost == other.Cost)
+                {
+                    return Value.CompareTo(other.Value);
+                }
+                return Cost.CompareTo(other.Cost);
+            }
+        }
+
+        public Dictionary<int, Arrow> Dijkstra(IEnumerable<int> srcIter, float budget)
+        {
+            // https://codereview.stackexchange.com/questions/152733/dijkstra-path-finding-in-c-is-15x-slower-than-c-version
+            // var nodeToArrow = new Dictionary<int, Arrow>();
+
+            var costArr = new float[Nodes.Length];
+            var prev = new int[Nodes.Length];
+            for(var i=0; i<Nodes.Length; i++)
+            {
+                prev[i] = -1;
+                costArr[i] = float.MaxValue;
+            }
+
+            var q = new SortedSet<QueueNode>(); // Priority Queue backed by OrderedSet
+
+            foreach(var closed in srcIter)
+            {
+                // nodeToArrow[closed] = new(){Prev=-1};
+                costArr[closed] = 0;
+                prev[closed] = closed; // TODO: keep it?
+                q.Add(new QueueNode(closed, 0));
+            }
+
+            while(q.Count > 0)
+            {
+                var u = q.Min;
+                q.Remove(u);
+
+                if(u.Cost != costArr[u.Value])
+                    continue;
+
+                // Predicate
+
+                if(u.Cost >= budget)
+                    continue;
+
+                var uCost = costArr[u.Value];
+                foreach(var edge in Nodes[u.Value].Edges)
+                {
+                    var v = edge.Target;
+                    var alt = uCost + edge.Cost;
+                    if(alt < costArr[v])
+                    {
+                        costArr[v] = alt;
+                        q.Add(new QueueNode(v, alt));
+
+                        prev[v] = u.Value;
+                    }
+                }
+            }
+
+            var ret = new Dictionary<int, Arrow>();
+            for(var i=0; i<Nodes.Length; i++)
+            {
+                if(prev[i] != -1)
+                {
+                    ret[i] = new Arrow(){Prev=prev[i], Cost=costArr[i]};
+                }
+            }
+            return ret;
+        }
+
+        public Dictionary<int, Arrow> _Dijkstra(IEnumerable<int> srcIter, float budget) // return: nodeToArrow
         {
             var nodeToArrow = new Dictionary<int, Arrow>();
-
-            var openSet = new HashSet<int>();
+            
             var closedMask = new bool[Nodes.Length];
             var costArr = new float[Nodes.Length];
+
+            var openSet = new HashSet<int>();
 
             foreach(var closed in srcIter)
             {
