@@ -34,18 +34,18 @@
                 colorMat[i] = new int[width][];
             return colorMat;
         }
-        public static float[][] CreateCountourMatrix(int height, int width)
+        public static float[][] CreateNestArray(int height, int width)
         {
             var mat = new float[height][];
             for(var i=0; i<height; i++)
                 mat[i] = new float[width];
             return mat;
         }
-        public static float[][] CreateCountourMatrix(float[,] mat)
+        public static float[][] CreateNestArray(float[,] mat)
         {
             var height = mat.GetLength(0);
             var width = mat.GetLength(1);
-            var z = CreateCountourMatrix(height, width);
+            var z = CreateNestArray(height, width);
             for(var i=0; i<height; i++)
                 for(var j=0; j<width; j++)
                     z[i][j] = mat[i,j];
@@ -148,6 +148,8 @@
             foreach(var chart in segGraph.PlotEdges())
                 yield return chart;
         }
+
+        
 
         public static DynamicObj CreateDyObj(Dictionary<string, object> dic)
         {

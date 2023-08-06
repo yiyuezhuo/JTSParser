@@ -79,7 +79,7 @@ class Program
         controller.Extract("NB", scenarioStr, mapStr, OOBStr);
         controller.AssignGraphByStaticData(StaticData.NBParameterData, "Column Infantry Movement Costs");
 
-        var divider = new HexGraphDivider(){Graph=controller.DynamicGraph, RoadSystem=controller.Map.CurrentTerrainSystem.Road};
+        var divider = new HexGraphDivider(){DynamicGraph=controller.DynamicGraph, RoadSystem=controller.Map.CurrentTerrainSystem.Road};
         var segGraph = divider.GetGraph();
         Console.WriteLine(segGraph);
 

@@ -51,9 +51,9 @@ namespace YYZ.JTS
 
         public DistanceGraph DynamicGraph;
         // public FrozenGraph<Hex> StaticGraph;
-        IPathFinder<Hex> StaticPathFinder;
+        public IPathFinder<Hex> StaticPathFinder;
 
-        public IGraphEnumerable<Hex> FrozenGraph;
+        // public IGraphEnumerable<Hex> FrozenGraph;
         public UnitGroup RootOOBUnit;
         public JTSUnitStates UnitStates;
         public JTSBridgeStates BridgeStates;
@@ -600,6 +600,7 @@ namespace YYZ.JTS
         public void Log(string s) => Logs.Add(s);
     }
 
+    /*
     public class NetworkSegment
     {
         public Hex BeginNode;
@@ -637,7 +638,8 @@ namespace YYZ.JTS
         // public MapFile Map;
         // public HexNetwork Network;
         // public DistanceSystem Distance;
-        public DistanceGraph Graph;
+        public DistanceGraph DynamicGraph;
+        // public IPathFinder<Hex> StaticPathFinder;
         public EdgeTerrainSystem RoadSystem;
 
         public int MaxSize = GetMaxSizeByRadius(5); // MaxSize=HexGraphDivider.GetMaxSizeByRadius(3)
@@ -670,7 +672,7 @@ namespace YYZ.JTS
             for(var level=0; level<RoadSystem.Count; level++)
                 roadDegreeMaps[level] = new();
 
-            foreach(var node in Graph.Nodes())
+            foreach(var node in DynamicGraph.Nodes())
             {
                 foreach(var edge in node.EdgeMap.Values)
                 {
@@ -712,9 +714,9 @@ namespace YYZ.JTS
             }
 
             // Create area for remaining non-blocking nodes
-            foreach(var node in Graph.Nodes())
+            foreach(var node in DynamicGraph.Nodes())
             {
-                if(!SegmentMap.ContainsKey(node) && !Graph.IsIsolated(node))
+                if(!SegmentMap.ContainsKey(node) && !DynamicGraph.IsIsolated(node))
                 {
                     FloodingSegment(node);
                 }
@@ -769,8 +771,8 @@ namespace YYZ.JTS
                         continue;
                     if(!src.PathFindingResultMap.ContainsKey(dst))
                     {
-                        var graph = new LimitedGraph(){Graph=Graph, LeftSet=src.Nodes, RightSet=dst.Nodes};
-                        var astarResult = PathFinding<Hex>.AStar3(graph, src.Center, dst.Center);
+                        var graph = new LimitedGraph(){Graph=DynamicGraph, LeftSet=src.Nodes, RightSet=dst.Nodes};
+                        var astarResult = PathFinding<Hex>.AStar3(graph, src.Center, dst.Center); // TODO: Leverage StaticPathFinder?
                         src.PathFindingResultMap[dst] = astarResult;
                         dst.PathFindingResultMap[src] = astarResult.Reverse();
                     }
@@ -792,7 +794,7 @@ namespace YYZ.JTS
                     if(segment.Count == MaxSize)
                         break;
 
-                    foreach(var neiNode in Graph.Neighbors(testNode))
+                    foreach(var neiNode in DynamicGraph.Neighbors(testNode))
                     {
                         if(SegmentMap.TryGetValue(neiNode, out var segmentNei))
                         {
@@ -827,4 +829,5 @@ namespace YYZ.JTS
             public float EstimateCost(Hex src, Hex dst) => Graph.EstimateCost(src, dst);
         }
     }
+    */
 }
