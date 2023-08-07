@@ -64,6 +64,8 @@ namespace YYZ.JTS
             return radius * radius * 3 + 3 * radius + 1;
         }
 
+        public NetworkSegment GetSegment(Hex hex) => SegmentMap[hex];
+
         public SegmentGraph GetGraph()
         {
             Segment();
@@ -249,5 +251,7 @@ namespace YYZ.JTS
             public float MoveCost(Hex src, Hex dst) => Graph.MoveCost(src, dst);
             public float EstimateCost(Hex src, Hex dst) => Graph.EstimateCost(src, dst);
         }
+
+
     }
 }

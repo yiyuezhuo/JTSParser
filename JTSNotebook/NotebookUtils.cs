@@ -9,6 +9,7 @@
     using YYZ.JTS;
     using System.Linq;
     using DynamicObj;
+    using System.Drawing;
 
     public static class NB // Notebook Utils
     {
@@ -136,7 +137,8 @@
             {
                 foreach(var nei in seg.Neighbors)
                 {
-                    var line = Plotly.NET.CSharp.Chart.Line<float, float, string>(x: new []{seg.XMean, nei.XMean}, y: new[]{seg.YMean, nei.YMean});
+                    // var line = Plotly.NET.CSharp.Chart.Line<float, float, string>(x: new []{seg.XMean, nei.XMean}, y: new[]{seg.YMean, nei.YMean});
+                    var line = Plotly.NET.CSharp.Chart.Line<int, int, string>(x: new []{seg.Center.X, nei.Center.X}, y: new[]{seg.Center.Y, nei.Center.Y});
                     yield return line;
                 }
             }
@@ -149,7 +151,16 @@
                 yield return chart;
         }
 
-        
+        public static IEnumerable<GenericChart.GenericChart> PlotModifiedCenter(this SegmentGraph segGraph)
+        {
+            foreach(var seg in segGraph.Segments)
+            {
+                var trace = new Plotly.NET.Trace("scatter");
+                trace.SetValue("x", new float[]{seg.XMean, seg.Center.X});
+                trace.SetValue("y", new float[]{seg.YMean, seg.Center.Y});
+                yield return GenericChart.ofTraceObject(false, trace);
+            }
+        }
 
         public static DynamicObj CreateDyObj(Dictionary<string, object> dic)
         {
@@ -246,6 +257,18 @@
                 {"width", 1}
             }));
 
+            return GenericChart.ofTraceObject(false, trace);
+        }
+
+        public static GenericChart.GenericChart Scatter(IEnumerable<float> x, IEnumerable<float> y, int size=12)
+        {
+            var trace = new Plotly.NET.Trace("scatter");
+            trace.SetValue("mode", "markers");
+            trace.SetValue("x", x.ToArray());
+            trace.SetValue("y", y.ToArray());
+            trace.SetValue("marker", NB.CreateDyObj(new(){
+                {"size", size}
+            }));
             return GenericChart.ofTraceObject(false, trace);
         }
     }

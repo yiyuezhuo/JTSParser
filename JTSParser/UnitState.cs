@@ -171,6 +171,11 @@ namespace YYZ.JTS
         public Formation FormationRoot;
         public Dictionary<UnitGroup, Formation> Group2Formation = new();
 
+        public HashSet<string> PresentCountries()
+        {
+            return FormationRoot.Group.Units.Select(oob => oob.Country).ToHashSet();
+        }
+
         // public Dictionary<AbstractUnit, UnitState> Unit2state = new(); // OOB unit can be divided into multiple map units so it's not well defined 
 
         // 1 2.3.4.4 4 4 393 300 0 4194304 36 23
