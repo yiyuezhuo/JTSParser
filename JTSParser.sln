@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShowCase", "ShowCase\ShowCa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JTSNotebook", "JTSNotebook\JTSNotebook.csproj", "{6D8B9BA4-705D-4EA1-9456-1C72BD624A70}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "JTSNotebookFSharp", "JTSNotebookFSharp\JTSNotebookFSharp.fsproj", "{6CE17E89-FE63-42F0-A301-292454B68E63}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{6D8B9BA4-705D-4EA1-9456-1C72BD624A70}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6D8B9BA4-705D-4EA1-9456-1C72BD624A70}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6D8B9BA4-705D-4EA1-9456-1C72BD624A70}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6CE17E89-FE63-42F0-A301-292454B68E63}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6CE17E89-FE63-42F0-A301-292454B68E63}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6CE17E89-FE63-42F0-A301-292454B68E63}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6CE17E89-FE63-42F0-A301-292454B68E63}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
