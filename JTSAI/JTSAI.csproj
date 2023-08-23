@@ -2,13 +2,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\JTSParser\JTSParser.csproj" />
-    <ProjectReference Include="..\JTSAI\JTSAI.csproj" />
     <ProjectReference Include="..\YYZLib\YYZLib.csproj" />
   </ItemGroup>
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
     <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
     <LangVersion>9.0</LangVersion>
   </PropertyGroup>

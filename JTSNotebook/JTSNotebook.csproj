@@ -2,6 +2,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\JTSParser\JTSParser.csproj" />
+    <ProjectReference Include="..\YYZLib\YYZLib.csproj" />
+    <ProjectReference Include="..\JTSAI\JTSAI.csproj" />
   </ItemGroup>
 
   <ItemGroup>

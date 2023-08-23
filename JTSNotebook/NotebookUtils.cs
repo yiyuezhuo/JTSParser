@@ -10,6 +10,7 @@
     using System.Linq;
     using DynamicObj;
     using System.Drawing;
+    using YYZ.JTS.AI;
 
     public static class NB // Notebook Utils
     {

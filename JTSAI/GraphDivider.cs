@@ -1,4 +1,4 @@
-namespace YYZ.JTS
+namespace YYZ.JTS.AI
 {
     using YYZ.AI;
     using YYZ.PathFinding;

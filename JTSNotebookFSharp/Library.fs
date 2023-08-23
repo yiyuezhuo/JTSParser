@@ -1,6 +1,7 @@
 ﻿module JTSNotebookFSharp
 
 open YYZ.JTS
+open YYZ.JTS.AI
 open Plotly.NET
 open System
 
@@ -32,7 +33,7 @@ let plotRoadNetwork (network: HexNetwork) =
             network.SimplifyRoad(roadType) |>
                 Seq.map(fun road ->
                     let xl = [for node in road -> node.X]
-                    let yl = [for node in road -> node.Y]
+                    let yl = [for node: Hex in road -> node.Y]
                     Chart.Line(x = xl, y = yl, LineColor=c)
                 )
         ) |> Seq.concat |> Chart.combine
@@ -83,3 +84,66 @@ let test =
     let xData = [0. .. 0.1 .. 10.]
     let yData = [for x in xData -> sin(x)]
     Chart.Point(xData, yData)
+
+let commitValue (commit:float32) (target:float32) = 
+    let diversionaryStrength = min target commit * 1f
+    let diversionaryStrengthValue = 1f * diversionaryStrength
+
+    let model = LanchesterQuadroticSolution(Red0=commit, Blue0=target)
+    model.FightToMinPercent(0.75f)
+    let lossValue = 2f * max 0f model.BlueLoss - model.RedLoss
+
+    diversionaryStrengthValue + lossValue
+
+let linspace (left:float32) (right:float32) (number:int) =
+    let step = (right - left) / (float32)number
+    Array.init number (fun i -> (float32)i * step)
+    // Array.init number
+
+let createDyObj (tl: (string * Object) list) =
+    let obj = new DynamicObj.DynamicObj()
+    for (key, value) in tl do
+        obj.SetValue(key, value)
+    obj
+
+let createNestArray (mat: float32 array2d) : float32 array array =
+    [| for i in 1..mat.GetLength(0) -> [| for j in 1..mat.GetLength(1) -> mat[i-1,j-1] |] |]
+
+let createContour z =
+    let trace = Trace("contour")
+    trace.SetValue("z", z)
+
+    let labelfont = createDyObj([
+        ("family", "Raleway")
+        ("size", 12)
+        ("color", "black")
+    ])
+
+    let q = createDyObj([
+        ("coloring", "lines")
+        ("showlabels", true)
+        ("labelfont", labelfont)
+    ])
+
+    trace.SetValue("contours", q)
+
+    GenericChart.ofTraceObject false trace
+
+let plotUnits (unitStates: UnitState seq) = 
+    unitStates |> Seq.groupBy (fun u -> u.OobItem.Country) |> Seq.map (fun (key, units) ->
+        let x, y = units |> Seq.map(fun u -> (u.X, u.Y)) |> List.ofSeq |> List.unzip
+        Chart.Point(x, y)
+    ) |> Chart.combine
+
+let EqualAspectAxis =
+    let axis = LayoutObjects.LinearAxis()
+    axis.SetValue("scaleanchor", "x")
+    axis.SetValue("scaleratio", 1)
+    axis
+
+let EqualAspectReversedAxis =
+    let axis = LayoutObjects.LinearAxis()
+    axis.SetValue("scaleanchor", "x")
+    axis.SetValue("scaleratio", 1)
+    axis.SetValue("autorange", "reversed")
+    axis

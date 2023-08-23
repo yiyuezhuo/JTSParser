@@ -1,6 +1,7 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using System;
 using YYZ.JTS;
+using YYZ.JTS.AI;
 using YYZ.PathFinding;
 using System.IO;
 using System.Linq;
