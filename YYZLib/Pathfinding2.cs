@@ -140,23 +140,7 @@ namespace YYZ.PathFinding2
             // https://codereview.stackexchange.com/questions/152733/dijkstra-path-finding-in-c-is-15x-slower-than-c-version
             // var nodeToArrow = new Dictionary<int, Arrow>();
 
-            var costArr = new float[Nodes.Length];
-            var prev = new int[Nodes.Length];
-            for(var i=0; i<Nodes.Length; i++)
-            {
-                prev[i] = -1;
-                costArr[i] = float.MaxValue;
-            }
-
-            var q = new SortedSet<QueueNode>(); // Priority Queue backed by OrderedSet
-
-            foreach(var closed in srcIter)
-            {
-                // nodeToArrow[closed] = new(){Prev=-1};
-                costArr[closed] = 0;
-                prev[closed] = closed; // TODO: keep it?
-                q.Add(new QueueNode(closed, 0));
-            }
+            (var costArr, var prev, var q) = DijkstraInitialize(srcIter);
 
             while(q.Count > 0)
             {
@@ -186,6 +170,71 @@ namespace YYZ.PathFinding2
                 }
             }
 
+            return CreateArrowMap(costArr, prev);
+        }
+
+        public Dictionary<int, Arrow> DijkstraAllTarget(IEnumerable<int> srcIter, IEnumerable<int> allTargetIter)
+        {
+            (var costArr, var prev, var q) = DijkstraInitialize(srcIter);
+            var allTargetSet = allTargetIter.ToHashSet();
+
+            while(q.Count > 0 && allTargetSet.Count > 0)
+            {
+                var u = q.Min;
+                q.Remove(u);
+
+                if(allTargetSet.Contains(u.Value));
+                    allTargetSet.Remove(u.Value);
+
+                if(u.Cost != costArr[u.Value])
+                    continue;
+
+                // Predicate
+
+                var uCost = costArr[u.Value];
+                foreach(var edge in Nodes[u.Value].Edges)
+                {
+                    var v = edge.Target;
+                    var alt = uCost + edge.Cost;
+                    if(alt < costArr[v])
+                    {
+                        costArr[v] = alt;
+                        q.Add(new QueueNode(v, alt));
+
+                        prev[v] = u.Value;
+                    }
+                }
+            }
+
+            return CreateArrowMap(costArr, prev);
+
+        }
+
+        (float[] costArr, int[] prev, SortedSet<QueueNode> q) DijkstraInitialize(IEnumerable<int> srcIter)
+        {
+            var costArr = new float[Nodes.Length];
+            var prev = new int[Nodes.Length];
+            for(var i=0; i<Nodes.Length; i++)
+            {
+                prev[i] = -1;
+                costArr[i] = float.MaxValue;
+            }
+
+            var q = new SortedSet<QueueNode>(); // Priority Queue backed by OrderedSet
+
+            foreach(var closed in srcIter)
+            {
+                // nodeToArrow[closed] = new(){Prev=-1};
+                costArr[closed] = 0;
+                prev[closed] = closed; // TODO: keep it?
+                q.Add(new QueueNode(closed, 0));
+            }
+
+            return (costArr, prev, q);
+        }
+
+        Dictionary<int, Arrow> CreateArrowMap(float[] costArr, int[] prev)
+        {
             var ret = new Dictionary<int, Arrow>();
             for(var i=0; i<Nodes.Length; i++)
             {
@@ -197,6 +246,7 @@ namespace YYZ.PathFinding2
             return ret;
         }
 
+        /*
         public Dictionary<int, Arrow> _Dijkstra(IEnumerable<int> srcIter, float budget) // return: nodeToArrow
         {
             var nodeToArrow = new Dictionary<int, Arrow>();
@@ -259,6 +309,7 @@ namespace YYZ.PathFinding2
 
             return nodeToArrow;
         }
+        */
 
         // public EarlyStopDijkstra // support Predicate
     }

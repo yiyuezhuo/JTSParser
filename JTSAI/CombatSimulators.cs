@@ -1,4 +1,4 @@
-namespace YYZ.JTS.AI
+namespace YYZ.AI
 {
     using System;
 

@@ -544,6 +544,7 @@ namespace YYZ.PathFinding
         // IDijkstraOutput<T> Dijkstra(IEnumerable<T> srcIter, Func<T, bool> Predicate, float budget);
 
         IDijkstraOutput<T> GetReachable(T src, float budget);
+        IDijkstraOutput<T> GetShortpathForMultiple(T src, IEnumerable<T> allTargets);
 
         /*
         public IDijkstraOutput<T> GetReachable(T src, float budget)
@@ -579,6 +580,11 @@ namespace YYZ.PathFinding
             var srcIter = new T[] { src };
             var result = Dijkstra(srcIter, Predicate, float.PositiveInfinity);
             return result;
+        }
+
+        public IDijkstraOutput<T> GetShortpathForMultiple(T src, IEnumerable<T> allTargetIter)
+        {
+            throw new NotImplementedException(); // TODO: Implement or refactor?
         }
     }
 
@@ -718,6 +724,18 @@ namespace YYZ.PathFinding
         public IDijkstraOutput<ET> GetReachable(ET src, float budget)
         {
             var dict = Graph.Dijkstra(new int[]{E2I(src)}, budget);
+            return CreateDijkstraOutput(dict);
+        }
+
+        public IDijkstraOutput<ET> GetShortpathForMultiple(ET src, IEnumerable<ET> allTargetIter)
+        {
+            var _allTargetIter = allTargetIter.Select(E2I);
+            var dict = Graph.DijkstraAllTarget(new int[]{E2I(src)}, _allTargetIter);
+            return CreateDijkstraOutput(dict);
+        }
+
+        DijkstraOutput CreateDijkstraOutput(Dictionary<int, PathFinding2.Graph2D.Arrow> dict)
+        {
             var ret = new DijkstraOutput();
 
             foreach((var i, var arrow) in dict)

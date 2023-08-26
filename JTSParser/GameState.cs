@@ -1,5 +1,5 @@
 using System.IO;
-using YYZ.PathFinding;
+// using YYZ.PathFinding;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -110,34 +110,6 @@ namespace YYZ.JTS
                 });
             }
             return Transform(orders, "Attack Nearest AI Script");
-        }
-    }
-
-    public class GraphWrapper
-    {
-        public DistanceSystem Distance;
-        public DistanceGraph DynamicGraph;
-        // public FrozenGraph<Hex> StaticGraph;
-        public IPathFinder<Hex> StaticPathFinder;
-
-        public static GraphWrapper Create(HexNetwork network, string parameterDataStr, string movementCostName)
-        {
-            var distance = new DistanceSystem(){Name=movementCostName};
-            var param = ParameterData.Parse(parameterDataStr);
-            distance.Extract(network.TerrainSystem, param.Data[movementCostName]);
-            var dynamicGraph = new DistanceGraph(){Network=network, Distance=distance};
-
-            /*
-            var staticGraph = FrozenGraph<Hex>.GetGraph(DynamicGraph, hex => (hex.X, hex.Y));
-            StaticPathFinder = staticGraph.GetPathFinder();
-            */
-            var staticPathFinder = FrozenGraph2D<Hex>.GetPathFinder(dynamicGraph, hex => (hex.X, hex.Y));
-            return new()
-            {
-                Distance=distance,
-                DynamicGraph=dynamicGraph,
-                StaticPathFinder=staticPathFinder
-            };
         }
     }
 }
