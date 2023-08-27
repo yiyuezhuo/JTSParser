@@ -39,6 +39,16 @@ class Program
         
         Console.WriteLine(graphWrapper);
 
+        // var sg = new StateGraphWrapper(){S=gameState, G=graphWrapper};
+
+        var allocator = new YYZ.AI.PointToPointAllocator.SimplePointToPointAllocator();
+
+        var activeCountries = new HashSet<string>(){"French"};
+        var hexBoard = new HexBoard(){S=gameState, G=graphWrapper, activeCountries=activeCountries};
+        var hexRes = allocator.Allocate(hexBoard);
+
+        Console.WriteLine(hexRes);
+
         var divider = new HexGraphDivider(){
             DynamicGraph=graphWrapper.DynamicGraph,
             RoadSystem=gameState.Map.CurrentTerrainSystem.Road,
@@ -48,15 +58,10 @@ class Program
 
         Console.WriteLine(segGraph);
 
-        var sg = new StateGraphWrapper(){S=gameState, G=graphWrapper};
+        var segmentBoard = SegmentBoard.Generate(gameState, segGraph, activeCountries);
+        var segmentRes = allocator.Allocate(segmentBoard);
 
-        var activeCountries = new HashSet<string>(){"French"};
-
-        var board = new Board(){S=gameState, G=graphWrapper, activeCountries=activeCountries};
-        var allocator = new YYZ.AI.PointToPointAllocator.SimplePointToPointAllocator();
-        var res = allocator.Allocate(board);
-
-        Console.WriteLine(res);
+        Console.WriteLine(segmentRes);
     }
 
     static void Main3(string[] args)

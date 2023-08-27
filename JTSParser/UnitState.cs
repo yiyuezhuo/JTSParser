@@ -107,6 +107,34 @@ namespace YYZ.JTS
             {
                 abstractState.Parent = this;
 
+                // Pattern Match
+                if(abstractState is UnitState unitState)
+                {
+                    CurrentStrength += unitState.CurrentStrength;
+                    x += unitState.CurrentStrength * unitState.X;
+                    y += unitState.CurrentStrength * unitState.Y;
+                    xW1 += unitState.X;
+                    yW1 += unitState.Y;
+                    HexPositions.Add(new HexPosition(){X=unitState.X, Y=unitState.Y});
+                }
+                else if(abstractState is Formation formation)
+                {
+                    formation.CalculateFrozenValue();
+
+                    CurrentStrength += formation.CurrentStrength;
+                    x += formation.XMean * formation.CurrentStrength;
+                    y += formation.YMean * formation.CurrentStrength;
+                    foreach(var hexPosition in formation.HexPositions)
+                    {
+                        HexPositions.Add(hexPosition);
+                        xW1 += hexPosition.X;
+                        yW1 += hexPosition.Y;
+                    }
+
+                    FlattenStates.AddRange(formation.FlattenStates);
+                }
+
+                /*
                 var unitState = abstractState as UnitState;
                 if(unitState != null)
                 {
@@ -134,6 +162,7 @@ namespace YYZ.JTS
 
                     FlattenStates.AddRange(formation.FlattenStates);
                 }
+                */
             }
 
             XMeanUnit = xW1 / HexPositions.Count;
@@ -278,22 +307,25 @@ namespace YYZ.JTS
             return ret;
         }
 
+        [Obsolete("use GetBrigadeFormations")]
         public Dictionary<UnitGroup, List<UnitState>> GroupByBrigade()
         {
             var ret = new Dictionary<UnitGroup, List<UnitState>>();
             foreach(var unitState in UnitStates)
             {
                 var parent = unitState.OobItem.Parent;
-                var group = parent as UnitGroup;
-                if(group != null && group.Size == "B")
+                if(parent is UnitGroup group)
                 {
-                    if(ret.TryGetValue(group, out var unitStateList))
+                    if(group.Size == "B")
                     {
-                        unitStateList.Add(unitState);
-                    }
-                    else
-                    {
-                        ret[group] = new List<UnitState>() { unitState };
+                        if(ret.TryGetValue(group, out var unitStateList))
+                        {
+                            unitStateList.Add(unitState);
+                        }
+                        else
+                        {
+                            ret[group] = new List<UnitState>() { unitState };
+                        }
                     }
                 }
             }
