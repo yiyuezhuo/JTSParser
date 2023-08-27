@@ -5,10 +5,90 @@ using YYZ.PathFinding;
 using YYZ.PathFinding2;
 using System.Collections.Generic;
 using System.Linq;
-
+using YYZ.AI.PointToPointAllocator;
 
 namespace YYZ.JTS.AI
 {
+    public class Position: IPosition
+    {
+        public Hex Origin;
+
+        public override bool Equals(object obj)
+        {
+            return obj is Position position &&
+                   EqualityComparer<Hex>.Default.Equals(Origin, position.Origin);
+        }
+
+        public override int GetHashCode()
+        {
+            return Origin.GetHashCode();
+        }
+
+    }
+
+    public class Unit: IUnit
+    {
+        public UnitState Origin;
+        public float CombatValue{get => Origin.CurrentStrength;} // TODO: handle gun
+        public IPosition Position{get; set;}
+    }
+
+    public class Board: IBoard
+    {
+        public GameState S;
+        public GraphWrapper G;
+        public HashSet<string> activeCountries;
+        public List<float> MoveTime(IPosition src, IEnumerable<IPosition> positions)
+        {
+            // I dont't want use complicated generic to write experimenting code so I just downcast,
+            // so a little performance hit and introduce some obscure implicity constraints which could be enforced by generic.
+            // For example, positions should be the same concrete class, which can be enforced by generic, but I rather not to write many 
+            // generic type shits.
+            var _src = ((Position)src).Origin;
+            var _positions = positions.Select(p => ((Position)p).Origin).ToList();
+            
+            var res = G.StaticPathFinder.GetShortpathForMultiple(_src, _positions);
+            var ret = new List<float>();
+            foreach(var pos in _positions)
+                if(res.TryGetValue(pos, out var path))
+                    ret.Add(path.cost);
+                else
+                    ret.Add(-1);
+            return ret;
+        }
+
+        IEnumerable<IUnit> SelectUnits(bool selectActive)
+        {
+            foreach(var state in S.UnitStates.UnitStates)
+            {
+                var isActive = activeCountries.Contains(state.OobItem.Country);
+                if((isActive == selectActive) && (!isActive == !selectActive))
+                {
+                    var hex = S.Network.HexMat[state.I, state.J];
+                    var position = new Position(){Origin=hex};
+                    var unit = new Unit()
+                    {
+                        Origin=state,
+                        Position=position
+                    };
+                    yield return unit;
+                }
+            }
+
+        }
+
+        public IEnumerable<IUnit> ActivesUnits
+        {
+            get => SelectUnits(true);
+        }
+        public IEnumerable<IUnit> PassiveUnits
+        {
+            get => SelectUnits(false);
+        }
+
+
+    }
+
     public class StateGraphWrapper
     {
         public GameState S;

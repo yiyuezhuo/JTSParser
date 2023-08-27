@@ -10,12 +10,15 @@ namespace YYZ.AI.PointToPointAllocator
         public IEnumerable<IUnit> ActivesUnits{get;}
         public IEnumerable<IUnit> PassiveUnits{get;}
         // public IEnumerable<IUnit> UnitsOf(IPosition position);
-        public List<float> MoveTime(IPosition src, IEnumerable<object> positions); // This use normal graph or blocked graph
+        public List<float> MoveTime(IPosition src, IEnumerable<IPosition> positions); // This use normal graph or blocked graph
     }
 
+    
     public interface IPosition
     {
+        
     }
+    
 
     public interface IUnit
     {
@@ -35,7 +38,7 @@ namespace YYZ.AI.PointToPointAllocator
         public float DiversionaryCoef = 1f;
         public float LossCoef = 5f;
 
-        class BoardWrapper
+        public class BoardWrapper
         {
             public UnitWrapper[] ActiveUnits;
             public UnitWrapper[] PassiveUnits;
@@ -46,8 +49,11 @@ namespace YYZ.AI.PointToPointAllocator
 
             public static BoardWrapper Create(IBoard board)
             {
-                var units = new List<IUnit>(board.ActivesUnits);
-                units.AddRange(board.PassiveUnits);
+                var actives = board.ActivesUnits.ToList();
+                var passives = board.PassiveUnits.ToList();
+
+                var units = new List<IUnit>(actives);
+                units.AddRange(passives);
 
                 var unitMap = units.ToDictionary(u => u, u => new UnitWrapper(){Origin=u});
                 var positionMap = units.Select(u => u.Position).Distinct()
@@ -57,24 +63,25 @@ namespace YYZ.AI.PointToPointAllocator
                 {
                     var position = unit.Position;
                     var positionWrapper = positionMap[position];
-                    unitWrapper.Position = positionWrapper;
+                    unitWrapper.InitialPosition = positionWrapper;
                     positionWrapper.Units.Add(unitWrapper);
                 }
 
-                var activeUnits = board.ActivesUnits.Select(u => unitMap[u]).ToArray();
-                var passiveUnits = board.PassiveUnits.Select(u => unitMap[u]).ToArray();
-                var sources = activeUnits.Select(u => u.Position).Distinct().ToArray();
-                var targets = passiveUnits.Select(u => u.Position).Distinct().ToArray();
+                var activeUnits = actives.Select(u => unitMap[u]).ToArray();
+                var passiveUnits = passives.Select(u => unitMap[u]).ToArray();
+                var sources = activeUnits.Select(u => u.InitialPosition).Distinct().ToArray();
+                var targets = passiveUnits.Select(u => u.InitialPosition).Distinct().ToArray();
 
                 foreach(var source in sources)
                 {
                     var times = board.MoveTime(source.Origin, targets.Select(t => t.Origin));
+                    // var times = source.Origin.MoveTime(targets.Select(t => t.Origin));
                     for(var i=0; i<targets.Length; i++)
                         source.MoveTimeMap[targets[i]] = times[i];
                 }
 
                 foreach(var unit in passiveUnits)
-                    unit.Position.PassiveTotalCombatValue += unit.CombatValue;
+                    unit.InitialPosition.PassiveTotalCombatValue += unit.CombatValue;
 
                 return new()
                 {
@@ -88,23 +95,23 @@ namespace YYZ.AI.PointToPointAllocator
             }
         }
 
-        class UnitWrapper
+        public class UnitWrapper
         {
             public IUnit Origin;
             public float CombatValue{get => Origin.CombatValue;}
-            public PositionWrapper Position;
+            public PositionWrapper InitialPosition;
             // Attached variables
             public PositionWrapper AssignedPosition;
-            public void AssignTo(PositionWrapper position)
+            public void AssignTo(PositionWrapper assignedPosition)
             {
-                if(position != null)
-                    position.AssginedUnits.Remove(this);
-                Position = position;
-                position.AssginedUnits.Add(this);
+                if(assignedPosition != null)
+                    assignedPosition.AssginedUnits.Remove(this);
+                AssignedPosition = assignedPosition;
+                assignedPosition.AssginedUnits.Add(this);
             }
         }
 
-        class PositionWrapper
+        public class PositionWrapper
         {
             public IPosition Origin;
             public Dictionary<PositionWrapper, float> MoveTimeMap = new();
@@ -123,7 +130,7 @@ namespace YYZ.AI.PointToPointAllocator
         }
 
 
-        public void Allocate(IBoard _board)
+        public BoardWrapper Allocate(IBoard _board)
         {
             var board = BoardWrapper.Create(_board);
 
@@ -134,7 +141,7 @@ namespace YYZ.AI.PointToPointAllocator
                 {
                     assignments.Add(new()
                     {
-                        ArrivalTime=unit.Position.MoveTimeMap[target],
+                        ArrivalTime=unit.InitialPosition.MoveTimeMap[target],
                         Unit=unit,
                         Position=target
                     });
@@ -156,19 +163,24 @@ namespace YYZ.AI.PointToPointAllocator
 
             while(true)
             {
-                var updateAny = false;
+                var updateCount = 0;
 
                 foreach(var active in board.ActiveUnits)
                 {
                     foreach(var target in board.Targets)
                     {
-                        updateAny |= TryUpdate(active, target);
+                        if(TryUpdate(active, target))
+                            updateCount += 1;
                     }
                 }
 
-                if(!updateAny)
+                if(updateCount == 0)
                     break;
+
+                Console.WriteLine($"updateCount={updateCount}");
             }
+
+            return board;
 
         }
 
@@ -182,7 +194,7 @@ namespace YYZ.AI.PointToPointAllocator
 
             var newValue = PositionValue(src) + PositionValue(dst);
 
-            if(oldValue > newValue)
+            if(oldValue >= newValue)
             {
                 unit.AssignTo(src);
                 return false;
@@ -192,7 +204,11 @@ namespace YYZ.AI.PointToPointAllocator
 
         float PositionValue(PositionWrapper position)
         {
-            var pairs = position.AssginedUnits.Select(u => (u, u.Position.MoveTimeMap[position])).ToList();
+            var pairs = position.AssginedUnits.Select(u => (u, u.InitialPosition.MoveTimeMap[position])).ToList();
+
+            if(pairs.Count == 0)
+                return 0;
+
             pairs.Sort((x,y) => x.Item2.CompareTo(y.Item2)); // Use SortedSet or SortedList?
 
             var totalCombatValue = 0f;

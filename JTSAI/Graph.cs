@@ -11,7 +11,7 @@ namespace YYZ.JTS.AI
         public HexNetwork Network;
         public DistanceSystem Distance;
 
-        bool HasEdge(EdgeLayer layer, int i, int j, HexDirection direction) => layer.Defined && layer.Data[i, j].ByDirection(direction);
+        // bool HasEdge(EdgeLayer layer, int i, int j, HexDirection direction) => layer.Defined && layer.Data[i, j].ByDirection(direction);
 
         public IEnumerable<Hex> Neighbors(Hex pos)
         {

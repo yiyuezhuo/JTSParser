@@ -122,7 +122,7 @@ namespace YYZ.JTS
             return new HexNetwork(){Width=map.Width, Height=map.Height, TerrainSystem=map.CurrentTerrainSystem, HexMat=hexMat};
         }
 
-        bool HasEdge(EdgeLayer layer, int i, int j, HexDirection direction) => layer.Defined && layer.Data[i, j].ByDirection(direction);
+        // bool HasEdge(EdgeLayer layer, int i, int j, HexDirection direction) => layer.Defined && layer.Data[i, j].ByDirection(direction);
 
         public IEnumerable<Hex> Nodes()
         {

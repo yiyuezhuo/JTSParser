@@ -2,6 +2,7 @@
 
 open YYZ.JTS
 open YYZ.JTS.AI
+open YYZ.AI
 open Plotly.NET
 open System
 
@@ -147,3 +148,21 @@ let EqualAspectReversedAxis =
     axis.SetValue("scaleratio", 1)
     axis.SetValue("autorange", "reversed")
     axis
+
+let plotArrow (x: float32) (y: float32) (x2: float32) (y2: float32) =
+    let marker = createDyObj([
+        ("size", 10)
+        ("symbol", "arrow-bar-up")
+        ("angleref", "previous")
+    ])
+
+    let trace = Trace("scatter")
+    trace.SetValue("x", [| x; x2 |])
+    trace.SetValue("y", [| y; y2 |])
+    trace.SetValue("marker", marker)
+    trace.SetValue("line", createDyObj([
+        ("color", "rgb(55, 128, 191)")
+        ("width", 1)
+    ]))
+
+    GenericChart.ofTraceObject false trace

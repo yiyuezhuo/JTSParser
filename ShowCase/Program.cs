@@ -28,6 +28,39 @@ class Program
 {
     static void Main(string[] args)
     {
+        var mapPath = @"E:\JTSGames\Pen_spain\Maps\Vitoria.map";
+        var oobPath = @"E:\JTSGames\Pen_spain\OOBs\Vitoria.oob";
+        var scenarioPath = @"E:\JTSGames\Pen_spain\Scenarios\167.Vitoria1_21June13.scn";
+        var gameState = GameState.LoadFromPath("NB", scenarioPath: scenarioPath, mapPath: mapPath, oobPath: oobPath);
+        
+        Console.WriteLine(gameState);
+        
+        var graphWrapper = GraphWrapper.Create(gameState.Network, StaticData.NBParameterData, "Column Infantry Movement Costs");
+        
+        Console.WriteLine(graphWrapper);
+
+        var divider = new HexGraphDivider(){
+            DynamicGraph=graphWrapper.DynamicGraph,
+            RoadSystem=gameState.Map.CurrentTerrainSystem.Road,
+            RoadLevelCoef = 0.4f
+        };
+        var segGraph = divider.GetGraph();
+
+        Console.WriteLine(segGraph);
+
+        var sg = new StateGraphWrapper(){S=gameState, G=graphWrapper};
+
+        var activeCountries = new HashSet<string>(){"French"};
+
+        var board = new Board(){S=gameState, G=graphWrapper, activeCountries=activeCountries};
+        var allocator = new YYZ.AI.PointToPointAllocator.SimplePointToPointAllocator();
+        var res = allocator.Allocate(board);
+
+        Console.WriteLine(res);
+    }
+
+    static void Main3(string[] args)
+    {
         var mapStr = File.ReadAllText(@"E:\JTSGames\Pen_spain\Maps\Vitoria.map");
         var oobStr = File.ReadAllText(@"E:\JTSGames\Pen_spain\OOBs\Vitoria.oob");
         var scenarioStr = File.ReadAllText(@"E:\JTSGames\Pen_spain\Scenarios\167.Vitoria1_21June13.scn");
