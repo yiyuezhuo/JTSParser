@@ -43,11 +43,15 @@ class Program
 
         var allocator = new YYZ.AI.PointToPointAllocator.SimplePointToPointAllocator();
 
+        /*
+
         var activeCountries = new HashSet<string>(){"French"};
         var hexBoard = new HexBoard(){S=gameState, G=graphWrapper, activeCountries=activeCountries};
         var hexRes = allocator.Allocate(hexBoard);
 
         Console.WriteLine(hexRes);
+
+        */
 
         var divider = new HexGraphDivider(){
             DynamicGraph=graphWrapper.DynamicGraph,
@@ -58,7 +62,11 @@ class Program
 
         Console.WriteLine(segGraph);
 
-        var segmentBoard = SegmentBoard.Generate(gameState, segGraph, activeCountries);
+        var spanishCountries = new HashSet<string>(){"Spanish"};
+
+        // var segmentBoard = SegmentBoard.Generate(gameState, segGraph, spanishCountries);
+        var segmentBoard = new SegmentBoardFactory()
+            .Generate(gameState, segGraph, spanishCountries);
         var segmentRes = allocator.Allocate(segmentBoard);
 
         Console.WriteLine(segmentRes);

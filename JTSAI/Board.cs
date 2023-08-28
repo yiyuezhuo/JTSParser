@@ -69,14 +69,14 @@ namespace YYZ.JTS.AI
             // generic type shits.
             var _src = GetHex((TPosition)src);
             var _positions = positions.Select(p => GetHex((TPosition)p)).ToList();
-
+            
             var res = GetPathFinder().GetShortpathForMultiple(_src, _positions);
             var ret = new List<float>();
             foreach(var pos in _positions)
                 if(res.TryGetValue(pos, out var path))
                     ret.Add(path.cost / AllowancePerTurn);
                 else
-                    throw new ArgumentException("AI for Disconnected is not implemented");
+                    throw new ArgumentException("AI for Disconnected is not implemented"); // or float.PositiveInfinity ?
             return ret;
         }
         public abstract IPathFinder<THex> GetPathFinder();
@@ -143,7 +143,8 @@ namespace YYZ.JTS.AI
     {
         public Formation Origin;
         public float CombatValue{get; set;} // TODO: handle gun
-        public IPosition Position{get; set;}
+        public SegmentPosition Position{get; set;}
+        IPosition IUnit.Position{get => Position;}
     }
 
     
@@ -151,11 +152,22 @@ namespace YYZ.JTS.AI
     {
         // public GameState S;
         // public SegmentGraph SegmentGraph;
-        IPathFinder<NetworkSegment> pathFinder;
-        List<SegmentUnit> activesUnits;
-        List<SegmentUnit> passiveUnits;
+        public IPathFinder<NetworkSegment> PathFinder;
+        public List<SegmentUnit> ActivesUnitList;
+        public List<SegmentUnit> PassiveUnitList;
 
-        public static SegmentBoard Generate(GameState state, SegmentGraph segmentGraph, HashSet<string> activeSet)
+        public override NetworkSegment GetHex(SegmentPosition pos) => pos.Origin;
+        public override IPathFinder<NetworkSegment> GetPathFinder() => PathFinder;
+        public override IEnumerable<IUnit> ActivesUnits{get=>ActivesUnitList;}
+        public override IEnumerable<IUnit> PassiveUnits{get=>PassiveUnitList;}
+    }
+
+    public class SegmentBoardFactory
+    {
+        public bool SoftBlock = true;
+        public float SoftBlockCoef = 1f / 600;
+
+        public SegmentBoard Generate(GameState state, SegmentGraph segmentGraph, HashSet<string> activeSet, bool b=true)
         {
             var brigades = state.UnitStates.GetBrigadeFormations();
 
@@ -182,20 +194,23 @@ namespace YYZ.JTS.AI
                 list.Add(unit);
             }
 
-            var pathFinder = FrozenGraph2D<NetworkSegment>.GetPathFinder(segmentGraph, seg => (seg.XMean, seg.YMean));
+            IGraphEnumerable<NetworkSegment> preFrozenGraph = segmentGraph;
+            if(SoftBlock)
+            {
+                var strengthMap = passives.GroupBy(u => u.Position.Origin)
+                    .ToDictionary(g => g.Key, g => (float)g.Sum(u=> u.Origin.CurrentStrength));
+                preFrozenGraph = new SoftBlockGraph<NetworkSegment>()
+                    {Graph=preFrozenGraph, ResistanceMap=strengthMap, ExtraCostCoef=SoftBlockCoef};
+            }
+
+            var pathFinder = FrozenGraph2D<NetworkSegment>.GetPathFinder(preFrozenGraph, seg => (seg.XMean, seg.YMean));
 
             return new()
             {
-                pathFinder=pathFinder,
-                activesUnits=actives,
-                passiveUnits=passives
+                PathFinder=pathFinder,
+                ActivesUnitList=actives,
+                PassiveUnitList=passives
             };
         }
-
-        public override NetworkSegment GetHex(SegmentPosition pos) => pos.Origin;
-        public override IPathFinder<NetworkSegment> GetPathFinder() => pathFinder;
-        public override IEnumerable<IUnit> ActivesUnits{get=>activesUnits;}
-        public override IEnumerable<IUnit> PassiveUnits{get=>passiveUnits;}
     }
-    
 }

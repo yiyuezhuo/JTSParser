@@ -281,28 +281,6 @@ namespace YYZ.JTS.AI
             }
         }
 
-        public class BlockedGraph : PathFinding.IGraphEnumerable<Hex>
-        {
-            public IGraphEnumerable<Hex> Graph;
-            public HashSet<Hex> BlockedSet;
-            public IEnumerable<Hex> Neighbors(Hex hex)
-            {
-                if(!BlockedSet.Contains(hex))
-                {
-                    foreach(var nei in Graph.Neighbors(hex))
-                    {
-                        if(!BlockedSet.Contains(nei))
-                            yield return nei;
-                    }
-                }
-            }
-
-            public float MoveCost(Hex src, Hex dst) => Graph.MoveCost(src, dst);
-            public float EstimateCost(Hex src, Hex dst) => Graph.EstimateCost(src, dst);
-            public IEnumerable<Hex> Nodes() => Graph.Nodes();
-        }
-
-
         public IEnumerable<DispatchPlan> GetAttackContourPlan(AllocationParams p)
         {
             // Requires:
@@ -313,7 +291,7 @@ namespace YYZ.JTS.AI
 
             GetBlockedSetAvailableSet(p, out var blockedSet, out var availableSet);
 
-            var blockedGraph = new BlockedGraph(){Graph=G.DynamicGraph, BlockedSet=blockedSet};
+            var blockedGraph = new BlockedGraph<Hex>(){Graph=G.DynamicGraph, BlockedSet=blockedSet};
             
             var availableFormations = S.UnitStates.GetBrigadeFormations().Where(formation => p.FriendlyCountries.Contains(formation.Group.Country)).ToHashSet(); // TODO: de-duplicate?
 
@@ -324,7 +302,7 @@ namespace YYZ.JTS.AI
         {
             GetBlockedSetAvailableSet(p, out var blockedSet, out var availableSet);
 
-            var blockedGraph = new BlockedGraph(){Graph=G.DynamicGraph, BlockedSet=blockedSet};
+            var blockedGraph = new BlockedGraph<Hex>(){Graph=G.DynamicGraph, BlockedSet=blockedSet};
 
             var activeFormations = new List<Formation>();
             /*

@@ -30,10 +30,10 @@ namespace YYZ.AI.PointToPointAllocator
 
     public class SimplePointToPointAllocator
     {
-        public float Coef = 1f;
+        // public float Coef = 1f;
         public float DiscountRate = 0.1f;
         public float LanchesterPercent = 0.5f;
-        public float DiversionaryTimeLambda = 5f;
+        public float DiversionaryTimeLambda = 0.2f;
         public float DiversionaryPercentLambda = 1f;
         public float DiversionaryCoef = 1f;
         public float LossCoef = 5f;
@@ -104,8 +104,8 @@ namespace YYZ.AI.PointToPointAllocator
             public PositionWrapper AssignedPosition;
             public void AssignTo(PositionWrapper assignedPosition)
             {
-                if(assignedPosition != null)
-                    assignedPosition.AssginedUnits.Remove(this);
+                if(AssignedPosition != null)
+                    AssignedPosition.AssginedUnits.Remove(this);
                 AssignedPosition = assignedPosition;
                 assignedPosition.AssginedUnits.Add(this);
             }
@@ -222,7 +222,7 @@ namespace YYZ.AI.PointToPointAllocator
                 if(lastT != -1f)
                 {
                     massP = DiversionaryTime(t) - DiversionaryTime(lastT);
-                    massPInt += massP * DiversionaryPercent(totalCombatValue, position.PassiveTotalCombatValue);
+                    massPInt += massP * DiversionaryPercent(totalCombatValue, position.PassiveTotalCombatValue) * position.PassiveTotalCombatValue;
                 }
                 lastT = t;
 
@@ -242,7 +242,7 @@ namespace YYZ.AI.PointToPointAllocator
                 throw new ArgumentException("position should have at least 1 element");
 
             massP = 1f - DiversionaryTime(lastT);
-            massPInt += massP * DiversionaryPercent(totalCombatValue, position.PassiveTotalCombatValue);
+            massPInt += massP * DiversionaryPercent(totalCombatValue, position.PassiveTotalCombatValue) * position.PassiveTotalCombatValue;
 
             return LossCoef * MathF.Max(0, presentValues.Max()) + DiversionaryCoef * massPInt;
         }
