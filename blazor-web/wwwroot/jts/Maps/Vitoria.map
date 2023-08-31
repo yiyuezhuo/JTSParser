@@ -1,0 +1,671 @@
+2
+209 101
+0 30 0 187802 1
+rrffrfffffffffffffrrfrffrffffrfffffffffffffffffffffffffff ffffffff                                                                       wvv                                       ffff          ww              
+rrfrfffffffffffffffrfrfrrffrffffffffffffffffffff f fff f  ffffffff                                                                       wvv                                      ffrff           w              
+frfffffffffffffffffffffffffrffffffffffffffffff            fffffffff                                                                      wwv                                      frrff            w             
+ffffffffffffffffffffffffffrfffffffffffffffffff           fff ffffff                                                           vvv       v wv                                      rrrf             ww            
+fffffffffffffffffffffffffrrfffffffffffffffff                                                                                             w v                                     rrrff               w           
+ffffffffffffffffffffffffffffffffffffffffffff                                                                          vv                 ww                 v                    rrrf                ww          
+ffffffffffffffffffffffffffffffffffffffffff                                              v                                                 w                 v                   rrrf                   w         
+ffffffffffffffffffffffffffffffffffffffffff                                               v                                              ww                  v                                          ww        
+fffffffffffffffffffffffffffffffffffffffff                     f ffff                                                                  ww                     v                                          w        
+ffffffffffffffffffffffffffffffffffffffff          fff         fffff                     v                                            w                                                                   ww      
+ffffffffffffffffffffffffffffffffffffffff          fff        fffff                     vv                                            w                                                                     ww    
+fffffffffffffffffffffffffffffffffffffff          fffff           f                                                         v         w                                                                      w    
+fffffffffffffffffffffffffffffffffffffff          fffff                                                vv                   v         w                                                                      w    
+ffffffffffffffffffffffffffffffffffffffff        fffff                                                  v                             w vv                                                                   w    
+ffffffffffffffffffffffffffffffffffffffff        ffffff                                                                          s s wwvv                                                                     w   
+fffffffffffffffffffffffffffffffffffffff          f fff                                                                        ssssww                                                                         w   
+ffffffffffffffffffffffffffffffffffffff                                                  f fff                               ssssww                                                                           w   
+rfffffffffffffffffffffffffffffffffffff                                                 fffffff                            ffssww                         vv                                                  w  w
+rfffffffffffffffffffffffffffffffffffff      f                                     f f ffffffff                         fffssww                           v                                                   w  w
+frfffffffffffffffffffffffffffffffffff      ff                                    fffffffffffff                  w w w wswsww                                                                                 w w 
+ffffffffffffffffffffffffffffffffffff      ffff                                   f ffffff   ff              wwww w w w w w                                                                                   www 
+rfffffffffffffffffffffffffffffffffff      fffff                                      fff    f             ww                                                                                                 w   
+rffffffffffffffffffffffffffffffffffff     fffff                                       ff                ww                                                                                                  ww   
+rrrffffffffffffffffffffffffffffffffff       fff                                                       ww                                                                                                    w    
+rrrffffffffffffffffffffffffffffffffffff     ff             ffff                                     fwff                                                                                                  ww     
+rrrrfffffrfffffffffffffffffffffffffffff      f            fffff                   v v     v        fwwf       v                    f                                                                      w      
+rrrrrffffrfffffffffffffffffffffffff                      ffffffff   ff            vv v     v      ffwf       vvv                ffff                                                                     w       
+rrrrrfffffffffffffffffffffffffffffff                    ffffffffffffff                            wwff         v        f      ffffff               v                                                   ww v     
+rrrrrrrrrfffffffffffffffffffffffffff                  ffffffffffffffff                          ffwf                 vv fff   fffffff               vv          f                                       w vv     
+rrrrrrrrrrrffffffffffffffffffffffff                   fffffffffffffffff                        fwwff                    fffffffffffffff             v       fffff v v                                  w         
+rrrrrrrrrrrrrrrfrffffffffffffffffffff                  ffffffffffffffff                       ffwff                      ffffffffffffff   bb              ffffffff v                                  ww         
+rrrrrrrrrrrrrrrrrfffrffffffffffffffff     fff          ffffffffffffffff                    ssswwff                       fffffffffffffff          f fff ffwwwfffff                                    w          
+rrrrrrrrrrrrrrrrrrrffrffffffffffffff  f ffffff         fffffffffffffffff                   swwff                           fffffffffffff        sfffffffww   wwfwss                               vv  w          
+rrrrrrrrrrrrrrrrrrrfffrfffffffffffff  fffffffffff     fffffff  fffffffff                  sswfff                         v  ffffffwwwfwww w w wswswfffwfw      wfww                                  w           
+rrrrrrrrrrrrrrrrrrrrrfrffffffffffff        f ffff ffffffffff      ffff f                  wwff                               fffwwv  w   w w w w w www w       ww w                                 ww           
+rrrrrrrrrrrrrrrrrrrrrrrrffffffffff             fffffffffffff    w  f                     swsff                          www   ww  vv                             ww         w w                     w     fffff  
+rrrrrrrrrrrrrrrrrrrrrrrrrffffffffff              fffffffffff  ww ww    vv                swsw w                     wwww  w ww                                     wwww w ww w w          w         w    ffffffff
+ rrrrrrrrrrrrrrrrrrrrrrrrrrfrrfffff               fffffffff  w     ww  vw           w   wsww w ww                 ww       w                                           w w     ww        w ww w    w     ffffffff
+ rrrrrrrrrrrrrrrrrrrrrrrrrrrfrffff                fffffffff  ww      www wwwwwwwwwww www w       wwww wwwww w w w w                                                             w w w   ww   w ww  w     f ffffff
+   rrr    rrrrrrrrrrrrrrrrrrrffffrr               fffffffffff  ww                                    w w www w w w  v                                                            w w www         www         ffff
+v          r rrrrrrrrrrrrrrrrrrrrrr              fffffffffffff   w                                                  vv                                                                                           
+v            rrrrrrrrrrrrrrrrrrrrrrr               ffffffffffff  ww                                                  v                                                                                           
+                 rrrrrrrrrrrrrrrrr                   fffffffff    w                             vvv                             fff                                 v                                            
+                     rrrrrrrrrrr r                    fffffffff   w                            vvv       vv                   fffff   f                              v                                           
+                       rrrrrrr                        fffffffff    w                            v        v                   fffffffffff                                                                         
+                         r r                    f   f ffffffffff   ww                                                       fffffffffffff                                                                        
+                                             fffffffffffffffffff    w                                                      ffffffffffffff                                v                                       
+                                               fffffffffffffffff   v w                                                    ffffffffffffffff                                                            fff        
+                                               fffffffffffff fff   v w                                                    ffffffffffffffff                                                          ffffff       
+                                                 ffffffffff          ww                                                    fffffffffffffffv                                                        ffffffff      
+                                                     ffffffff         w                                                    fffffffffffff  vv                                        vv             ffffffff      
+                                                       ffffff fffff    ww                                                   ffffffff fff   v                                        vv ff          ffffffffff    
+f                                                        fffffffff      w                                                   ff fff                                                 vv  ffff        fffffffffff   
+ff                                                       fffffffff       ww                                                           f ffff                                          fffffff     ffffffffffff   
+fff                                                        wwwwfff         w                                                         fffffff                                          fffffff   fffffffffffffff  
+fffr                                                      ww   ww          ww                                         vv            ffffffff                                          fffffff  fffffffffffffffff 
+fffrr                                                     w      ww         w                                          v            fffffff                       vv                   fffff  ffffffffffffffff   
+rrrfff                                  v v               w        ww       w                                          v             ffffff                      vvvv                     ff  fffffffffffffff    
+rrrff                                   vv               w           ww   ww                                                           fff                      vvvvv                      f  fffffffffffffffffff
+rrrf                                                     w             www                                                                                      vvvvv                        ffffffffffffffffffff
+rrrff                                                    w                                v v                                                                  vvvvvv                        ffffffffffffffffffff
+frrrf                                                    w                                 v                                                                  vvvvvvv                          ffff  ffffffffffff
+frrrrff                                   w              w                                                                                                     vvvvvv                                fffffff fff 
+fffr r                                  ww ww           ww                                                                                                       v                                   fffff f     
+ fff                                   w     ww         w                                                                                                                                             ffff       
+                                      ww       ww     ww                                                    v                                                                              v    v      fff       
+     ffr                              w          ww w w                                                     vv                                                                                 vv        f       
+     fffr                             w            w w                                                           v  f   fff        vvv                                                         v                 
+      ffr                             w                                                                               f fffff      vv                                                                            
+       frr  f fff                     w                   f                                                           fffffffff                                                                                  
+         rr fffff                 w ww                 ffff                                                      ff fffffffffffff                                                                                
+             fffff              ww w                  fffffff                                                    ffffffffffffffff                                                                                
+        f  rr ffff              w                    fffffffff                                                   fffffffffff f f    f                                                                            
+        ff  r  f f            ww                      fffffff                                                    fffffffffff      fff                                                                            
+        fff                 ww                           fff                                                      ffffffffff      ff                                                          v             f    
+         ffff     f        w                             f        v                                               ffffff  ff     ff                          v                                 v          fffff  
+          fffff  ff       ww                                     v                                                ffff f         f                                                                        fffff  
+          ffffffffff      w                                      v                                                 fff                                    v                                              fffff   
+           ffffffff       w                                                       v                                ff                                                                                    fffff   
+           fffffff      ww                                                       vvv                                    f                                                                                  f   vv
+           ffff         w                                                                                              f                                                                                       vv
+           fff         w            r r                                                                               ff      o   ff      v                                                                      
+                      ww          rrrrrr                                                                                 v   ooo   f    v v           vv                                                         
+                      w                       r                                                                   f      vv  o      f    v                                                                       
+                     w                          r       rr                                                      ffff     vv     ffffff                                                                           
+                     w                          rrr      rr                               rrr                  ffffff f        ffffff                                                         vv                 
+                    ww      ff                   r       rrrr                             rrr     rrr          ffffffff         rrrf                                                                             
+                   w        fff                           rrr                             rrr    rrrrrr       fffffffff     ff                f                                                                  
+                   w       fffff                         rrrrrr   r                       rrrrr rrrffrr       fffffffffff ffff              ffff                                                                 
+                  ww       fffff                            rrrrrrrr                      rrrrr rrrffrr       ffffffffffffff                fff   f                                    ff     fff                
+              wwww         f                               rrrrrrrrrr                 rrrrfrrrrrrrfrfrrr      ffff  fffffffff             fffff  fff                                   fffff ffff                
+            ww                                                 rrrrrrr              rrfrrfffrrfrfffffrfrr     fffff  ffffffff         ffffffff  ffff                                   fffffffffff               
+           w                                                   rrrrrrrr         rrfrrffrrffrrrffffffffrrrr     fff   ffffffff        fffff f f  ffff                              f    ffff    ff                
+           w                                                     r rrrr        rrffrfrrrrffrrrrfrrrfrfrrrrr            fff ff                  ffff                             fffff    f     ff                
+           w                                                        rr         rrfrffrrrrfrrrrrffffrrrrrrrrrr                                  fff            ff               ffffff                            
+           w                                                         r         rrrrfffrrrrfrfrfffrrrrrrrfrrrr                                  f              rff             fffffffff                          
+           ww                                                                    rrrrrrrrrffffrffrfrrrrrffrrrr                                                rr              ff ffffff                          
+            w v                                                                    r rrrrrrfrfrfffrrfrrfffrrrrr                                               fr        v        fff f                           
+          ww v                                                                           r rrrrrffrrffffffrrrrr                                                f        vv                                       
+          w  v                                                                               r r rrrrffffffrrrrr                                                                                                 
+         w                                                                                      v  rrfffrrrrrrr                                                                                                  
+llkkkkjjjjjkklkllkklllmmnnmmlllkkkjkjjiiiiiihhggggggggggffggggffeeeddddcccbbbbbaaaaaaaabbaa99877788899aaa99aaa98788877777766665545555544403344444444444444444456778888888899abbcddefffdbabbba98760066777777777777
+klkjjjjjjjjkkkkkkkklllmmnnmmllkkkkjjjjiiiihhhhggggfgggffffggfgffeeeddddccccbbbbaaaaaaaabbaa99887778889aa9989998877777766666666554445444440334444444444444444446677888888889abbccdefggfdbabbbb98776066666666667777
+kkjjjjijjjjjjjjkjjjkklmmmmmlllkkkkjjjiiihhhhggggggfffffffffffffffeeedddddcccbbbbaaaaaa9aaaaa9998777889999988887777776666666666554334443430034444444444444444446677888888889abccddefhgfcbaabcca9876505666666666677
+jkjjjiijijjjjjjjjjjkkllmmmmllkkkkjjjiiiihhhhggggffffffeeefefeffffefeeedddcccbbbbaaaaaa9aaabaa998877889888877777766666666665555554333333322034444444444444444456677777888889abcddeeghgfcbaaabcaa887500555555666666
+kjjjjiiiijjjjjjjjjjjkklllmlllkkkjjjjiiihhhggggffffffffeeeeeeeeeeeeeeeedddcccbbbbbbaaa9999aabaa98877788887777776666666655554445443333333320334444444444444444565677777777789abcddefhhgfcbbaabcba987655045455556666
+kkjjjjiiiijiiiijjjjjjkklllllkkkjjjjjiihhhgggggffffeeeeeedddeeeeeeedeedddccccbbbbbbaaa9999aaaaaa998777877776666666666555544333433333333332003344444444444444456566677777788aaccdefghhfdcbbaaabcb987755004444555555
+jjjjjjiiiiijiiiiijjjjkkkklkkkkjjjjjiiihhhggggffffeeededdddddddeeeddddeddcccbbbabbbaaaa99999aaaaa98877777666666665545454433333333333333332203344444444444444446556677877799abccdeghggedbbcbaaacb987765440444445454
+kjjjjjjjiiiiiiiiiijjjjjkkkkkkjkkjjiiihhhhgggffffeeeedddddddddddeddddddddcccbbbaabbbaaab9999aaaaa9887676666665655443434333333333333333322003334444444444444334544567877789aabbcdeefefdbbcebaaacb987765440044444444
+kjjjkjkjjijjjiijjiijijjkkkkkjjkjjjiiihhhggggfffeeeedddddcccdcdddddddcdddcccbbbaaabaaaabba999aaaa9987666666555544333333333333333333332200333344444444444444333445668866899989bbcccdcdbbbbccaaaba988765444033334444
+jjjklllkjjjjjiijiiiiiijjjjkkjjjjiihhhhhhggggffeeddddddccccccccdddddcccccccbbbbaaaaaaaabbba99aaaa9977565655444433333333333333333333332033333444444444443433334456566767788899abbbbcbbbbaabba98a9988766544300333333
+jjjkkkkkkjjjjiiiiiijiiijjjjkkjjjiihhhhgggggfffeeedddddcccccccccdddcccccccbbbbabaaaaaaabbba999aa999977555443333333333333333333333333320333344444444443333333344675566778788899aaaabba9a99aaa9888888766544332003333
+kjjjjjjlkjjiiiiiiiiiiiijijjkjjjjihhhhhggggffffeeddddcccccbbbbccccdcccbbbbbbbbbbbaaaa99bbaa889a99999777644323333333333333333333333333203333444444443333333333455655777889999899aaaaaa89999a99887877766544332202232
+lkkjkjjjjjjijiijjjiijiiiijjjjjjjihihhhggffffeeeeddddccccbbbbbccccccccbbbbbbbbbbaaaaa89aba9889999999777765332233333333333333333333333203333444444333333332234555545678899baa9abdbaaa988899999877767766544332202222
+llkkkkkjjjjjjjjjjjiiijiijjjjjjjjiiihhgggfffeeeddddccccccbbbbbbbbbcccbbbbbbbbbbaaaa99899a9989999999777777754322233333333333333333232210334444444433332322233445444677889abbab9ccbaaa887788889866756666554433201222
+mllklkkkkjjjjjjjjjiiiiiiijjjijjjiihhhgggffeeedddddccccccbbabbbbbbcccbbaaaabbbbaaaa888989888999887767676765532123333333333333332212110033444444443322222223344433467899ab9a897aabaa8898767888865655565554433210222
+mmllllkkkjjjjjjjjjjjjiiiiiiiiiiiiihhhgggffeeeedddcccbcbbbbaaaabbbbbbbbaaabbbaaaa8877778888899987766666565553212333333333333322111100333444444443332222223333333456788999786778aa9899a9866767664654455544433210121
+nmmllllkkkkjjjjjjjjjjijiiiiiiiiiiihhhgggffeeddddccccbbbbbbaaaaabbbbbbbaaaaaaaa887767888888887877666655555543212333333333333211110033333444444433332222222323334456787878556789a9788aaa877656554553344544433210111
+onnmmlllkkkkkjjjjjjjjjjiiiiiiiiihihhhggfffeeeddcccccbbbaaaaa9aaaabbbbbbaaaaa997756778888887767666655444444331122333333333322110033333344444444332222222222222344566766564557789767799a987754343444344444433210110
+poonmmlllklkkkkjjiiiiijjiiiiiiiihhhhggfffeeeedddcccccbbaaa999aaabbbbbbaaaa997755678888787766666655554323232211122323232222110033333333444444433322222222222223455655554444666887667889885544333344334444433210110
+pponnmmmmllllkkjjjjiiiiiiihiiiiiihhhggfffeeeddddcccccbbaaa989aaabbbbbaaaa9886555778877776666665555553212121111110202020101003333333344444434333222222222223333445533444456766776667888585443333333333444332210101
+qppoonnmnmmllkkkkjjjiiiiihhhhhiiihhhgggfffeedddddcccbbaaa99889aaabbbbaaa99765567777777666666665555443211111100000020203030333333334444444433332222222222223333344433445566766765576777566565433333333323232210002
+qqppponnnnmllllkkkkjjiiiiiihhhhiiihhgggfffeeeeddddccbbaa9988899aaabbaaa987555667667766665556565544333211110011202333434343333343444433444333332222222222222333333334556667666755666755456665433333333322221110122
+qqqppoooonnmmllllkkjjjjiiiihihhhiihhgggfffeeeeedddccbbaa9987789aabbbaa9976556666666666665555555543222211001122334444444444444444443333443333222222222222222223333234454566656644456745455555333333333332221100223
+qqqqqppppoonnmmllkkkkjjjiiiiiihhhihhhggffffeeeedddccbbaa98777789aaaaaa9865566655666666655555454443211100112233444444444444444444333323333322222222222222222222232234344566556534456544444555333333443322221101233
+qqqqqqppppponnmlllkkkkkjjijiiiihhhihhggffffeeedddcccbbaa987766899aaa998755666655565556554444344433211000113344444444444444444433332223333322222212222212221222222223435655565433565543344445433344653212110012333
+qqqqqqqppppoonnmmllklkkjjjjjiiihhhhhhhggfffeeedddccbbaa9987655789999997655665555555555543333233333210011224444444444333333333333332122332222221111121211111222222233444544555434454444344434433344463211110122333
+qqqqqqqqqpppponnnmmlllkkkjjjjiihhhhhghggfffeeeddcccbbaa9987645688999886545565555554555543211233332110011334444444333333333333333221112221112111111111111112222222233344434555334443344323333333333232221101223333
+qqqqqqqqqqqppoononnmmllkkkjjjjiihhhggggffffeeeddccbbaa99876534577888776435554555443455443211233322000122444444443323232223333333221111111111111111111111122222222233333334554334443234322343444332222211002233333
+qqqqqqqqqqqqqppopoonmllllkkjjjiihhggfgfffffeedddccbbaa88665434567777775334334555332444443210122211001133444444444222222223333322210011111111111111111111222222222224333345553234332235422344555432111111012233333
+qqqqqqqqqqqqqqpppponnmmllllkkjjiihhgffffffeeedddccba9886554423466777664323234554212444432210111100002244444444444432122222222222110001111101111111111111222222221123233344442233321234322344443432211110123333333
+qqqqqqqqqqqqqqqpppononnmmllkkjjjjihggfffffeedddccbbaa996644322355666664211134553112334322210111100123344443444343432111111121111110000010000011111111112221112221112123454432233221334322233332322211100223333333
+qqqqqqqqqqqqqqqqqppopoonnmmllkkjjiihhfeeefddddccbbaaa998755332345666654200133432111233322210000001223444433334432322111111111111000000000000000111111112110002221111123464321222211333222223222222111101233333333
+qqqqqqqqqqqqqqqqqqqppponnnnmmllkjjhhffdeddccbcbbaaaa9998765432234545554220022322011233222210000022333334333334432222111100000100000000000000000001111111001110010111223444321232111233221222222211111102233333333
+qqqqqqqqqqqqqqqqqqqqqppoooonmlllkjiggedcbbabaaaa9a999987765532233434454431011211011222221100001122333322222334332112100100000000000000000000000000011101011111101001123433211222112222211112111111111012223333322
+qqqqqqqqqqqqqqqqqqqqqpppppoommmlljihfedccbba998999898877665432122223333432200100011122111100112222232222222223332111100000000000000000000000000000100010111122100101122322111211112322111111111111110012222322222
+qqqqqqqqqqqqqqqqqqqqqqqpppooommmlkihfeeeeddbb98878787766554422110112222322211000011111110000111212222222221222222100000000000000000000000000001011111111112222211001111211110101112322111111111111110112221212221
+pppqqqqqqqqqqqqqqqqqqqqqqppppmnmlkiggghghffddaa887665645443321003001111112221000011111000000000101111111111111121100000000000000000000111110111111111111222233211110000101001010112211111101111111110111111111111
+oooppqqqqqqqqqqqqqqqqqqqqqqponnmlkihihjiihgeecb9977554343332103aa450010101111100000000000000000000000101000001010100000000000000000000112121111111111111223343321111111010111110011111111010010111101111111111111
+nnoopppqpqqqqqqqqqqqqqqqqqqpponmmkkjkkkjjihfedca98774333333220044aa5500000000000000000000010000000000000000000000000111000001000000000112222212221112122335433221111111121111111010101110011101001101111111112222
+nnooooopoppqqqqqqqqqqqqqqqqqqoonnmnlmllkkjhfedcb9877435454422110044a753110100010000000001111100000000000000000000001221000012100000000122233333332222222354423221111112222111111101010001111111110001122212112233
+mnnonnmmlmmppqqqqqqqqqqqqqqqqqqopoonnmlkkjhfddba8876767665433221103aa55331101121100000111111111110000000000000000011221100122110000000022233333333333333554222111111112222111111111111111111223221111122222221233
+mnmnlmkkjllmmpppqqqqqqqqqqqqqqqqqpponmllkjgedcb9989898876554433220035a8531123232210000111111111111101010101010001111222100122210001110111222233333334454654221111111222211111111111111111112333221111112223332233
+llllkkjjhjjkkmmppqqqpqqqqqqqqqqqqqpoonmlljgeeddbbaa99887766554432103468653223333321000011111111111111111111111111111222101222100012221111112222323344456543221111122222111222122111111111112121221111112233453333
+kkkkjjihghhiiklnnonooppqqqqqqqppopooonmmlkjgfffedcba9998766665543201245764422333333120011111111111111111111111111111222101222100112221111111122222233434332221111122222122222222111111111111111111111111122344433
+ijijiihhegegijkmmnnnmnnppqpqpqpomnmnnnmljiggefeedcbaa998877665544210133655433333333332211111111111111111111111111111222101222210122221111111111222222323222222221112222222222222111111111111111111111111112333332
+ghhhhhgeeeeghjjkkmlmlmmnnononooonlkmlmlmkigeddcdbbaa9998887765544320022444433333334443321111111111111111111111111111222211222211222211111111111222222222222222221112223332222221111111111111111111111111111222222
+ggegegeedefgghgiikklklkmmnmnmnmnmlkkikikjigdcbaa9a998888777765554431011334332333344444332111111111111111111111111111122221222222222211111111111222222222222222221112333333222221222111111111111111111111111112111
+hgeeeeeeceeffgeggiiighhkklkkkmllklkighgihihfda9878787777676666554431001222222233444454433221111111111111111111111111111221222222221111111111111222222222222222221122333333322222222111111111111111111111111111111
+hggeedddbcceeedefgggfffhhihihjijijiifedfegffeca886675666665656555431100212111233344555544321111111111111111111111111111122222222111111222111111122122222222222221223333333332222222221111111111111111111111111111
+hggfedccbbbdcccddfefdddffgeffgfhfgfgedcdcedeedb987654545454555555432100111111233344566655432211111111111111111111111111232222222111122332111111111111222222222221222232333332222222221111111111111111111111111111
+ihhggeeccbbbbbbcbdddccaddecccededededcabaccdcdba98755434344444444443210001111233344577765443322111111111111111111111112232222222212233332111111111111222222222222222222223232222221211111111111111111111111111111
+iiihhggeeddccbaaabbca98bbcaaabbcaccccc998aababaa88765443233333344443311001111233445678876554433211111111111111111111112232222222222233221111111111111111222222222222222222222222221111111111223332111111111111111
+jjjiihhgfeedbba9899a9879ab99799a9aabbba878788999876655433212122334333220001112335566a9987665543221111111111111111111112332222222223322111111112111111122222222222222222222222222211111111111121212111111111111111
+jjjjjiiggeedcbba988988688a987888789a9a997667788887665444310101011323332110011223569aaaa99776544321111111111111111111122332222222333322111111111221111222222222222222222222222222222111111111111111111111111111111
+kkkkkjjhhgfedcbb9987776678798667788988887545566767654443210000000222232221000123569a8a997766554321111111111111111111123322222223332211111111111222211222222222222222222222222222222111111111111111111111111111111
+lllllkkjigfedcba98a8877666677766677767676644455666654443200000000012222221100123566768886656554211111111111111211111123322222233221111111111111112212222222222222222222222222222221112111111111111111111111111111
+nmnmmllkiggfdcaaaaaa988765566765566655565543354555554433210012200001111211100123564446765545443211111111111122222111123322223322111111111111111112222222222222222222222222222222221122211111111111111111111111111
+ppnnmmlkjhgfecbbbbbaa98876555655455544454432244445454432110012322000000111000123443346865444432111111111111122332112223322233221111111111111111112222222222222222222222222222222112233211111111111111111111111111
+qpnljlkkjihffdeccbbaa98876555555444444333332233444443322100012344110000000000113333446865444332111112221111112333222223332332211211111111111111112222222222222222222222222222222123353211111111111111111111111111
+qppkjiijiiihgffddcbaa98865444555434443334322222334443321000012344341200000000112222345665544321111222222111112333332233322332122221111111111111122222222222222222222222222222221223433111111111111111111122111111
+qqqplihhhighggfedccba99765543445433654443311122333333321100022334443322000101122233345665543221122222222211111233332333322332222111111211111211122222222222222222222222222222222335332111111111111111111222221111
+oqqppkkgggfgfgfedccbba9875554335433444331100011223333322100123344444432111323233334445555443222222223222211111233333333333222211112232222111211222222222222222222222222222322222343321111111111111111111222221111
+nooqqppkjfdedecdcdcbaa9887655334443344210000000112333322100112245554443322344334334444454443322332333332211111123333333333222211223333221112211222222222222222222222222223432233432211111111111111111111222222111
+knnooqpmkiecbbababaa998877665433443323100000000002232321000001233445443333344344334444444444322333333333211221123333333333222233333322111112222222222222222222222222222223432233332211111111111111111111122222222
+hkknnooomjgdb9899988786766554443344321000000000000021211001000122323333343344345434555545454322333434343322332222333333333322233333221111112223232222222222222222222222223332233332211111111111111111111122222322
+hhhklnnnljgdba887867665545443433244221000000100000000100001110011222233354434455445555656554322333445454322333223233333333322233332222221122234443222222222222222222222233222223332221111111111111111111122223432
+ghhiinnnljgdba877766655554433222244221000001211000000000112110000112223455434555445566666665322224456665423333223333333333332233333333222232335532222222222222222222222233222223333222211122211111111111112223432
+fgghhjnnmjgca9889887777665544221133310000001222100000000122211101012223455533555445666777665532223455665433343223433443334533223344332223333345422222222222222222222223333222223333222111222211111111111111223332
+fffghiknpkhdb9aaa998877665544321122210000000222110001010223212102221123456543455445677878776543343344556434443223443443334554222344442223333443322222222222233322222223333223222333222111233211111111111111112222
+effgghilplkedbcbb998887665544321000100000000122221012221233322212322222356543455545678888887653344434455434543223443443334455342344443222333443222222222223333322222222333223322333222111233311111111111111112221
+deeffghjkomggddbbaa9887655443321000000001120111221012231234422212432222345544455556788999997653344444445545544223454454333344444334433222223332222222222333333322222222333233322333222111344321111111111111111111
+dddefgghikllkggdcba98776544322100000000022321112221233422354443124323233455445666567899aa998753344544455667554333454455443344444444432223222222222222223533353533222222333233322333221112344321111111111111111111
+cccddffggijlmjgfcba8775544321100000000112332211232123443235664322322434445655677656889aabba9863455554456877643333455454443334444444322333332222222222223555555533333322333234322333221223444321121211111111111111
+bbbccdeffghjjlifebb9865433220000001110212344321233223454437774322234434556666677756889abccca9654777555579a8643433565444444333444443222433332222222222223556566555555322333234422333211233443212222222111111111111
+aaabbcdeefghhjihgddba774320000000132213324555322433235666377743223445445667777888767899abccaa766887566679b8654534565544444333444442233433322222222222223466666666565323333244432333222333443222222222111111111111
+aa9aabbddefgghhhhgecb975310000001254335554666322444235777788743234554445678788989877788aaccca87698868888ab9776644576656444333444433344332222222222223233466666666655223333344443332222334443222222222211111111111
+99999aabcddffgghhhgdca7530000011235544665466744244533689988886534554565567889999999898888bbcc987a997aaa8abb898645677866643343444434433322232223222233343466666665533223333344443332223444432222222222211111111112
+888999abbcceefdfeheda844100001434565557776678663457356aab9988754556566656889a9aaaaaab9889abcca98baa9bcdadcba98756788886643443444444433333343334322334464446666665322234333444443322233444332222223322211111111222
+7778899aabaccdbccedb752200001355669667a9a6a8a885578668bccbba8755868777866789aabbbbbbcba9aacdebbacccbfefefdba99867788886544543444443343444454444323446666666666553322344333444443333334443322222234533221211111222
+6667789aaaaabc9a9baa54210000356689babaebeacbcaa889a899cdecca977789b9a998978abbccdccccbaacceeheedfffffffffdba98767888886545644444334444445555543333466666666655332222443333344443333334443222222234543333321122222
+555667899a998a776a88431000025599bbeeieieifgefdda9acaaadefedba9878aacbaa9a9aabcdeeeeddccceehhihhfhhiggffffdbaa9878899986566654444545555555555543334466666666653222233443333344444333344432222222223443333322122222
+444556789988676547663100000256abeeiimkmkkijhhffabbdddceggfecba97899aaabababbcceegegeedeejikjkjkjjjkiigigheda997788a9975566654455555555656555434334466666665533222344443333344444333344433322322223343333333222222
+344445678996554445442100002265behimmknkkjjiiiiiffefeedfhigfddba898a99bcccbdceeeghghggeghllmlmlmkkklkljkjifda9888aaba876666654555666666665554455444466666653332223344433333344444333444434444422223433333333332222
+4333345668876432243310000155aaegkljkhihihhhijjkijggffefhjjhfecbabbcaabbccdeeeegghijhhfgjmnononnlllmmmlmkifda98aaccb9876666655555667676666544555444466666533332333344433333444444333444544554532234533444433333322
+5443344557775432111100001267acfjijhhfgggfgghhjjkljkhhfghkkkhfdbbdddddbbbcdeeeghhiikkkhgjmoppponllmnnommlkhfaa9acdcca877677655566778776665544665444466645334333333344333333444443333445544555543233433444444333322
+44433334455544210000000014579cfhghffdfffefegghhjjmlkjhhgjlljgdddfegeeddcedeeefgijkkllkkkmoqqqpnmmnpoponmkhgda9bceddbb9a89765667798a976555456765444666643444433333333333343344443334445744555553223333455545433333
+3333332324443211000000002457acefffeecfeedddeffghhiikjjjhillkjgggggjhhegfgeeeffghijklmllkmoqqqpnmnoqqqpomligdbaadeffddbba97657789ab9887655567765466665433555433444333333343344433334445854445555323333456656543333
+3333221213232100000000014578bceeeecccdddccdeeffgfhhiijjjkkmlmjkjlkljjhihihhfggihiijlmmnmooqqqponpqqqqqqnlihddbdcfhifecb976668899898877556677764466554444554344544443333354344433444445975445555432233445677554433
+222221010112000000000001468abcceccbbcdccbccddeeeeffhhiijklmnpmnlnmnlmklkljjhiikkkijkmnooopqqqqqoqqqqqqqoojhfgdffhhjifda986789999888766768788754666655455543355555444333345444334444445675445566443233335577665544
+2222110000000000000000012578abacbbabbcaaabcdcdcddeeffgghhklopqqopoonnmmmnlljkkmlmkllmnppppqqqqqpqqqqqqqpolkhjgihjiiigdca8789aaa9887777888888754666766666543455777554333335443344444445666555566543233334466765554
+22110000000000000000000012488a8a999aaa8aabbcbcbcccdeeffggiilmppqqppoooononnlmmnmomnmppqqqqqqqqqqqqqqqqqqpooklkljkjjiifea98aabba9888888888888746667776665434577887554333334443344444445666665666554322334456776555
+22100000000000000000000001366757777988789babababbccddddffggjjmmppqqppooooooopopopoppqqqqqqqqqqqqqqqqqqqqqoooommllkkjigeaaaddcba8888888888888766667776655335788988755434443443455555455666655666654432334455676655
+11000000000000000000000001145535565766676989888aabbccccddffhiklnnppqppooooppppppqqqqqqqqqqqqqqqqqqqqqqqqqqppooommlkkigfddddddba8888888888888766677766654457789999875434444444566766566666655666654433233345667655
+000000000000000000000000001222233534344667677777799bbbbcdeeggijllnnpppoooopppppqqqqqqqqqqqqqqqqqqqqqqqqqqqqppoonmlljihgffeedcb98888888888888876677766654567789a99875434454444567877666666656666665443223344567766
+0000000000000000000000000011111223222335565656667789abbccdddfhhjjllnnooooooppppqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqooonmljiihfffedcb9888888888888887777766666566779abaa875434555544567787666666656666665544332334556766
+00000000000000000000000000111122222222233445455667789aabbccddffhhjkllmmonooopppqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqppoomlkiihgffedbb9888888888888888777766666666779acbb975435555545556687766666656666666544432234456666
+0000000000000000000000000111112222222222233444566778899aabbcddeghiikkllmmnnooppppqqqqqqqqqqqqqqqqqqqqqqqqqqqqqpoonmkjihgfedcba9888888888888888887766666666778abcb975445555545555577766665566666666654443233445565
+00000000000000000000000001111122222222222223344566778999abbccddffhhiijjlkmmnnooppppqpqqqqqqqqqqqqqqqqqqqqqqqqqqpoonlkihgfedbaa98888888888888888877666666677789acb985545555555555566656555566666666654443233444455
+000000000000000000000000011111222222222222233345566778999abbcddeegghhiijjkkmmnnoopoppppppqqqqqqqqqqqqqqqqqqqqqqppoomkjigfecba988888888888888888877666666677789aba985555555555555555555556666666666654443322334444
+000000000000000000000000001112222222222222222334556777899aabbccdeffgghhiijjkkmmnnoooopoppppppqqqqqqqqqqqqqqqqqqqponmkjigfdcba9888888888888888888776666666777899aa985555555555555555555566666666666654444432233344
+00000000000000000000000000011222222222222222222445566778899abccdddeffgghhiijjkkmmnnonooooooppppppqqqqqqqqqqqqqqpponmkjigfdcba988888888888888888777666666677789999985555555555555555555566666666666554444433223333
+1
+                                                                                        -         %                                       )                 1         *1                 )                       
+                                                                                        )DD        H                                      %                *          1                 *1                       
+                                                                                        )  DD      )                          8       4    LB4D            )         *                  )                        
+                                                                                        )    DD    )                  4 4 24B234L 24B2 DJ0 -D  DD 4        )        21                  1         $              
+                                                                                        )      H   %H               22 B4B  2:  )FB4D   1  ) H   B DD      )       *                   *           DH            
+                                                                                        )      %D   )       4 24B4B2  62 DB2*1  )    DB2   ) %H      DD 4 *1      21                   )            %            
+                                                                                        1        DD % 4 24B2 B       * DD   )   %          )  %        B @!     22                    *1             DH          
+                                                                                       *           DBZ B            *1   DD 9    H        *1   DD             *2                      1               %          
+                                                                                       )             )              )      B-    %H       1      H            1                     *2                 H         
+D                                                                                      )             )              1     4 1DH   )     22       )           *                      1                  %H        
+ DD                                                                                    %L            %H            *  4 22 J  %   )    *        4)          *1                    22                    %        
+   DD                                                                                   %DD 4         )           2122 B   )24DH  )    )4 4 24B2 ED         1                    *                       DH      
+     DD                                                                                  LDB DB4D 4   % 4     4 26B2       +   ED %   *3 B FB4B4D  H       *                     )                        %      
+       DD 4                                                                              ) H     B DB4BZ DB4B2 B          21     DBT@ -          DD%H     *1                    *1                         H     
+         B DD                                                                            ) %H          %D                *            )DL          DE     )                     1                          %H    
+             DD                                                                          )  %            H              *1            1 1H           DH   )                   22                            )    
+               DD                                                                       *1   DD          %H             1            * * %H           -   1                  *                              )    
+                 DD                                                                     )      DD         )           *2            21:1  %           )DH*                  *1                              )    
+                   DD                                                                   )        H        %           1            * *%    DD         ) %)                  )                               )    
+                     DD 4                                                               )        %B4D      H         "            21*1 H     DD       )  EH                 1                               )    
+                       B DD                                                             )            DT 4 21                    22  1  )       H      )   %                *                                )    
+                           DD                                                           1           22 B B          20        22   *   )       %H     %    H              *1                                1    
+                             DD                                                        *          22       $H     *2      4 22     )   )        %      H   -D             1                                *     
+                               H                                                      *1        22          %     1 4 24B2 B      *1   %H        H     )   ) DD         *2                                21     
+                               %D                                                     9       22             DD 6222 B            )     )        %H   *1   )   DD       1                                *       
+                                 DD                                                 225 4 4 22                 J B                1     %         %   1   *1     DD   *2                                *1       
+                                   DD                                           , >222 B B B                   )          4 4 4 2:       H         DH*    1        DD 1                                 1        
+                                     DD                                         1B)B                           %D       22 B B B )       %H         %)   *           ND                                *         
+                                       DD                                      *  )                              DD   22         )        %         *Q   )          *1 DH                             *1         
+                                         DD                                   *1  )                                DF2           )         H24D 4 4 5   21          1   %                             1    (     
+                                           DD                                 )   )                                  DH          )    4 24B3   B B B H22           "     DD 4                        *     )     
+                                             DD                               1   )                                   %          %H 22 B             'L                    B DT                     21     )     
+                                               DD 4                         22    )                                    DD         32                  %@                    22 DD                 22       %D    
+                                                 B DD 4                   22      )                                      DD 4 4 22                     @ $H               22     H            4 22           DD  
+                                                     B DB4D 4 4 <        *        )                                        B B B  ,                       %           24B2       %H         22 B               DD
+                                                           B B B)DD 4   *1        1                                               5LD 4 24B4B4D   4   24D  H        "2            %       22                     
+                                                                !  B DD 1        *                                              *2 I B B       DB2 DB2   H %H                      DD   22                       
+                                                                       B         !                                          , 24A( %H                    )  )                        DD"                         
+                                                                                                                            1B   %H %                    %H %                          @                         
+                                                                       $H        ,D                                 4     *2      %  DD                   % 4H                                                   
+4 4 24B4B4D                                                             %        -DDD 4 4 4                   4 24B2 H    1        H   H                   B ED               4 4                  $D 24D 4      
+ B B       DD                                                            H       ) DDB B B DD 4   4 4 4 4 24B2 B     )   *         %D  %T                      H        4 24B2 B @                   B   B DD 4 4
+             DD                                                          )      *9   DD      B DJ6DB4B4B J  4 4      )   )           DF2 DH                    -D 0 "4B2 B                                   B B 
+               DD                                                        %D     1)     DH       )  B B DB922 B DB4B4N1   )             H  #8                ,,B1 B  "4D                                          
+                 DD                                                        DH *2 )      %       )        'D         1DH  )             %H  %D             :4AA         DD                                        
+                   DD                                                       '0)  )       DD     )          DD     22  %  )              %    DB4D       22%              H                                       
+                     H                                                       DY  )         H    1            H  22     DN1               H       H  24B2   H          24D)                                       
+                     %D                                                     22%  )         %L  *             %Z2        )H               %H      )22       )         "   EB0                                     
+                       H                                           $@ "4B4B2   H )          )DD)            22)         1%B4D         4   )     23         )                                                     
+                       %D                                                      %H)          1  ED         *2  %       *2     DB4B4B4B2 DD !   22           %H                                                    
+                         H                                                      %)         *     H        1    DD     )               24BP  *2              )                          $D                        
+                         %D                                                      I         )     %D      *       DD   )             22      % 4 4           )                            DD                      
+                           DD                                                    %D       *1       DD   21         H  )           22         B B DB4B4B4B4B4E                              DB4D 4 4 4 4 4 4      
+                             DD                                                    H      )          DH*           %H )          *                           DH                                J B B B J B DB4B4B
+                               DD                                                  %D     %           +1            % 1         *1                            %                               *1       )         
+                                 DD                                                  DD    H        , 1              NL         1                              H                              1       *1         
+                                   DD                                                  DD 25H     24AB               %EDB4H   22                               %H                            *        )          
+                                     D@                                                  B  )    *                   ( H  #4F224B4B4D                           !                           *1        )          
+                                         (                                                  %   21                  21 )     B       DD 4                                                   )         1          
+                                        *1                                                   DR2                   *   %H              B DD                                                 )        *           
+                                        )                                                   22                     )    )                  DD 8                                             )        )           
+                                        1                                                  *                       )    '4D                  B% 0                                           )        )           
+                                       *                                                  29                       )     H DD                  B            (                               )       *1           
+                                      *1                                                *2 )                       )     )   DH                             )     $                         1       )            
+                                      1  $L                                             1  )                       )     %H   %                             1      H                       *        !            
+                                     *    %DD                                         22  21                       %D     !    H          *0               *       )                       )    , 4 24D          
+                                    *1     H DD              $D                      *   *                  20 (     H         !          )               *1       )                  (    !    )B B   DD        
+                                    1      -D  DD 4            DD                   21  *1                22   )     %H             0     1           4   1       *1                  1 $       )        H       
+                                  *2       ) DD  B D@            DH             *4B2    1                *     )      )           22    *2          *2 H22        1                  *   DD     %        %D      
+                                  1        )   H                  %             1     *2                21     %H     %         22      )           1  'D        *                  *1     H    .P         DH    
+                                22         !   %D                  DD     < 24B2      1               4*        )      H      22        1          *     H      *5D                 )      %H   )DD         %    
+                               *                 DB4D 4 24D 4        DD 22%B         *            24B2 A        %      )    22         *          *1     %H     1  H                1       %   1  DH        DD  
+                              21                     B B   B DD       2VH  DB4D   4 :5B4B4D   24B2               H     %H *2          21          1       %    *   %D              *         H *    % 4     4 2TB
+                            22                                 DH   22  %      DB2 B1      DR2                   )      ) 1          *           *         DH *1     DD           21         %Z1     B DD 22 B   
+H                         *2                                    %  *     DD        *    *4B2                     )      '2          21          *1          % 1        DD 4 4 4 >24 4 4 24B4B6E       24BVH      
+)                         1                                      H21       DD      )    1                        )       H         *            1           *R           B B B B)B B B B      *TD   22    )      
+%                        *                                      634          DB8   )  22                         %H      %H       21           *            1                   )             1 2TF2      %      
+ H                       )                                    22 B DB4D        %D  )*2                            )       )     *2            21          22                    1            * *   DD      DH    
+ )                      21                                4 22         DD 4 4 4 4H )1                             -       )     1            *           *                     *            *1 )     LD     #4H  
+ %H                    *                          4 4 24B2 B             B B B B EJ3                              1H      )   26B4D 4       *1          *1                     )            1  )     ) DD 4 4 % 4
+  )                   *1                      4 22 B B                            %                              * )      ) 22     B DH     1           1                      )           *   )     %H  B B DRR 
+  %                   1                     22 B                                   H                             ) %D     +2          5   *2           *                       )          *1   %H     %   24B2   
+   H                 *                    *2                                       %H                           *1   H    )     4 24B2 H4 5 4     4 24J5D                      )          )     )     2TF2       
+   %H               *1                    1                                         )                           1    %D   ) 24B2 B     # B B DB4B2 B  1  DD                    )          )     )   22   H       
+    %               )                   22                                          %                          *       DB4K2                        22     DD                  )          1     1 22     %D      
+     H              1                  *                                             H                         )          1                        *         DD               *1         *  4 26B2         DH    
+     )            *2                  21                                             %H                       *1        22                        *1           DD             )          )22 B              %    
+     )            1                 22                                                %                       )        *                          1              H            1         *3                   DD  
+     %H          *                22                                                   DD                     )       21                         *               %D          &H         1                      DD
+      %       24B1            24B2                                                       DD                   )     *2                          *1                 H          )       22                         
+       H    22              22                                                             H                  )     1                           1                  %H         )      *                           
+       )  *2        $ 4 24B2                                                               %D                 )   22                           *                    )         )   24B1                           
+       %H )          B B                                                                     H                +4B2                            *1                    %         +4B2                               
+        ) )             4 4 4 4                                                              %H               )                               1                      H        )                                  
+        % )           22 B B B DB4D 4                                                         %               )                              *                       )        1                                  
+         DY       4 22             B DB4B4B4B4B4B4D                                            H              1                             *1                       %H      *                                   
+         *%     22 B                               DD 4                                        )             *                              1                         %     *1                                   
+        *1 @   "                                     B DB4B4B4D                                )            21                             *                           LH   1                                    
+        1                                                      DB4D 4 4 4                      %H         22                              *1                          25E 22                                     
+       *                                                           B B B DB4B4B4B4B4B4D 4 4 4   )       22                                1                         22   B                                       
+       )                                                                               B B B DB4K4B4B4B2                                 *                        *2                                             
+1
+                                                                                                                                                       %H                                          )             
+                                                                                                                                                        )                                          !             
+                                                                                                                                                        %                                         (              
+                                                                                                                                                         H                                        )              
+                                                                                                                                                         )                                        )              
+                                                                                                                                                         )                                        )              
+                                                                                                                                                         %L                                       )              
+                                                                                                                                                          )DD 0                                   )              
+                                                                                                                                                          %  B                                    1              
+                                                                                                                                                           H                                     *               
+                                                                                                                                                           )                                    *1               
+                                                                                                                                                           %H                                   1                
+                                                                                                                                                            )                                 22                 
+                                                                                                                                                            )                               *2                   
+                                                                                                                                                            %                               1                    
+                                                                                                                                                             H                             *                     
+                                                                                                                                                             )                            *1                     
+                                                                                                                                                             %H                           1                      
+                                                                                                                                                              )                          *                       
+                                                                                                                                                              )                          )                      *
+                                                                                                                                                              %                         *1                      1
+                                                                                                                                                               H                        1                      * 
+                                                                                                                                                               )                       *                      21 
+                                                                                                                                                               %H                      )                     *   
+                                                                                                                                                                )                      )                    21   
+                                                                                                                                                                %                      )                   *     
+                                                                                                                                                                 H                     )                   )     
+                                                                                                                                                                 )                     )                  *9     
+                                                                                                                                                                 )                     )                  39     
+                                                                                                                                                                 %H                    )                 * !     
+                                                                                                                                                                  )                    )                *1       
+                                                                                                                                                                  %                    )                )        
+                                                                                                                                                                   H                   )                1        
+                                                                                                                                                                   )                   )               *         
+                                                                                                                                                                   %H                  )              *1         
+                                                                                                                                                                    !                  )              )          
+                                                                                                                                                                                       )              1          
+                                                                                                                                                                   ,H                  )             *           
+                                                                                                                                                                   ))                  !            *1           
+                                                                                                                                                                  *1)                               1            
+                                                                                                                                                                  ) )             4 24J0          22             
+                                                                                                                                                                  ) )           *2 B  1          *               
+                                                                                                                                                                  ) )           1    *          21               
+                                                                                                                                                                  - 9          *    *1        *2                 
+                                                                                                                                                                  )B%         21    1         1                  
+                                                                                                                                                                  )  H       *     *        22                   
+                                                                                                                                                                  )  )      21    *1      *2                     
+                                                                                                                                                                  ) 29     *      1       1                      
+                                                                                                                                                                  +2 )    21    *2      22                       
+                                                                                                                                          (                       %  )   *      1      *                         
+                                                                                                                                         $E                        H )  21     *      21                         
+                                                                                                                                           DH                      )*5B2      *1    :2                           
+                                                                                                                                            %                      ))         1 4 22)                            
+                                                                                                                                             DH                    )1        *22 B  )                            
+                                                                                                                                              %                    +        23      )                            
+                                                                                                                                               DH                 *9      22        1                            
+                                                                                                                                                %                 9)  24B2         *                             
+                                      $ 4                                                                                                        H              .6E):2            *1                             
+                                       B DD 4 4                                                                                                  %H   24D 4 :4B4MDDK9             1                              
+                                           B B DB4B4B4B4@ $ 4                                                                                     +4B2   FDB1   =D^S1            *                               
+                                                           B DB4D 4                 24B4B4D                                                       1        J   &EB7R            *1                               
+                                                                 B DD 4       4 24B2       DD 4                                                 &2         %B4D 2VLDD   4 4 4   1                                
+                                                                     B DB4T 22 B             B DD 4                                              DD         4 2VD )DBTB2 B B DF2                          4     4
+                                                                      4 22 B                     B DD 4                                            H  24B4B2 B   DA            DD                     24B2 DB4B2 
+                                                                  4 22 B                             B DD 4                               4 4 24B4B5B2                           DD           4   24B2           
+                                                              24B2 B                                     B DD             4 4 4 64B4B4B4B2 B B                                     DD       22 DB2               
+                                                          4 22                                               DB4D 4 4 24B2 B B B DD                                                  DD   22                     
+                                                      24B2 B                                                     B B B             D@                                                  DB2                       
+                                                  4 22                                                                                                                                                           
+                                              4 22 B                                                                                                                                                             
+                                          24B2 B                                                                                                                                                                 
+                                      24B2                                                                                                                                                                       
+                                  4 22                                                                                                                                                                           
+                                22 B                                                                                                                                                                             
+                              *2                                                                                                                                                                                 
+                              1                                                                                                                                                                                  
+                            22                                                                                                                                                                                   
+                           *                                                                                                                                                                                     
+                           )                                                                                                                                                                                     
+                          21                                                                                                                                                                                     
+                         *                                                                                                                                                                                       
+                        *1                                                                                                                                                                                       
+                        1                                                                                                                                                                                        
+                       *                                                                                                                                                                                         
+                       )                                                                                                                                                                                         
+                      *1                                                                                                                                                                                         
+                      )                                                                                                                                                                                          
+                      1                                                                                                                                                                                          
+                     *                                                                                                                                                                                           
+                     )                                                                                                                                                                                           
+                     )                                                                                                                                                                                           
+                    21                                                                                                                                                                                           
+                   *                                                                                                                                                                                             
+                  21                                                                                                                                                                                             
+                 *                                                                                                                                                                                               
+                21                                                                                                                                                                                               
+               *                                                                                                                                                                                                 
+              *1                                                                                                                                                                                                 
+            $ 5 4                                                                                                                                                                                                
+            2VHB DD                                                                                                                                                                                              
+           *  %    H                                                                                                                                                                                             
+0
+0
+1
+                                                                                    &0      (  &X                              'X                           $.@                                                  
+                                                                                    "X0   "<C8<*?0  ,                          "#80                         &Q                                                   
+                                                                                ,(8  'P    ! #!C#X<,A@                           'X                         .P                                                   
+                                                                                !C#8<.X          'YA                             "'0                       $Q@        &0$,@                                      
+                                                                                   #!C'0         "'0                              &P                       &P         &P.Q                                       
+                                                                            (         &P          "X0                             .P                       &P         .\A@                                       
+                                                                          "<C88       "X0          'P                            $Q@                      $.@        $QA                                         
+                                                                           ! #'0       '\(0        &X                            &P                       &Q        $.@   ,(<,@                                  
+                                                                              *X8      "!GP       ("/0                          $.@                       .P        .Q  ,,AC!A              8                    
+                                                      "88                   $,C?C88      &X       #<CX8                         &Q                       $UL@     ,,]H<,AA(                "'0                   
+                                                       #'0                   A ! ##88    "'0       ! ##88 (                     &P                       &^Q     $QC!C#Y<,C88               &P                   
+                                                        "X0$P       "80            #'0    &P           ##<C88                   .P                      ,.A@    ,.@    #!A 'A               "X0                  
+                                                         '\.@        'P             .P    .P             ! #'0                 $Q@                     $QA     $QA                  "80      'P &0               
+                                                         "'Q  $,@    &X $          $Q@  ,,A@                "X0                &P                     ,.P      &P           ,        'X      &P &P               
+                                                          &P  .Q     "'0.P        $.H ,,AA                   'P               $.@                   ,,MO@     $.@          $]H       "#88    &X "X0              
+                                                    8     &P,,A@      >\Y@        .]C<AA                     &P               &Q                   $QE_Q      .Q          ,.AA        ,/C88  "'0 'P              
+                                                   "#88   "\QA  (    "!C'0       $QA !                      $.@               &P                   &T.A@     $Q@        $,AA    ,,@   !A ##80 &P &X              
+                                                     ##88  'P ,,A       "X8     ,.@                         &Q                 @                   &VQ    ,(<.@         .Y8    $QA,,@      'X &P "'0             
+                                                       ##88&P$QA         #'0  ,,AA                          &P                                     &VP  $,AC!A      ( ,,YC!    &\,AA     (<.C8>X8 &P             
+                                                    (    ##>\.@           "X<,AA                            "P                                     &ZX0 .Q        $,C<AC!      &QA       #!A #!C#8>X8            
+                                                    #88    #'Q             #/Q                                                       $P            "'7P$Q@        .Q !         &P ,              #!C#8<(8        
+                                                     #/88   &P            ,,A@                                                      $.@             &V\.@        $Q@        0 $.D,A@  ,              #!C#8<(0    
+                                                     $AC#88 &P           $QA                                                        .Q              &R!A        $.@   ,,@ $.@ &Q.Q   $Q@                 #!C     
+                                                         ##86P          $.@                                                        $Q@              "X8     (   .Q,(<,AA  .Q  .\A@  ">P                          
+                                                           '^P          &Q             $X                                         $.@                ##80 ,,C8<,]LAC!A  $,A@ $QA     'X                          
+                                                           "'P          .P             "#80$P                                     &Q                   '\,AA #!C!A      .Q   &P    $P"'0                         
+                                                            &P         $Q@               '\.@                   (                 &P                  $.AA             $Q@   &P   $.@ "X0                        
+                                                            &P         &P         ,      "#Y0                   #88               &P                  &Q               &P    &P   &Q   'P         (              
+                                                     (8 (   &P         &P        $Q@       'P                    ##88             &P                  .P              ,.@   $.@   .P   &X         #88 (          
+                                                     ##<C88 .P         &P       $.@        &P                      #'0            &P                 $Q@             $QA    &Q   $Q@   "'0         ##<C0         
+                                                       ! ##<A@         &X       &Q         &P                       &P            &P                $.@         (   ,.@     &P   &P     &P           !           
+                                    (                      !           "#80     &P         &P                 "88   &P            "X0                A         $S8<,AA      .P   &P     &P                       
+                                  "<C88 (                                'X     .P         "                   ##80 "X0            '@                          " #!A       $Q@  $.@     &P                       
+                                   ! #/<C8<(8                            "#88  $Q@                               'X  'P                                                    &P   .Q      &P                       
+                                    ,,AA #!C#88               0            #'0 &P                                "'0 &P                                                   ,.@  $Q@      &P                       
+                                   $QA       ##8<(8          "              "X$.@                                 "X0&@                                                  $QA   &@       .P                       
+                                  $.@          #!C#88 ( ( (                  !&Q                                   #            &0                                       &@            $Q@           (8   ,(<(<(8
+                                  &Q               ##<O<C<C8                   @                                                &P                                                     &P            'S8<,IC!C!C!
+                                   @                ,-AA ! !                      0                                             "X8                                                    &@            &P##]C88    
+                                                  ,,AA                           &P                                              ##88                                               $               $.@  ! ##80  
+                                            ( ,(<,AA                             &X                                                ##88                                          (0 .P            "86Q       'X  
+                                          ,,C<AC!A                               "#88                                                ##80                                        'X$Y@             'VP       "!  
+        0                                ,AA !                                     ##88                                                'X                       $                "'2'0             &RX0          
+       &P                      (8        !                                           #'0                                               "'0                       @                &P"X8            &X'X          
+       &P ,,@                  #'0                                                    "X8                                               "X8                                       "X0#'0           "'2'0         
+8      &\,AA                    "X8         8                                          ##88                             "80              #'0                                       'X &P            &P&P         
+#88    &QA                       ##88      "#88                                          #'0                             'P               &P                                       "'0&P            &P"X8        
+ ##88  &X                          #'0       ##88                                         "X8                           $.@               &P                                        "X2X0           "X0#'0       
+   ##88"'0    ,     $               "X0        ##88 (                                      ##88                         "Y0               "X0                                        'X'X            'P .P       
+     ##8>P( $,A@    "X0              'X          ##<C88                                      ##80                        'P                'P                                        "#:388          &P$Y@       
+       ##\C8>Y8      'P   $          "'0           ! ##88                                      'X                        &P                &P                     ( ,(0               ,/P##8         &P"/88      
+         ! #!C+88    &P   "X0         "X8              #'0                                     "#88                      &X             $(<.@                 ( ($[<MO@              $QGP  !        $.@$QC'0     
+            ,,C?C80  &X    'X   ,      ##80             "X0                                      'W0                     "/0            "[3Y0               $,C<C>C=CY0             ,.D.@           &Q &X "X<(8 (
+            !A ! 'X  "'0   "'0 $Q@       'X              #                                      $.BX8                   $,A@             'X'X               .Q ! ! ! 'X            $QA&Q            &P "'0 'YC#<A
+                ,.C8<(>X0   "X<.@        "'0                                                    &Q ##88                 &Q               "'2#80            $Q@       "'0           &P "X0           .P  &P "#88! 
+              $,AA #!C!G\(8  ##Y0         "X0                                                   .P   #'0                &P                .P 'P           ,.@         &P          ,.@  'P         ,,OP  .P   ##88
+              .Q       "!C'0   'X          'P                                     $,@          $Q@    "X8               &P               $Q@ &X          $QA          "X0       $,AA   &X        $QEQ@ $Q@     ##
+             $A@          &P   "'0         &P                                     .Q           &P      ##80             "X0              &P  "'0        $.@            'X       .Q     "'0      $.D.@  "         
+  "88                     "X0   &P         &P                                   ,,Y@          $.@        'X (           $/@             (&P ( .P        &Q             "'0    $,A@      &P      .Q&Q             
+   ##88                 ( ,/X   "X0        &P                               "8<,QC#88         .Q         &S<G0          &Q        ,(<(<,C>D,C<OP        .P              &P    &Q        &P    $,A@.P             
+     ##88               #<AC#80  'X        &P                          $X    #!GX  #!        $Q@         &P!"X0         .P      ,,AC!C!A !.Q %Q@       $Q@              .P    .P        "X0   .Q $Q@             
+       ##88              !   'X  "'0       &P                          "'0     "'0           &P          &P  'P        $Q@    ,,AA       $Q@ &X        &\(0            $Y@   $Q@        $/@  $Q@ &P              
+         ##88                "'0  &P       &@                           "X0     &P           &P          &P  &X       $.@   ,,AA        $.@  "#88      "!GP            "'0  $.@         &Q   &X  &P              
+           ##80               &P  "X8                      (             'X     &P           &P          &P  "'0      &Q   $YA          "Y0    ##88      &P             .P  &Q          &P   "'0$.@              
+             'X               "X0  ##80                    !             "'0    &P           &X          &P   "X8     &P   "'0          $/@      #'0    $.@            $Q@  .P          &P    &P&Q               
+             "#8<(8 ,(<(<(<(8  'P    # (0                   $(8 (         &P    &P           &W0         &P   $/C88   .P    &P          .Q        .P    &Q            ,.@  $Q@          &P    &P"X0              
+              ,/AC#<AC!C!C!C#88&P      'X                   .[3<C88       "X0   &P           &ZX8        &P   &Q #'0 $Y@    &P         $Q@       $Q@    .P           $QA  $.@           .P    &P '\(8            
+            $,AA   !         ##>P      "'0(       &0  &0   $QGX! ##88      'X   &P           "'3#88      &P   &P  &P "'0    "X8       $.@        &@   ,,A@           &P   &Q           $Q@    &P "!C#80          
+            .Q                 'X       "\C80     .P  "X0  &P"'0   #'0     "'0  &P            &P ##88   $.@   &P  "X0 "X8    ##88     &Q             $QA             &X   &P           &P     &P     'X          
+           $A@                 "'0    (  ! 'X    $Q@   'P  &@ &P    &P      &P  &P            &P   #'0  &Q    &P   'P  #'0     #'0    .P             &P              "'0  &P           &P     &P     "#88        
+                                "P    '0   "'0   &X    &P     "X0   "X0      @  &P            &P    &P   @    &P   &P   "X0     "P   $Q@            $.@               &P  &P          ,.@     "X0      ##80      
+                                    &0&P    "X0  "'0   &X      'P    'P         &P            &P    .X0       .P   &X    'X         $.@             "Y0               &P  &P         $QA      $/@        'P      
+                     (<(8           &P"X0    'P   &P   "'0     &P    &P         "X0           &P   $QGX     $,CX0  "'0   "'0        .Q               'P               .P  .P        $.@       .Q         "       
+                     #!C'0      0   &P 'X    &X   &P    "X0    &P    &P          'P           &P   &P"'0     A 'P   &P    &X0     ,,A@              ,.X              $Q@ $Q@        &Q      $,A@                 
+                        "X8    &P   .P "'0   "'0  "X0    'P   $.@    &X          &\(8 (       &P  $.@ &P       &P   &P    &WP    $QA              ,,AC'0             &P $.@         &P      "Y0               ( (
+                         #!    &P  $Y@  &P    "X0  'P    &P   &Q     "'0         "!C#<G88     &P  &Q  &P       &P    @    .VP   $.@   ( ,(<(<(<(<,QA  "X0           $.@ &Q          .P      $/@              $S<A
+                               &P $.S0  &X0    'P  &P    &P   &P      &P             !&S'0    &P  &P  "P       &P       $,AFP    A  ,,C<AC!C!C!C%O@    '@           .Q  .P        ,,A@      .Q              $.@! 
+                               &P  G@    C     &P  &X    "    &P      "X8             &P"X0   "X0 "P           &P       .Q &P     ,,AA !        .Q                $,A@ $Q@      $,AA       $Q@              .Q   
+                               &P              &P  "'0        &P       ##80           &P #     'P         ( ( (&P      $Q@ &P   $,AA           $Q@                .Q   &P       "Y0       ,.@              $Q@   
+                               &@              &P   &P        &P         'X           .P       &P        ,C<C<C>P      &P  &X   &Q            ,.P               $,A@   &P        'P     ,,YA(              &\(8  
+                        "88                    &@   &P        "X8 (      "#80        $Q@       &P        ! ! !$/@      &P  "'0   @           $QGX               .Q    $.@        &P    $QC#<C80            &YC!  
+            8 &0         ##80                       &P         ##<C80      #         &P        &P             .Q      ,.@   .P              ,.@"'0            ,,A@    &Q         &P    &P  ! 'X            "#88  
+           "#8>P           #                        "X0          ! 'X                &P        &P            $Q@     $QA   $Q@             $QA  &P           $QA      &X0        &P    &P    "#80            ##80
+             ##X0                                    'X            "#88 (            &X        &P           $.@     ,.@    &P             ,.@   .P          $.X       &WX       $.@    &X      'P              'X
+               'X                                    "'0             'S<C88          "'0       &P           &Q    ,,AA     &P            $QA   $Q@          &S#88 (   &R#80     &Q     "'0     &@              "#
+               "#80                 ,                 "X0            &P! '[8<(8       &P      $.@           .P(   !A      $.@           ,.@    &P           .P ##<C80  @ 'X     .P      "X8                      
+                 'X                ,Q@    (            #             &P  "'3!C#88     "X8     &Q           $S\S0          .Q          ,,AA    $.@          $Q@   ! 'X    "'0  $,A@       ##0                     
+                 "#0              $/@   $,A                          &@   "X0  ##88    #'0    "X0         $.@'P          $Q@        ,,AA      &Q           &P      "'0    "P  .Q                                 
+                                  .Q    .Q                                 #     'A     "X8   $/@         &Q &@          &P       ,,AA        &P          ,.@       "X8      $Q@                                 
+                                 $Q@  $,A@                                               ##80 &Q           @            ,.@      $AA           @         $QA         'S88   $.@                                  
+                                $.@   &Q                                                   #  "P                       $QA                              $.@         $.@##80 .Q                                   
+                                &Q    .P                                                                               &@                               .Q          &Q   '@$Q@                                   
+                                &P   $Q@                                                                                                              $,A@          &P     &P                                    
+                                &P  $.@                                                                                                               &Q            &P     &P                                    
+                                &P  .Q                                                                                                                 @            &P     &P                                    
+                                &P $Q@                                                                                                                              &P     &P                                    
+                                "X<.@                                                                                                                               &P     &@                                    
+                                $/AA                                                                                                                                "P                                           
+                                &Q                                                                                                                                                                               
+                                .P                                                                                                                                                                               
+                               $A@                                                                                                                                                                               
+1
+                                                                                                                                                                                                                 
+                                                                                                                                                                                                                 
+                                                                                                                                                                                                                 
+                                                                                                                                                                                                                 
+                                                                                                                                                                                                                 
+                                                                                                                                                                                                                 
+                                                                                                                                                                                                                 
+                                                                                                                                                                                                                 
+                                                                                                                                                                                                                 
+                                                                                                                                                                                                                 
+                                                                                                                                                                                                                 
+                                                                                                                                                                                                                 
+                                                                                                                                                                                                                 
+                                                                                                                                                                                                                 
+                                                                                                                                                                                                                 
+                                                                                                                                                                                                                 
+                                                                                                                                                                                                                 
+                                                                                                                                                                                                                 
+                                                                                                                                                                                                                 
+                                                                                                                                                                                                                 
+                                                                                                                                                                                                                 
+                                                                                                                                                                                                                 
+                                                                                                                                                                                                                 
+                                                                                                                                                                                                                 
+                                                                                                                                                                                                                 
+                                                                                                                                                                                                                 
+                                                                                                                                                                                                                 
+                                                                                                                                                                                                                 
+                                                                                                                                                                                                                 
+                                                                                                                                                                                                                 
+                                                            "80                                                                                                                                                  
+                                                             'P                                                                                   ,(>0                                                           
+                                                             &P                                                                                  $QC!@                                                           
+                                                             &P                                                                                  &@                                                              
+                                                             &H                                                                                                                                                  
+                                                              #0              0                                                 8                              $X                                                
+                                                            (                &X                                                "!                              "'0                                               
+                                                           $A                "#0                                         $P                                     &P        "88                                    
+                                                                                                                         &P                                     &P         #'0(                                  
+                                                                                                                        $.@                                     "X0         "\C88                                
+                                                                                                                        &Q                                       'P          ! ##0                               
+                                                                                                                        .P                                       &P                                              
+                                                                                                                       $Q@                                       .@                                              
+                                                                                                                       &X                                       &1                                               
+                                                                                                                       "'0                                      &P                                               
+                                                                                                                         @                                      &P                                               
+                                                                                                                                                                &P                                               
+                                                                                                                                                                &P                                               
+                                                                                                                                                                &P                                               
+                                                                                                                                                                &P                                               
+                                                                                                                                                                .P                                               
+                                                                                                                                                               $Q@                                               
+                                                          (                                                                                                    "                                                 
+                                                          #0                                                                                                                                                     
+                                                                                                                                                                                                                 
+                                                                                                                                                                                                                 
+                                                                                                                                                                                                                 
+                                                                                                                                                                                                                 
+                                                                          ( (                                                                                                                                    
+                                                                          #<A                                                                                                                                    
+                                                                           !                                                                                                                                     
+                                                                                                                                                                                                                 
+                                                          (                                                                                                                                                      
+                                                          #08                                                                                                                                                    
+                                                           "'0                                                                                                                                                   
+                                                            "P                                                                                                                                                   
+                                                                                                                                                                                                                 
+                                                                                                                                                                                                                 
+                                                                                                                                                                                                                 
+                                                                                                                                                                                                                 
+                                                                                                                                                                                                                 
+                                                                                                                                                                                                                 
+                                                                                                                                                                                                                 
+                                                                                                                                                                                                                 
+                                                                                                                                                                                                                 
+                                                                                                                                                                                                                 
+                                                                                                                                                                                                                 
+                                                                                                                                                                                                                 
+                                                                                                                                                                                                                 
+                                                                                                                                                                                                                 
+                                                                                                                                                                                                                 
+                                                                                                                                                                                                                 
+                                                                                                                                                                                                                 
+                                                                                                                                                                                                                 
+                                                                                                                                                                                                                 
+                                                                                                                                                                                                                 
+                                                                                                                                                                                                                 
+                                                                                                                                                                                                                 
+                                                                                                                                                                                                                 
+                                                                                                                                                                                                                 
+                                                                                                                                                                                                                 
+                                                                                                                                                                                                                 
+                                                                                                                                                                                                                 
+                                                                                                                                                                                                                 
+                                                                                                                                                                                                                 
+                                                                                                                                                                                                                 
+                                                                                                                                                                                                                 
+                                                                                                                                                                                                                 
+                                                                                                                                                                                                                 
+                                                                                                                                                                                                                 
+                                                                                                                                                                                                                 
+0
+0
+0
+0
+0
+0
+162.962 29.7333 2 1 0 Abechuco
+139.038 50.8667 2 1 0 Ali
+153.808 17.8333 2 1 0 Aranguiz
+91.3462 61.3333 2 1 0 Arinez
+91.3077 53.4 2 1 0 Arinez Knoll
+131.885 68.0333 2 1 0 Armentia
+164.577 42.9333 2 1 0 Arriaga
+122.923 83.1333 2 1 0 Berrosteguieta
+180.615 50.9333 2 1 0 Betono
+117.385 40.5 2 1 0 Crispijana
+39.8462 63.6333 1 1 0 D'Urban's bridge
+96.0385 99.9333 2 1 0 Dorono
+203.538 28.0333 2 1 0 Durana
+110.538 26.2 2 1 0 Estarrona
+140.192 2.26667 2 1 0 Foronda
+185.154 36.4333 2 1 0 Gamarra Mayor
+193.269 32.5667 2 1 0 Gamarra Menor
+131.154 34.9667 2 1 0 Gobeo
+108 66.0667 2 1 0 Gomecha
+105.385 44.1333 2 1 0 Lermanda
+96.4231 43.0333 2 1 0 Margarita
+156.308 6.6 2 1 0 Mendiguren
+83.9231 26.1333 2 1 0 Mendoza
+1.57692 41.2333 2 1 0 Montevite
+41.4615 58.2667 2 1 0 Nanclares
+19.8462 81.4667 2 1 0 Puebla Gorge
+46.4615 85.8 3 1 0 Puebla Heights
+14.6154 98.1333 2 1 0 Puebla de Arganzon
+71.2308 49.9333 1 1 0 Puente Villodas
+165.423 35.6 1 1 0 Puente de Arriaga
+199.462 27 1 1 0 Puente de Durana
+185 40.3 1 1 0 Puente de Gamarra
+130.154 32.7333 1 1 0 Puente de Gobeo
+81.9231 39.6333 1 1 0 Puente de Mendoza
+57.3846 60.1667 1 1 0 Puente de Nanclares
+150.385 33.3333 1 1 0 Puente de Yurre
+66.1538 76.1667 2 1 0 Subijana de Alava
+151.577 0.7 1 1 0 To Bilbao
+196.038 0.1 1 1 0 To Durango
+137.5 100.067 1 1 0 To Logrono
+206.923 72.3 1 1 0 To Matauco
+206.269 62.8 1 1 0 To Matauco & Saluatierra
+1.53846 10.6667 1 1 0 To Zuazo
+72.0385 36.3333 2 1 0 Tres Puentes
+67.0769 48.0333 2 1 0 Villodas
+162.462 59.0667 3 1 0 Vitoria
+148.5 28.3667 2 1 0 Yurre
+104.615 38.2 3 1 1 Zadorra
+119.115 56.2667 2 1 0 Zuazo
+82.3846 79.3333 2 1 0 Zumelzu

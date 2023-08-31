@@ -1,0 +1,179 @@
+﻿@page "/"
+
+@inject HttpClient _client
+
+<PageTitle>Index</PageTitle>
+
+<h1>Hello, world!</h1>
+
+Welcome to your new app.
+
+<SurveyPrompt Title="How is Blazor working for you?" />
+
+<input @bind="s" />
+<button @onclick="Load"> Load </button>
+<button @onclick="Plot"> Plot </button>
+<button @onclick="Update"> Update </button>
+<button @onclick="Plot2"> Plot2 </button>
+
+
+<PlotlyChart @bind-Config="config" @bind-Layout="layout" @bind-Data="data" @ref="chart"/>
+
+@code {
+    string s = "";
+    GameState? gameState;
+
+    Dictionary<string, int[]> terrainColorMap = new()
+        {
+            {"Water", new[]{50, 50, 255}},
+            {"Froest", new[]{10, 255, 10}},
+            {"Orchard", new[]{50, 250, 50}},
+            {"Rough", new[]{100, 100, 50}},
+        };
+
+    int[] defaultTerrainColor = new[]{100, 200, 100};
+
+    async Task Load()
+    {
+        var scenarioStr = await _client.GetStringAsync("jts/Scenarios/167.Vitoria1_21June13.scn");
+        var oobStr = await _client.GetStringAsync("jts/OOBs/Vitoria.oob");
+        var mapStr = await _client.GetStringAsync("jts/Maps/Vitoria.map");
+
+        gameState = GameState.Load(code: "NB", scenarioStr: scenarioStr, oobStr: oobStr, mapStr: mapStr);
+        s = gameState.Scenario.ToString();
+    }
+
+    async Task Update()
+    {
+        await chart.Update();
+    }
+
+    async Task Plot()
+    {
+        if(gameState == null)
+            return;
+        var xl = gameState.UnitStates.UnitStates.Select(u => (object)u.X).ToList();
+        var yl = gameState.UnitStates.UnitStates.Select(u => (object)u.Y).ToList();
+
+        Console.WriteLine(xl);
+
+        
+        // var colorMat = new int[gameState.Height, gameState.Width][];
+        var colorOfArrayOfArray = new List<object>();
+        for(var i=0; i<gameState.Height; i++)
+        {
+            var row = new List<int[]>();
+            for(var j=0; j<gameState.Width; j++)
+            {
+                if(!terrainColorMap.TryGetValue(gameState.Map.TerrainMap[i,j].Name, out var color))
+                    color = defaultTerrainColor;
+                row.Add(color);
+            }
+            colorOfArrayOfArray.Add(row);
+        }
+        
+        Console.WriteLine($"before update: [{colorOfArrayOfArray.Count}]");
+
+        // await chart.Clear();
+
+        /*
+        data = new List<ITrace>
+        {
+            
+            new Image
+            {
+                Z=colorOfArrayOfArray
+            },
+            
+            new Scatter
+            {
+                Name = "ScatterTrace",
+                // Mode = ModeFlag.Lines | ModeFlag.Markers,
+                
+                X = xl,
+                Y = yl
+                
+                // X = new List<object>{3,2,1},
+                // Y = new List<object>{1,2,3}
+            }
+        };
+        */
+        await chart.Clear();
+        await chart.AddTrace(
+            new Image
+            {
+                Z=colorOfArrayOfArray
+            }
+        );
+        await chart.AddTrace(
+            new Scatter
+            {
+                Name = "ScatterTrace",
+                // Mode = ModeFlag.Lines | ModeFlag.Markers,
+                
+                X = xl,
+                Y = yl
+                
+                // X = new List<object>{3,2,1},
+                // Y = new List<object>{1,2,3}
+            }
+        );
+
+
+        // await chart.React();
+        // Console.WriteLine("update -1");
+        // await chart.React();
+        // await chart.NewPlot();
+
+        Console.WriteLine("update");
+    }
+
+    async Task Plot2()
+    {
+        /*
+        data = new List<ITrace>
+        {            
+            new Scatter
+            {
+                Name = "ScatterTrace",
+                // Mode = ModeFlag.Lines | ModeFlag.Markers,
+                
+                X = new List<object>{3,2,1},
+                Y = new List<object>{1,2,3}
+            }
+        };
+        await chart.React();
+        */
+        // await chart.DeleteTrace(0);
+        await chart.Clear();
+        await chart.AddTrace(new Scatter
+            {
+                Name = "ScatterTrace",
+                // Mode = ModeFlag.Lines | ModeFlag.Markers,
+                
+                X = new List<object>{3,2,1},
+                Y = new List<object>{1,2,3}
+            }
+        );
+    }
+
+
+    PlotlyChart chart;
+    Config config = new Config()
+    {
+        Responsive = true
+    };
+
+    Layout layout = new Layout();
+    // Using of the interface IList is important for the event callback!
+    IList<ITrace> data = new List<ITrace>
+    {
+        new Scatter
+        {
+            Name = "ScatterTrace",
+            // Mode = ModeFlag.Lines | ModeFlag.Markers,
+            X = new List<object>{1,2,3},
+            Y = new List<object>{1,2,3}
+        }
+    };
+}
